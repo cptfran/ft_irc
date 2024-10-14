@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="ft_irc"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ircserv">
+				<Option output="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ircserv/fast">
+				<Option output="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Colors.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Logging.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Server.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Logging.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Server.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/main.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
