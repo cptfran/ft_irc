@@ -1,0 +1,3 @@
+/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/ircserv.dir
+/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
