@@ -24,4 +24,6 @@ private:
 
 	bool authenticateClient(int clientSocket) const;
 	static void handleClient(int clientSocket);
+	static void handleCapLs(int clientSocket);
+	static std::string extractPassword(const std::string& buffer);
 };
