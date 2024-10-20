@@ -21,6 +21,7 @@
 #define AUTHENTICATE_CLIENT_SUCCESS LIGHT_CYAN "Client authenticated succesfully." RESET
 #define SERVER_RUN LIGHT_CYAN "Server is running and waiting for connections..." RESET
 #define HANDLE_CLIENT_FAIL LIGHT_CYAN "Client disconnected or error occured." RESET
+#define CLIENT_CONNECTED LIGHT_GREEN "Connected to the server.\n" RESET
 
 template <typename Identifier>
 void logMessage(const std::string& logLevel, const std::string& idType, Identifier id, const std::string& message)

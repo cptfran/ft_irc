@@ -38,7 +38,7 @@ hang.
 write, but also listen, and so forth).
 
 Because you have to use non-blocking file descriptors, it is
-possible to use read/recv or write/send functions with no poll()
+possible to use read6/recv or write/send functions with no poll()
 (or equivalent), and your server wouldn’t be blocking.
 But it would consume more system resources.
 Thus, if you try to read/recv or write/send in any file descriptor
