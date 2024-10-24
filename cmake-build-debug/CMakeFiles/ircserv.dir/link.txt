@@ -1,1 +1,1 @@
-/usr/bin/c++ -g CMakeFiles/ircserv.dir/src/main.cpp.o CMakeFiles/ircserv.dir/src/Server.cpp.o CMakeFiles/ircserv.dir/src/Logging.cpp.o -o ircserv 
+/usr/bin/c++ -g CMakeFiles/ircserv.dir/src/main.cpp.o CMakeFiles/ircserv.dir/src/Server.cpp.o CMakeFiles/ircserv.dir/src/Logging.cpp.o CMakeFiles/ircserv.dir/src/Client.cpp.o -o ircserv 

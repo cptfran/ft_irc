@@ -1,11 +1,16 @@
 #include "../include/Server.h"
+
+#include <cmath>
+
 #include "../include/Logging.h"
 #include <stdexcept>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <cstring>
 #include <iostream>
+#include <list>
 #include <bits/stl_algo.h>
+#include <poll.h>
 
 /**
  * @brief Constructor for the Server class.
@@ -35,10 +40,6 @@ Server::Server(const std::string& password) : fd(-1), password(password)
  */
 Server::~Server()
 {
-	for (std::vector<int>::iterator it = clientSockets.begin(); it != clientSockets.end(); ++it)
-	{
-		close(*it);
-	}
 	if (this->fd != -1)
 	{
 		close(this->fd);
@@ -100,30 +101,88 @@ void Server::init(const int port)
  */
 void Server::run()
 {
-	logMessage(INFO, SERVER_RUN);
-	while (true)
-	{
-		socklen_t addrLen = sizeof(this->address);
-		const int newSocket = accept(this->fd, reinterpret_cast<sockaddr*>(&this->address), &addrLen);
-		if (newSocket < 0)
-		{
-			logMessage(ERROR, ACCEPT_FAIL);
-			continue;
-		}
-		if (!authenticateClient(newSocket))
-		{
-			close(newSocket);
-			logMessage(ERROR, AUTHENTICATE_CLIENT_FAIL);
-		}
-		else
-		{
-			logMessage(INFO, "CLIENT", newSocket, AUTHENTICATE_CLIENT_SUCCESS);
-			send(newSocket, CLIENT_CONNECTED, strlen(CLIENT_CONNECTED), 0);
-			clientSockets.push_back(newSocket);
-			handleClient(newSocket);
-		}
-	}
+    logMessage(INFO, SERVER_RUN);
+    pollfd listen_fd = {};
+    listen_fd.fd = this->fd;
+    listen_fd.events = POLLIN;
+    listen_fd.revents = 0;
+    this->pollFds.push_back(listen_fd);
+    while (true)
+    {
+    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
+    	{
+    		logMessage(ERROR, "Poll error");
+    		continue;
+    	}
+        for (size_t i = 0; i < this->pollFds.size(); ++i)
+        {
+            if (this->pollFds[i].revents & POLLIN)
+            {
+                if (this->pollFds[i].fd == this->fd)
+                {
+                	connectClient();
+                }
+            	else
+            	{
+                   // TODO: create client class to handle multiple clients and mantain their state
+            		// Data from an existing client
+            		char buffer[1024];
+            		int bytesRead = recv(this->pollFds[i].fd, buffer, sizeof(buffer), 0);
+            		if (bytesRead <= 0)
+            		{
+            			// Client disconnected or error
+            			logMessage(ERROR, "CLIENT", this->pollFds[i].fd, HANDLE_CLIENT_FAIL);
+            			close(this->pollFds[i].fd);
+            			this->pollFds[i].fd = -1; // Mark for removal
+            		}
+            		else
+            		{
+            			// Process data
+            			buffer[bytesRead] = '\0';
+            			logMessage(INFO, "CLIENT", this->pollFds[i].fd, "[MESSAGE] " + std::string(buffer));
+            			send(this->pollFds[i].fd, buffer, bytesRead, 0); // Echo back
+            		}
+                }
+            }
+        }
+
+        // Remove closed client sockets
+        for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
+        {
+            if (it->fd == -1)
+            {
+                it = this->pollFds.erase(it);
+            }
+        	else
+        	{
+                ++it;
+            }
+        }
+    }
 }
+
+void Server::connectClient()
+{
+	socklen_t addrLen = sizeof(this->address);
+	const int clientSocket = accept(this->fd, reinterpret_cast<sockaddr*>(&this->address), &addrLen);
+	if (clientSocket < 0)
+	{
+		logMessage(ERROR, ACCEPT_FAIL);
+		return;
+	}
+	if (!authenticateClient(clientSocket))
+	{
+		logMessage(ERROR, AUTHENTICATE_CLIENT_FAIL);
+		close(clientSocket);
+		return;
+	}
+	logMessage(INFO, "CLIENT", clientSocket, AUTHENTICATE_CLIENT_SUCCESS);
+	Client client(clientSocket, POLLIN, 0);
+	this->pollFds.push_back(client.getPollFd());
+	this->clients.push_back(client);
+	handleClient(clientSocket);
+}
+
 
 /**
  * @brief Authenticates a client by reading data from the client socket and extracting the password.
@@ -139,7 +198,8 @@ void Server::run()
  * @param clientSocket The socket file descriptor for the client connection.
  * @return True if the client is successfully authenticated, false otherwise.
  */
-bool Server::authenticateClient(int clientSocket) const
+// TODO: modify to handle not only cap ls, pass but also to verify hostname etc
+bool Server::authenticateClient(const int clientSocket) const
 {
 	handleCapLs(clientSocket);
 	int bytesRead = 1;
@@ -149,13 +209,11 @@ bool Server::authenticateClient(int clientSocket) const
 		bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
 		if (bytesRead > 0)
 		{
-			buffer[bytesRead] = '\0'; // Null-terminate the buffer
+			buffer[bytesRead] = '\0';
+			std::cout << buffer << std::endl;
 			std::string receivedPassword = extractPassword(buffer);
-			std::cout << "Extracted password: " << receivedPassword << std::endl;
 			if (!receivedPassword.empty())
 			{
-				std::cout << receivedPassword << receivedPassword.length() << std::endl;
-				std::cout << this->password << this->password.length() << std::endl;
 				return receivedPassword == this->password;
 			}
 		}
@@ -209,17 +267,20 @@ std::string Server::extractPassword(const std::string& buffer)
 void Server::handleCapLs(const int clientSocket)
 {
 	char buffer[1024];
-	std::string receivedCommand;
-	int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-	if (bytesRead > 0)
+	const int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+	if (bytesRead <= 0)
 	{
-		buffer[bytesRead] = '\0';
-		receivedCommand = buffer;
-		if (receivedCommand.find("CAP LS") != std::string::npos)
-		{
-			const std::string capResponse = ":server CAP * LS :\r\n";
-			send(clientSocket, capResponse.c_str(), capResponse.size(), 0);
-		}
+		logMessage(ERROR, "CLIENT", clientSocket, HANDLE_CLIENT_FAIL);
+		close(clientSocket);
+		return;
+	}
+	buffer[bytesRead] = '\0';
+	std::cout << buffer << std::endl;
+	const std::string receivedCommand = buffer;
+	if (receivedCommand.find("CAP LS") != std::string::npos)
+	{
+		const std::string capResponse = ":server CAP * LS :\r\n";
+		send(clientSocket, capResponse.c_str(), capResponse.size(), 0);
 	}
 }
 
