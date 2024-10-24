@@ -183,23 +183,6 @@ void Server::connectClient()
 	handleClient(clientSocket);
 }
 
-// void Server::parser()
-// {
-// 	char buffer[INPUT_BUFFER_SIZE];
-// 	const int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-// 	if (bytesRead > 0)
-// 	{
-// 		buffer[bytesRead] = '\0';
-// 		std::cout << buffer << std::endl;
-// 		const std::string receivedCommand = buffer;
-// 		if (receivedCommand.find("CAP LS") != std::string::npos)
-// 		{
-// 			const std::string capResponse = ":server CAP * LS :\r\n";
-// 			send(clientSocket, capResponse.c_str(), capResponse.size(), 0);
-// 		}
-// 	}
-// }
-
 
 /**
  * @brief Authenticates a client by reading data from the client socket and extracting the password.
@@ -215,49 +198,27 @@ void Server::connectClient()
  * @param clientSocket The socket file descriptor for the client connection.
  * @return True if the client is successfully authenticated, false otherwise.
  */
-// bool Server::authenticateClient(const int clientSocket) const
-// {
-// 	handleCapLs(clientSocket);
-// 	int bytesRead = 1;
-// 	while (bytesRead > 0)
-// 	{
-// 		char buffer[1024] = {};
-// 		bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-// 		if (bytesRead > 0)
-// 		{
-// 			buffer[bytesRead] = '\0';
-// 			std::cout << buffer << std::endl;
-// 			std::string receivedPassword = extractPassword(buffer);
-// 			if (!receivedPassword.empty())
-// 			{
-// 				return receivedPassword == this->password;
-// 			}
-// 		}
-// 	}
-// 	return false;
-// }
-
+// TODO: modify to handle not only cap ls, pass but also to verify hostname etc
 bool Server::authenticateClient(const int clientSocket) const
 {
 	handleCapLs(clientSocket);
-	while (true)
+	int bytesRead = 1;
+	while (bytesRead > 0)
 	{
 		char buffer[1024] = {};
-		const int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-		if (bytesRead <= 0)
+		bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+		if (bytesRead > 0)
 		{
-			logMessage(ERROR, "CLIENT", clientSocket, HANDLE_CLIENT_FAIL);
-			close(clientSocket);
-			return false;
+			buffer[bytesRead] = '\0';
+			std::cout << buffer << std::endl;
+			std::string receivedPassword = extractPassword(buffer);
+			if (!receivedPassword.empty())
+			{
+				return receivedPassword == this->password;
+			}
 		}
-		buffer[bytesRead] = '\0';
-		std::cout << buffer << std::endl;
-		// std::string receivedPassword = extractPassword(buffer);
-		// if (!receivedPassword.empty())
-		// {
-			// return receivedPassword == this->password;
-		// }
 	}
+	return false;
 }
 
 /**
