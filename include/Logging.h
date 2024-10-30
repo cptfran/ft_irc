@@ -22,6 +22,8 @@
 #define SERVER_RUN LIGHT_CYAN "Server is running and waiting for connections..." RESET
 #define HANDLE_CLIENT_FAIL LIGHT_CYAN "Client disconnected or error occured." RESET
 #define CLIENT_CONNECTED LIGHT_GREEN "Connected to the server.\n" RESET
+#define EMPTY_CLIENT_PROMPT LIGHT_CYAN "Empty client prompt, nothing to handle." RESET
+#define WRONG_CLIENT_COMMAND LIGHT_CYAN "Command not supported." RESET
 
 template <typename Identifier>
 void logMessage(const std::string& logLevel, const std::string& idType, Identifier id, const std::string& message)

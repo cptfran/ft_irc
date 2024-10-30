@@ -1,7 +1,7 @@
 #include "../include/Server.h"
 
+#include <ClientCommand.h>
 #include <cmath>
-
 #include "../include/Logging.h"
 #include <stdexcept>
 #include <unistd.h>
@@ -23,9 +23,9 @@
  *
  * @param password The password to be used for client authentication.
  */
-Server::Server(const std::string& password) : fd(-1), password(password)
+Server::Server(const string& password) : fd(-1), password(password)
 {
-	std::memset(&this->address, 0, sizeof(this->address));
+	memset(&this->address, 0, sizeof(this->address));
 }
 
 /**
@@ -59,18 +59,18 @@ Server::~Server()
  * If any step fails, the function throws a runtime error with an appropriate error message.
  *
  * @param port The port number on which the server will listen for incoming connections.
- * @throws std::runtime_error If the port is out of range, socket creation fails, binding fails, or listening fails.
+ * @throws runtime_error If the port is out of range, socket creation fails, binding fails, or listening fails.
  */
 void Server::init(const int port)
 {
 	if (port < REGISTERED_PORT_MIN || port > REGISTERED_PORT_MAX)
 	{
-		throw std::runtime_error(ERROR WRONG_PORT_RANGE);
+		throw runtime_error(ERROR WRONG_PORT_RANGE);
 	}
 	this->fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->fd == -1)
 	{
-		throw std::runtime_error(ERROR SOCKET_FAIL);
+		throw runtime_error(ERROR SOCKET_FAIL);
 	}
 	this->address.sin_family = AF_INET;
 	this->address.sin_port = htons(port);
@@ -78,26 +78,24 @@ void Server::init(const int port)
 	if (bind(this->fd, reinterpret_cast<sockaddr*>(&this->address), sizeof(this->address)) < 0)
 	{
 		close(this->fd);
-		throw std::runtime_error(ERROR BIND_FAIL);
+		throw runtime_error(ERROR BIND_FAIL);
 	}
 	if (listen(this->fd, SOMAXCONN) < 0)
 	{
 		close(this->fd);
-		throw std::runtime_error(ERROR LISTEN_FAIL);
+		throw runtime_error(ERROR LISTEN_FAIL);
 	}
 }
 
 /**
  * @brief Runs the server, accepting and handling client connections.
  *
- * This function enters an infinite loop where it continuously accepts new client connections.
+ * This function enters an infinite loop to continuously accept new client connections.
  * For each new connection, it attempts to authenticate the client using the authenticateClient function.
- * If authentication fails, the connection is closed and an error message is logged.
- * If authentication succeeds, a success message is logged, a welcome message is sent to the client,
- * the client's socket is added to the list of client sockets, and the handleClient function is called to manage the
- * client.
- * The function logs messages at various stages to provide information about the server's operation and any errors
- * encountered.
+ * If the authentication fails, it closes the connection and logs an error message.
+ * If the authentication succeeds, it logs a success message, sends a welcome message to the client,
+ * adds the client's socket to the list of client sockets, and calls the handleClient function to manage the client.
+ * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
 void Server::run()
 {
@@ -127,7 +125,7 @@ void Server::run()
                    // TODO: create client class to handle multiple clients and mantain their state
             		// Data from an existing client
             		char buffer[1024];
-            		int bytesRead = recv(this->pollFds[i].fd, buffer, sizeof(buffer), 0);
+            		const size_t bytesRead = recv(this->pollFds[i].fd, buffer, sizeof(buffer), 0);
             		if (bytesRead <= 0)
             		{
             			// Client disconnected or error
@@ -139,7 +137,7 @@ void Server::run()
             		{
             			// Process data
             			buffer[bytesRead] = '\0';
-            			logMessage(INFO, "CLIENT", this->pollFds[i].fd, "[MESSAGE] " + std::string(buffer));
+            			logMessage(INFO, "CLIENT", this->pollFds[i].fd, "[MESSAGE] " + string(buffer));
             			send(this->pollFds[i].fd, buffer, bytesRead, 0); // Echo back
             		}
                 }
@@ -147,7 +145,7 @@ void Server::run()
         }
 
         // Remove closed client sockets
-        for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
+        for (vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
         {
             if (it->fd == -1)
             {
@@ -170,7 +168,8 @@ void Server::connectClient()
 		logMessage(ERROR, ACCEPT_FAIL);
 		return;
 	}
-	if (!authenticateClient(clientSocket))
+	Client client(clientSocket, POLLIN, 0);
+	if (!authenticateClient(client))
 	{
 		logMessage(ERROR, AUTHENTICATE_CLIENT_FAIL);
 		close(clientSocket);
@@ -182,24 +181,6 @@ void Server::connectClient()
 	this->clients.push_back(client);
 	handleClient(clientSocket);
 }
-
-// void Server::parser()
-// {
-// 	char buffer[INPUT_BUFFER_SIZE];
-// 	const int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-// 	if (bytesRead > 0)
-// 	{
-// 		buffer[bytesRead] = '\0';
-// 		std::cout << buffer << std::endl;
-// 		const std::string receivedCommand = buffer;
-// 		if (receivedCommand.find("CAP LS") != std::string::npos)
-// 		{
-// 			const std::string capResponse = ":server CAP * LS :\r\n";
-// 			send(clientSocket, capResponse.c_str(), capResponse.size(), 0);
-// 		}
-// 	}
-// }
-
 
 /**
  * @brief Authenticates a client by reading data from the client socket and extracting the password.
@@ -226,8 +207,8 @@ void Server::connectClient()
 // 		if (bytesRead > 0)
 // 		{
 // 			buffer[bytesRead] = '\0';
-// 			std::cout << buffer << std::endl;
-// 			std::string receivedPassword = extractPassword(buffer);
+// 			cout << buffer << endl;
+// 			string receivedPassword = extractPassword(buffer);
 // 			if (!receivedPassword.empty())
 // 			{
 // 				return receivedPassword == this->password;
@@ -237,26 +218,36 @@ void Server::connectClient()
 // 	return false;
 // }
 
-bool Server::authenticateClient(const int clientSocket) const
+bool Server::authenticateClient(Client& client) const
 {
-	handleCapLs(clientSocket);
-	while (true)
+	// TODO: check what exactly is needed to fully authenticate the client
+	while (!client.isPasswordCorrect() || client.getNickname().empty() || client.getUsername().empty())
 	{
 		char buffer[1024] = {};
-		const int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+		const size_t bytesRead = recv(client.getSocket(), buffer, sizeof(buffer) - 1, 0);
 		if (bytesRead <= 0)
 		{
 			logMessage(ERROR, "CLIENT", clientSocket, HANDLE_CLIENT_FAIL);
-			close(clientSocket);
+			close(client.getSocket());
 			return false;
 		}
 		buffer[bytesRead] = '\0';
-		std::cout << buffer << std::endl;
-		// std::string receivedPassword = extractPassword(buffer);
-		// if (!receivedPassword.empty())
-		// {
-			// return receivedPassword == this->password;
-		// }
+		ClientCommand command(buffer);
+		try
+		{
+			command.parser();
+			vector<string> tokens = command.getTokens();
+			cout << tokens[0] << endl;
+			if (tokens[0] == "CAP")
+			{
+				const string capResponse = ":server CAP * LS :\r\n";
+				send(client.getSocket(), capResponse.c_str(), capResponse.size(), 0);
+			}
+		}
+		catch (const exception& e)
+		{
+			logMessage(ERROR,e.what());
+		}
 	}
 }
 
@@ -271,21 +262,21 @@ bool Server::authenticateClient(const int clientSocket) const
  * @param buffer The input string containing the password keyword and the password.
  * @return The extracted password as a string. If the keyword is not found, returns an empty string.
  */
-std::string Server::extractPassword(const std::string& buffer)
+string Server::extractPassword(const string& buffer)
 {
-	const std::string passwordKeyword = "PASS ";
+	const string passwordKeyword = "PASS ";
 	const size_t passwordPosition = buffer.find(passwordKeyword);
-	if (passwordPosition == std::string::npos)
+	if (passwordPosition == string::npos)
 	{
 		return "";
 	}
 	const size_t passwordStart = passwordPosition + passwordKeyword.length();
 	size_t passwordEnd = buffer.find('\n', passwordStart);
-	if (passwordEnd == std::string::npos)
+	if (passwordEnd == string::npos)
 	{
 		passwordEnd = buffer.length();
 	}
-	std::string password = buffer.substr(passwordStart, passwordEnd - 1 - passwordStart);
+	string password = buffer.substr(passwordStart, passwordEnd - 1 - passwordStart);
 	return password;
 }
 
@@ -314,11 +305,11 @@ void Server::handleCapLs(const int clientSocket)
 		return;
 	}
 	buffer[bytesRead] = '\0';
-	std::cout << buffer << std::endl;
-	const std::string receivedCommand = buffer;
-	if (receivedCommand.find("CAP LS") != std::string::npos)
+	cout << buffer << endl;
+	const string receivedCommand = buffer;
+	if (receivedCommand.find("CAP LS") != string::npos)
 	{
-		const std::string capResponse = ":server CAP * LS :\r\n";
+		const string capResponse = ":server CAP * LS :\r\n";
 		send(clientSocket, capResponse.c_str(), capResponse.size(), 0);
 	}
 }
@@ -352,7 +343,7 @@ void Server::handleClient(const int clientSocket)
 			break;
 		}
 		buffer[bytesRead] = '\0';
-		logMessage(INFO, "CLIENT", clientSocket, "[MESSAGE] " + std::string(buffer));
+		logMessage(INFO, "CLIENT", clientSocket, "[MESSAGE] " + string(buffer));
 		send(clientSocket, buffer, bytesRead, 0);
 	}
 }

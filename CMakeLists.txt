@@ -17,6 +17,7 @@ add_executable(ircserv
         include/Client.h
         src/Client.cpp
         include/Parser.h
+        src/Parser.cpp
 )
 
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")

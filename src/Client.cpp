@@ -16,6 +16,12 @@ Client::~Client()
 	}
 }
 
+int Client::getSocket() const
+{
+	return this->socket;
+}
+
+
 pollfd Client::getPollFd() const
 {
 	return this->pollFd;
