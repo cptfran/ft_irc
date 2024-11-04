@@ -21,8 +21,37 @@ int Client::getSocket() const
 	return this->socket;
 }
 
-
 pollfd Client::getPollFd() const
 {
 	return this->pollFd;
+}
+
+string Client::getPassword() const
+{
+	return this->password;
+}
+
+string Client::getNickname() const
+{
+	return this->nickname;
+}
+
+string Client::getUsername() const
+{
+	return this->username;
+}
+
+void Client::setPassword(const string& password)
+{
+	this->password = password;
+}
+
+void Client::setNickname(const string& nickname)
+{
+	this->nickname = nickname;
+}
+
+void Client::setUsername(const string& username)
+{
+	this->username = username;
 }

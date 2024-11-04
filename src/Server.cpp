@@ -169,14 +169,9 @@ void Server::connectClient()
 		return;
 	}
 	Client client(clientSocket, POLLIN, 0);
-	if (!authenticateClient(client))
-	{
-		logMessage(ERROR, AUTHENTICATE_CLIENT_FAIL);
-		close(clientSocket);
-		return;
-	}
+	authenticateClient(client);
 	logMessage(INFO, "CLIENT", clientSocket, AUTHENTICATE_CLIENT_SUCCESS);
-	Client client(clientSocket, POLLIN, 0);
+	// Client client(clientSocket, POLLIN, 0);
 	this->pollFds.push_back(client.getPollFd());
 	this->clients.push_back(client);
 	handleClient(clientSocket);
@@ -218,18 +213,18 @@ void Server::connectClient()
 // 	return false;
 // }
 
-bool Server::authenticateClient(Client& client) const
+void Server::authenticateClient(Client& client) const
 {
 	// TODO: check what exactly is needed to fully authenticate the client
-	while (!client.isPasswordCorrect() || client.getNickname().empty() || client.getUsername().empty())
+	while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
 	{
 		char buffer[1024] = {};
 		const size_t bytesRead = recv(client.getSocket(), buffer, sizeof(buffer) - 1, 0);
 		if (bytesRead <= 0)
 		{
-			logMessage(ERROR, "CLIENT", clientSocket, HANDLE_CLIENT_FAIL);
+			logMessage(ERROR, "CLIENT", client.getSocket(), HANDLE_CLIENT_FAIL);
 			close(client.getSocket());
-			return false;
+			return;
 		}
 		buffer[bytesRead] = '\0';
 		ClientCommand command(buffer);
@@ -242,6 +237,25 @@ bool Server::authenticateClient(Client& client) const
 			{
 				const string capResponse = ":server CAP * LS :\r\n";
 				send(client.getSocket(), capResponse.c_str(), capResponse.size(), 0);
+			}
+			else if (tokens[0] == "PASS")
+			{
+				client.setPassword(tokens[1]);
+			}
+			else if (tokens[0] == "NICK")
+			{
+				client.setNickname(tokens[1]);
+			}
+			else if (tokens[0] == "USER")
+			{
+				// TODO: if less than 5 tokens, not enough information, return something to client.
+
+				client.setUsername(tokens[5]);
+
+				// TODO: handle realname.
+				// It must be noted that realname parameter must be the last parameter,
+				// because it may contain space characters and must be prefixed with a
+				// colon (':') to make sure this is recognised as such.
 			}
 		}
 		catch (const exception& e)

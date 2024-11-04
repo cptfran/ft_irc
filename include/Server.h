@@ -27,7 +27,7 @@ private:
 	vector<Client> clients;
 	vector<pollfd> pollFds;
 
-	bool authenticateClient(Client& client) const;
+	void authenticateClient(Client& client) const;
 	static void handleClient(int clientSocket);
 	static void handleCapLs(int clientSocket);
 	static string extractPassword(const string& buffer);

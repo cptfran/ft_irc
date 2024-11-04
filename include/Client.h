@@ -23,16 +23,20 @@ public:
 
 	int getSocket() const;
 	pollfd getPollFd() const;
-	std::string& getNickname() const;
-	std::string& getUsername() const;
+	string getPassword() const;
+	string getNickname() const;
+	string getUsername() const;
 
-	bool isPasswordCorrect();
+	void setPassword(const string& password);
+	void setNickname(const string& nickname);
+	void setUsername(const string& username);
 
 private:
 	Client();
 
 	int socket;
 	pollfd pollFd;
-	std::string nickname;
-	std::string username;
+	string password;
+	string nickname;
+	string username;
 };
