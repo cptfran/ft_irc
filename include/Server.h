@@ -1,35 +1,59 @@
 #pragma once
 
+#include <map>
 #include "Client.h"
-#include <string>
 #include <vector>
 #include <netinet/in.h>
 
+// Ports range:
 #define REGISTERED_PORT_MIN 1024
 #define REGISTERED_PORT_MAX 49151
-#define INPUT_BUFFER_SIZE 512
 
-using namespace std;
+// Client message buffer size:
+#define INPUT_BUFFER_SIZE 512
 
 class Server
 {
 public:
-	explicit Server(const string& password);
+	Server(const std::string& name, const std::string& version, const std::string& password);
 	~Server();
+
+	void setVersion(const std::string& version);
 
 	void init(int port);
 	void run();
 
+	void reply(const Client& client, int replyCode, const std::vector<std::string>& args) const;
+
 private:
+	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
+
 	int fd;
 	sockaddr_in address;
-	string password;
-	vector<Client> clients;
-	vector<pollfd> pollFds;
+	std::string name;
+	std::string version;
+	std::string password;
+	std::string creationDate;
+	std::string availableUserModes;
+	std::string availableChannelModes;
+	std::vector<Client> clients;
+	std::vector<pollfd> pollFds;
+	std::map<int, ReplyFunction> replies;
 
-	void authenticateClient(Client& client) const;
-	static void handleClient(int clientSocket);
-	static void handleCapLs(int clientSocket);
-	static string extractPassword(const string& buffer);
+	// New client connection and authentication.
 	void connectClient();
+	bool authenticateClient(Client& client) const;
+	void handleCommands(Client& client, const std::string& buffer) const;
+
+	// Handling new requests of already connected client.
+	static void handleClientPrompt(int clientSocket);
+
+	// Reply functions.
+	static std::string rplWelcome(const std::vector<std::string>& args);
+	static std::string rplYourHost(const std::vector<std::string>& args);
+	static std::string rplCreated(const std::vector<std::string>& args);
+	static std::string rplMyInfo(const std::vector<std::string>& args);
+	static std::string rplNoTopic(const std::vector<std::string>& args);
+	static std::string errUnknownCommand(const std::vector<std::string>& args);
+	static std::string errChannelIsFull(const std::vector<std::string>& args);
 };

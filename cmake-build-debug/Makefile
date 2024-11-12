@@ -153,53 +153,53 @@ src/Client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Client.cpp.s
 .PHONY : src/Client.cpp.s
 
-src/Logging.o: src/Logging.cpp.o
-.PHONY : src/Logging.o
+src/ClientTranslator.o: src/ClientTranslator.cpp.o
+.PHONY : src/ClientTranslator.o
 
 # target to build an object file
-src/Logging.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Logging.cpp.o
-.PHONY : src/Logging.cpp.o
+src/ClientTranslator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o
+.PHONY : src/ClientTranslator.cpp.o
 
-src/Logging.i: src/Logging.cpp.i
-.PHONY : src/Logging.i
+src/ClientTranslator.i: src/ClientTranslator.cpp.i
+.PHONY : src/ClientTranslator.i
 
 # target to preprocess a source file
-src/Logging.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Logging.cpp.i
-.PHONY : src/Logging.cpp.i
+src/ClientTranslator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.i
+.PHONY : src/ClientTranslator.cpp.i
 
-src/Logging.s: src/Logging.cpp.s
-.PHONY : src/Logging.s
+src/ClientTranslator.s: src/ClientTranslator.cpp.s
+.PHONY : src/ClientTranslator.s
 
 # target to generate assembly for a file
-src/Logging.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Logging.cpp.s
-.PHONY : src/Logging.cpp.s
+src/ClientTranslator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.s
+.PHONY : src/ClientTranslator.cpp.s
 
-src/Parser.o: src/Parser.cpp.o
-.PHONY : src/Parser.o
+src/Log.o: src/Log.cpp.o
+.PHONY : src/Log.o
 
 # target to build an object file
-src/Parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Parser.cpp.o
-.PHONY : src/Parser.cpp.o
+src/Log.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Log.cpp.o
+.PHONY : src/Log.cpp.o
 
-src/Parser.i: src/Parser.cpp.i
-.PHONY : src/Parser.i
+src/Log.i: src/Log.cpp.i
+.PHONY : src/Log.i
 
 # target to preprocess a source file
-src/Parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Parser.cpp.i
-.PHONY : src/Parser.cpp.i
+src/Log.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Log.cpp.i
+.PHONY : src/Log.cpp.i
 
-src/Parser.s: src/Parser.cpp.s
-.PHONY : src/Parser.s
+src/Log.s: src/Log.cpp.s
+.PHONY : src/Log.s
 
 # target to generate assembly for a file
-src/Parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Parser.cpp.s
-.PHONY : src/Parser.cpp.s
+src/Log.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Log.cpp.s
+.PHONY : src/Log.cpp.s
 
 src/Server.o: src/Server.cpp.o
 .PHONY : src/Server.o
@@ -224,6 +224,30 @@ src/Server.s: src/Server.cpp.s
 src/Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Server.cpp.s
 .PHONY : src/Server.cpp.s
+
+src/Utils.o: src/Utils.cpp.o
+.PHONY : src/Utils.o
+
+# target to build an object file
+src/Utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Utils.cpp.o
+.PHONY : src/Utils.cpp.o
+
+src/Utils.i: src/Utils.cpp.i
+.PHONY : src/Utils.i
+
+# target to preprocess a source file
+src/Utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Utils.cpp.i
+.PHONY : src/Utils.cpp.i
+
+src/Utils.s: src/Utils.cpp.s
+.PHONY : src/Utils.s
+
+# target to generate assembly for a file
+src/Utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Utils.cpp.s
+.PHONY : src/Utils.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -261,15 +285,18 @@ help:
 	@echo "... src/Client.o"
 	@echo "... src/Client.i"
 	@echo "... src/Client.s"
-	@echo "... src/Logging.o"
-	@echo "... src/Logging.i"
-	@echo "... src/Logging.s"
-	@echo "... src/Parser.o"
-	@echo "... src/Parser.i"
-	@echo "... src/Parser.s"
+	@echo "... src/ClientTranslator.o"
+	@echo "... src/ClientTranslator.i"
+	@echo "... src/ClientTranslator.s"
+	@echo "... src/Log.o"
+	@echo "... src/Log.i"
+	@echo "... src/Log.s"
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"
+	@echo "... src/Utils.o"
+	@echo "... src/Utils.i"
+	@echo "... src/Utils.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

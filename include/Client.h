@@ -3,8 +3,6 @@
 #include <sys/poll.h>
 #include <iostream>
 
-using namespace std;
-
 /**
  * A client is anything connecting to a server that is not another
  * server. Each client is distinguished from other clients by a unique
@@ -23,20 +21,23 @@ public:
 
 	int getSocket() const;
 	pollfd getPollFd() const;
-	string getPassword() const;
-	string getNickname() const;
-	string getUsername() const;
+	std::string getPassword() const;
+	std::string getNickname() const;
+	std::string getUsername() const;
+	bool getCapEnd() const;
 
-	void setPassword(const string& password);
-	void setNickname(const string& nickname);
-	void setUsername(const string& username);
+	void setPassword(const std::string& password);
+	void setNickname(const std::string& nickname);
+	void setUsername(const std::string& username);
+	void setCapEnd(bool truefalse);
 
 private:
 	Client();
 
 	int socket;
 	pollfd pollFd;
-	string password;
-	string nickname;
-	string username;
+	std::string password;
+	std::string nickname;
+	std::string username;
+	bool capEnd;
 };

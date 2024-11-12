@@ -9,9 +9,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Client.cpp" "CMakeFiles/ircserv.dir/src/Client.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Client.cpp.o.d"
-  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Logging.cpp" "CMakeFiles/ircserv.dir/src/Logging.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Logging.cpp.o.d"
-  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Parser.cpp" "CMakeFiles/ircserv.dir/src/Parser.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Parser.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/ClientTranslator.cpp" "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Log.cpp" "CMakeFiles/ircserv.dir/src/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Log.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Server.cpp" "CMakeFiles/ircserv.dir/src/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Server.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Utils.cpp" "CMakeFiles/ircserv.dir/src/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Utils.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
   )
 
