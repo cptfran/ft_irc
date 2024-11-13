@@ -1,30 +1,36 @@
 #include "../include/Client.h"
 #include <unistd.h>
 
-Client::Client(const int fd, const short int events, const short int revents) : socket(fd), pollFd(), capEnd(false)
+// Client::Client(const int fd, const short int events, const short int revents) : fd(fd), pollFd(), capEnd(false)
+// {
+	// this->pollFd.fd = fd;
+	// this->pollFd.events = events;
+	// this->pollFd.revents = revents;
+// }
+
+Client::Client(const int fd) : fd(fd), capEnd(false)
 {
-	this->pollFd.fd = fd;
-	this->pollFd.events = events;
-	this->pollFd.revents = revents;
+
 }
 
 Client::~Client()
 {
-	if (this->socket != -1)
-	{
-		close(this->socket);
-	}
+	// if (this->fd != -1)
+	// {
+		// close(this->fd);
+	// }
 }
 
-int Client::getSocket() const
+int Client::getFd() const
 {
-	return this->socket;
+	return this->fd;
 }
 
-pollfd Client::getPollFd() const
-{
-	return this->pollFd;
-}
+// TODO: delete?
+// pollfd Client::getPollFd() const
+// {
+	// return this->pollFd;
+// }
 
 std::string Client::getPassword() const
 {

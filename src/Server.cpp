@@ -36,7 +36,7 @@
  * @param password The password to be used for client authentication.
  */
 Server::Server(const std::string& name, const std::string& version, const std::string& password)
-: fd(-1), address(), name(name), version(version), password(password), availableUserModes("-"),
+: fd(-1), name(name), version(version), password(password), availableUserModes("-"),
 availableChannelModes("-")
 {
 	const std::time_t now = std::time(NULL);
@@ -65,6 +65,15 @@ Server::~Server()
 	if (this->fd != -1)
 	{
 		close(this->fd);
+	}
+
+	for (std::vector<Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	{
+		const int clientFd = it->getfd();
+		if (clientFd != -1)
+		{
+			close(clientFd);
+		}
 	}
 }
 
@@ -96,7 +105,7 @@ void Server::init(const int port)
 	}
 
 	this->fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (this->fd == -1)
+	if (this->fd < -1)
 	{
 		throw std::runtime_error(ERROR SOCKET_FAIL);
 	}
@@ -116,10 +125,11 @@ void Server::init(const int port)
 		throw std::runtime_error(ERROR F_SETFL_FAIL);
 	}
 
-	this->address.sin_family = AF_INET;
-	this->address.sin_port = htons(port);
-	this->address.sin_addr.s_addr = INADDR_ANY;
-	if (bind(this->fd, reinterpret_cast<sockaddr*>(&this->address), sizeof(this->address)) < 0)
+	sockaddr_in addr = {};
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = INADDR_ANY;
+	if (bind(this->fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
 	{
 		close(this->fd);
 		throw std::runtime_error(ERROR BIND_FAIL);
@@ -148,161 +158,176 @@ void Server::run()
 	Log::msgServer(INFO, SERVER_RUN);
 
 	// Add the server to the poll.
-	const pollfd listen_fd = {this->fd, POLLIN, 0};
-    this->pollFds.push_back(listen_fd);
+	pollfd listenFd = {this->fd, POLLIN, 0};
+    this->pollFds.push_back(listenFd);
 
 	// Main loop, handling new client connections and already running clients.
     while (true)
     {
-    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
+    	if (poll(this->pollFds.begin().base(), this->pollFds.size(), -1) < 0)
     	{
     		Log::msgServer(ERROR, "Poll error");
-    		continue;
+    		// continue;
     	}
-        for (size_t i = 0; i < this->pollFds.size(); ++i)
+    	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); ++it)
         {
-        	if (this->pollFds[i].revents == 0)
+    		if (it->revents == 0)
         	{
         		continue;
         	}
 
-        	if (this->pollFds[i].revents & POLLHUP)
+            if ((it->revents & POLLHUP) == POLLHUP)
         	{
-        		std::cout << "POLLHUP" << std::endl;
         		break;
         	}
 
-            if (this->pollFds[i].revents & POLLIN)
+            if ((it->revents & POLLIN) == POLLIN)
             {
-	            if (this->pollFds[i].fd == this->fd)
+    			if (it->fd == this->fd)
                 {
                 	connectClient();
                 	break;
                 }
-
-            	std::cout << "existing client handling" << std::endl;
-            	// Data from an existing client
-            	char buffer[INPUT_BUFFER_SIZE];
-            	const ssize_t bytesRead = recv(this->pollFds[i].fd, buffer, sizeof(buffer), 0);
-            	if (bytesRead <= 0)
-            	{
-            		// Client disconnected or error
-            		Log::msgServer(ERROR, "CLIENT", this->pollFds[i].fd, HANDLE_CLIENT_FAIL);
-            		close(this->pollFds[i].fd);
-            		this->pollFds[i].fd = -1; // Mark for removal
-            	}
-            	else
-            	{
-            		// Process data
-            		buffer[bytesRead] = '\0';
-            		Log::msgServer(INFO, "CLIENT", this->pollFds[i].fd, "[MESSAGE] " + std::string(buffer));
-            	handleCommands(clients[i], buffer);
-                }
+            	std::cout << "breaking" << std::endl;
+				break;
             }
         }
 
         // Remove closed client sockets.
-        for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
-        {
-            if (it->fd == -1)
-            {
-                it = this->pollFds.erase(it);
-            }
-        	else
-        	{
-                ++it;
-            }
-        }
+        // for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
+        // {
+        //     if (it->fd == -1)
+        //     {
+        //         it = this->pollFds.erase(it);
+        //     }
+        // 	else
+        // 	{
+        //         ++it;
+        //     }
+        // }
     }
 }
 
 void Server::connectClient()
 {
-	socklen_t addrLen = sizeof(this->address);
-	const int clientSocket = accept(this->fd, reinterpret_cast<sockaddr*>(&this->address), &addrLen);
-	if (clientSocket < 0)
+	Log::msgServer(INFO, NEW_CLIENT_START);
+
+	sockaddr_in addr = {};
+	socklen_t addrLen = sizeof(addr);
+
+	// Create fd for the new client and accept it.
+	const int clientFd = accept(this->fd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
+	if (clientFd < 0)
 	{
 		throw std::runtime_error(ERROR ACCEPT_FAIL);
 	}
 
-	Client client(clientSocket, POLLIN, 0);
-	this->pollFds.push_back(client.getPollFd());
+	// Create pollfd for the new client and add it to the pollfd list.
+	const pollfd pollFd = {clientFd, POLLIN, 0};
+	this->pollFds.push_back(pollFd);
+
+	// Create new client object and add it to the clients list.
+	const Client client(clientFd);
 	this->clients.push_back(client);
 
-	// Set the client socket to non-blocking mode.
-	if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) == -1)
-	{
-		close(clientSocket);
-		throw std::runtime_error(ERROR F_SETFL_FAIL);
-	}
+	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_CONNECTED);
 
-	if (!authenticateClient(client))
-	{
-		return;
-	}
-	Log::msgServer(INFO, "CLIENT", clientSocket, AUTHENTICATE_CLIENT_SUCCESS);
-	// this->pollFds.push_back(client.getPollFd());
-	// this->clients.push_back(client);
-	// handleClientPrompt(clientSocket);
+	// TODO: try to connect more than one client and check if fcntl for clients is necessary.
+	// Set the client socket to non-blocking mode.
+	// if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1)
+	// {
+	// 	close(clientFd);
+	// 	throw std::runtime_error(ERROR F_SETFL_FAIL);
+	// }
+
+	// Log::msgServer(INFO, "CLIENT", clientFd, AUTHENTICATE_CLIENT_SUCCESS);
 }
 
 
 // TODO: implement certain amount of time that client has to send authentication data.
-bool Server::authenticateClient(Client& client) const
-{
-	while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
-	{
-		char buffer[INPUT_BUFFER_SIZE] = {};
-		const ssize_t bytesRead = recv(client.getSocket(), buffer, sizeof(buffer) - 1, 0);
-		if (bytesRead <= 0)
-		{
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
-			{
-				continue;
-			}
-			Log::msgServer(ERROR, "CLIENT", client.getSocket(), HANDLE_CLIENT_FAIL);
-			close(client.getSocket());
-			return false;
-		}
-		buffer[bytesRead] = '\0';
-		try
-		{
-			handleCommands(client, buffer);
-		}
-		catch (const std::exception& e)
-		{
-			Log::msgServer(ERROR,e.what());
-		}
-	}
+// bool Server::authenticateClient(Client& client) const
+// {
+// 	while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
+// 	{
+// 		char buffer[INPUT_BUFFER_SIZE] = {};
+// 		const ssize_t bytesRead = recv(client.getSocket(), buffer, sizeof(buffer) - 1, 0);
+// 		if (bytesRead <= 0)
+// 		{
+// 			if (errno == EAGAIN || errno == EWOULDBLOCK)
+// 			{
+// 				continue;
+// 			}
+// 			Log::msgServer(ERROR, "CLIENT", client.getSocket(), HANDLE_CLIENT_FAIL);
+// 			close(client.getSocket());
+// 			return false;
+// 		}
+// 		buffer[bytesRead] = '\0';
+// 		try
+// 		{
+// 			handleCommands(client, buffer);
+// 		}
+// 		catch (const std::exception& e)
+// 		{
+// 			Log::msgServer(ERROR,e.what());
+// 		}
+// 	}
+//
+// 	// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
+// 	// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
+// 	reply(client, 001, Utils::anyToVec(client.getNickname(), client.getUsername(), this->name));
+// 	reply(client, 002, Utils::anyToVec(this->name, this->version));
+// 	reply(client, 003, Utils::anyToVec(this->creationDate));
+// 	reply(client, 004, Utils::anyToVec(this->name, this->version, this->availableUserModes,
+// 		this->availableChannelModes));
+// 	return true;
+// }
 
-	// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
-	// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
-	reply(client, 001, Utils::anyToVec(client.getNickname(), client.getUsername(), this->name));
-	reply(client, 002, Utils::anyToVec(this->name, this->version));
-	reply(client, 003, Utils::anyToVec(this->creationDate));
-	reply(client, 004, Utils::anyToVec(this->name, this->version, this->availableUserModes,
-		this->availableChannelModes));
-	return true;
+/**
+ * @brief Handles communication with a connected client.
+ *
+ * This function enters a loop to continuously read data from the client socket, log the received messages,
+ * and echo the messages back to the client. If an error occurs or the client disconnects, the function logs
+ * an error message, closes the client socket, and breaks out of the loop.
+ *
+ * It performs the following steps:
+ * 1. Reads data from the client socket into a buffer.
+ * 2. Checks if the read operation was successful. If not, logs an error message, closes the client socket, and exits
+ * the loop.
+ * 3. Null-terminates the buffer and logs the received message.
+ * 4. Sends the received message back to the client.
+ *
+ * @param clientFd The socket file descriptor for the client connection.
+ */
+// TODO: handleClientPrompt and handleCommands might overlap, also need to understand how exactly handle the buffer.
+void Server::handleClientPrompt(Client& client)
+{
+	// while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
+	char buffer[INPUT_BUFFER_SIZE] = {};
+	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
+	if (bytesRead <= 0)
+	{
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+		{
+			std::cout << "EAGAIN || EWOULDBLOCK" << std::endl;
+			return;
+		}
+		Log::msgServer(ERROR, "CLIENT", client.getFd(), HANDLE_CLIENT_FAIL);
+		close(client.getFd());
+		return;
+	}
+	buffer[bytesRead] = '\0';
+	try
+	{
+		handleCommands(client, buffer);
+	}
+	catch (const std::exception& e)
+	{
+		Log::msgServer(ERROR,e.what());
+	}
 }
 
 void Server::handleCommands(Client& client, const std::string& buffer) const
 {
-	// // Data from an existing client
-	// char buffer[INPUT_BUFFER_SIZE];
-	// const ssize_t bytesRead = recv(this->pollFds[i].fd, buffer, sizeof(buffer), 0);
-	// if (bytesRead <= 0)
-	// {
-	// 	// Client disconnected or error
-	// 	Log::msgServer(ERROR, "CLIENT", this->pollFds[i].fd, HANDLE_CLIENT_FAIL);
-	// 	close(this->pollFds[i].fd);
-	// 	this->pollFds[i].fd = -1; // Mark for removal
-	// }
-	// else
-	// {
-	// 	// Process data
-	// 	buffer[bytesRead] = '\0';
-	// 	Log::msgServer(INFO, "CLIENT", this->pollFds[i].fd, "[MESSAGE] " + std::string(buffer));
-	// }
 	ClientTranslator translator(buffer);
 	translator.fetchCommands(*this, client);
 
@@ -323,7 +348,7 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 				// TODO: check if server should send any capabilities or empty.
 				// There is no CAP LS response in replies as this negotiation protocol is part of IRCv3 extensions.
 				const std::string capResponse = ":server CAP * LS :\r\n";
-				send(client.getSocket(), capResponse.c_str(), capResponse.size(), 0);
+				send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
 			}
 		}
 		else if (it->first == "PASS")
@@ -356,47 +381,6 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 	// << client.getCapEnd() << std::endl;
 }
 
-/**
- * @brief Handles communication with a connected client.
- *
- * This function enters a loop to continuously read data from the client socket, log the received messages,
- * and echo the messages back to the client. If an error occurs or the client disconnects, the function logs
- * an error message, closes the client socket, and breaks out of the loop.
- *
- * It performs the following steps:
- * 1. Reads data from the client socket into a buffer.
- * 2. Checks if the read operation was successful. If not, logs an error message, closes the client socket, and exits
- * the loop.
- * 3. Null-terminates the buffer and logs the received message.
- * 4. Sends the received message back to the client.
- *
- * @param clientSocket The socket file descriptor for the client connection.
- */
-// TODO: handleClientPrompt and handleCommands might overlap, also need to understand how exactly handle the buffer.
-void Server::handleClientPrompt(const int clientSocket)
-{
-	while (true)
-	{
-		char buffer[INPUT_BUFFER_SIZE] = {};
-		const ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-		std::cout << "handleClientPrompt recv executed, buffer: " << buffer << std::endl;
-		if (bytesRead <= 0)
-		{
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
-			{
-				continue;
-			}
-			Log::msgServer(ERROR, "CLIENT", clientSocket, HANDLE_CLIENT_FAIL);
-			close(clientSocket);
-			break;
-		}
-		buffer[bytesRead] = '\0';
-		Log::msgServer(INFO, "CLIENT", clientSocket, "[MESSAGE] " + std::string(buffer));
-		break;
-		// send(clientSocket, buffer, bytesRead, 0);
-	}
-}
-
 void Server::reply(const Client& client, const int replyCode, const std::vector<std::string>& args) const
 {
 	if (this->replies.find(replyCode) != this->replies.end())
@@ -405,7 +389,7 @@ void Server::reply(const Client& client, const int replyCode, const std::vector<
 		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
 		<< this->replies.at(replyCode)(args) << "\r\n";
 		const std::string reply = oss.str();
-		send(client.getSocket(), reply.c_str(), reply.size(), 0);
+		send(client.getFd(), reply.c_str(), reply.size(), 0);
 	}
 }
 

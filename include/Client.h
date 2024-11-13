@@ -16,11 +16,13 @@
 class Client
 {
 public:
-	Client(int fd, short int events, short int revents);
+	// Client(int fd, short int events, short int revents);
+	explicit Client(int fd);
 	~Client();
 
-	int getSocket() const;
-	pollfd getPollFd() const;
+	int getFd() const;
+	// TODO: delete?
+	// pollfd getPollFd() const;
 	std::string getPassword() const;
 	std::string getNickname() const;
 	std::string getUsername() const;
@@ -34,8 +36,8 @@ public:
 private:
 	Client();
 
-	int socket;
-	pollfd pollFd;
+	int fd;
+	// pollfd pollFd;
 	std::string password;
 	std::string nickname;
 	std::string username;

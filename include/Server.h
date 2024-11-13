@@ -29,7 +29,6 @@ private:
 	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
 
 	int fd;
-	sockaddr_in address;
 	std::string name;
 	std::string version;
 	std::string password;
@@ -40,13 +39,13 @@ private:
 	std::vector<pollfd> pollFds;
 	std::map<int, ReplyFunction> replies;
 
-	// New client connection and authentication.
+	// New client connection.
 	void connectClient();
-	bool authenticateClient(Client& client) const;
-	void handleCommands(Client& client, const std::string& buffer) const;
+	// bool authenticateClient(Client& client) const;
 
 	// Handling new requests of already connected client.
-	static void handleClientPrompt(int clientSocket);
+	void handleCommands(Client& client, const std::string& buffer) const;
+	void handleClientPrompt(Client& client);
 
 	// Reply functions.
 	static std::string rplWelcome(const std::vector<std::string>& args);
