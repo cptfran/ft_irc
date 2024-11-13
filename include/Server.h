@@ -35,7 +35,8 @@ private:
 	std::string creationDate;
 	std::string availableUserModes;
 	std::string availableChannelModes;
-	std::vector<Client> clients;
+	// std::vector<Client> clients;
+	std::map<int, Client> clients;
 	std::vector<pollfd> pollFds;
 	std::map<int, ReplyFunction> replies;
 

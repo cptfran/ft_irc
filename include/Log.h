@@ -18,7 +18,7 @@
 #define BIND_FAIL LIGHT_CYAN "Socket binding failed." RESET
 #define LISTEN_FAIL LIGHT_CYAN "Server listening failed." RESET
 #define ACCEPT_FAIL LIGHT_CYAN "Failed accepting incoming connection." RESET
-#define NEW_CLIENT_START LIGHT_CYAN "New client connecting." RESET
+#define NEW_CLIENT_START LIGHT_CYAN "New client connecting..." RESET
 #define NEW_CLIENT_SUCCESS LIGHT_CYAN "New client connected." RESET
 // #define AUTHENTICATE_CLIENT_FAIL LIGHT_CYAN "Client authentication failed. Connection closed." RESET
 #define AUTHENTICATE_CLIENT_SUCCESS LIGHT_CYAN "Client authenticated succesfully." RESET

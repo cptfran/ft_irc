@@ -1,5 +1,4 @@
 #include "../include/Server.h"
-
 #include <cerrno>
 #include <ClientTranslator.h>
 #include <cstdio>
@@ -11,13 +10,13 @@
 #include <iostream>
 #include <list>
 #include <map>
-#include <bits/stl_algo.h>
+#include <algorithm>
 #include <poll.h>
 #include <sstream>
 #include "Utils.h"
 #include <ctime>
 #include <fcntl.h>
-#include <asm-generic/errno.h>
+#include <errno.h>
 #include <netdb.h>
 
 /**
@@ -67,9 +66,9 @@ Server::~Server()
 		close(this->fd);
 	}
 
-	for (std::vector<Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
-		const int clientFd = it->getfd();
+		const int clientFd = it->second.getFd();
 		if (clientFd != -1)
 		{
 			close(clientFd);
@@ -158,7 +157,7 @@ void Server::run()
 	Log::msgServer(INFO, SERVER_RUN);
 
 	// Add the server to the poll.
-	pollfd listenFd = {this->fd, POLLIN, 0};
+	const pollfd listenFd = {this->fd, POLLIN, 0};
     this->pollFds.push_back(listenFd);
 
 	// Main loop, handling new client connections and already running clients.
@@ -175,12 +174,10 @@ void Server::run()
         	{
         		continue;
         	}
-
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
         		break;
         	}
-
             if ((it->revents & POLLIN) == POLLIN)
             {
     			if (it->fd == this->fd)
@@ -188,11 +185,11 @@ void Server::run()
                 	connectClient();
                 	break;
                 }
-            	std::cout << "breaking" << std::endl;
-				break;
+            	handleClientPrompt(this->clients.at(it->fd));
             }
         }
 
+    	// TODO: check if this is needed.
         // Remove closed client sockets.
         // for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
         // {
@@ -228,9 +225,9 @@ void Server::connectClient()
 
 	// Create new client object and add it to the clients list.
 	const Client client(clientFd);
-	this->clients.push_back(client);
+	this->clients.insert(std::make_pair(clientFd, client));
 
-	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_CONNECTED);
+	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_SUCCESS);
 
 	// TODO: try to connect more than one client and check if fcntl for clients is necessary.
 	// Set the client socket to non-blocking mode.
@@ -298,7 +295,7 @@ void Server::connectClient()
  *
  * @param clientFd The socket file descriptor for the client connection.
  */
-// TODO: handleClientPrompt and handleCommands might overlap, also need to understand how exactly handle the buffer.
+// TODO: need to check if I should only fetch the buffer once or till some point I should do it in a loop.
 void Server::handleClientPrompt(Client& client)
 {
 	// while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
@@ -376,6 +373,17 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 			reply(client, 332, Utils::anyToVec(it->second[0]));
 		}
 	}
+	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
+	{
+		// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
+		// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
+		reply(client, 001, Utils::anyToVec(client.getNickname(), client.getUsername(), this->name));
+		reply(client, 002, Utils::anyToVec(this->name, this->version));
+		reply(client, 003, Utils::anyToVec(this->creationDate));
+		reply(client, 004, Utils::anyToVec(this->name, this->version, this->availableUserModes,
+			this->availableChannelModes));
+	}
+
 	// std::cout << "Client info:\n" << "socket: " << client.getSocket() << "\npassword: " << client.getPassword()
 	// << "\nnickname: " << client.getNickname() << "\nusername: " << client.getUsername() << "\ncap status: "
 	// << client.getCapEnd() << std::endl;

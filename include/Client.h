@@ -33,13 +33,16 @@ public:
 	void setUsername(const std::string& username);
 	void setCapEnd(bool truefalse);
 
+	bool registered(const std::string& serverPassword) const;
+	bool getWelcomeRepliesSent() const;
+
 private:
 	Client();
 
 	int fd;
-	// pollfd pollFd;
 	std::string password;
 	std::string nickname;
 	std::string username;
+	bool welcomeRepliesSent;
 	bool capEnd;
 };

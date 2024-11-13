@@ -8,7 +8,7 @@
 	// this->pollFd.revents = revents;
 // }
 
-Client::Client(const int fd) : fd(fd), capEnd(false)
+Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), capEnd(false)
 {
 
 }
@@ -70,4 +70,18 @@ void Client::setUsername(const std::string& username)
 void Client::setCapEnd(const bool truefalse)
 {
 	this->capEnd = truefalse;
+}
+
+bool Client::registered(const std::string& serverPassword) const
+{
+	if (this->password != serverPassword || this->nickname.empty() || this->username.empty())
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Client::getWelcomeRepliesSent() const
+{
+	return this->welcomeRepliesSent;
 }
