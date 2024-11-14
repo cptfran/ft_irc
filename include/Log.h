@@ -1,12 +1,21 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-
 #include "Colors.h"
+
+#ifndef DEBUGGING
+#define DEBUGGING 0
+#endif
+
+#if DEBUGGING
+#define DEBUG_LOG(msg) Log::msgServer(DEBUG, msg)
+#else
+#define DEBUG_LOG(msg) do {} while (0)
+#endif
 
 // Log types:
 #define INFO LIGHT_YELLOW "[INFO] " RESET
+#define DEBUG LIGHT_MAGENTA "[DEBUG] " RESET
 #define ERROR RED "[ERROR] " RESET
 
 // Log messages:
@@ -21,7 +30,7 @@
 #define NEW_CLIENT_START LIGHT_CYAN "New client connecting..." RESET
 #define NEW_CLIENT_SUCCESS LIGHT_CYAN "New client connected." RESET
 // #define AUTHENTICATE_CLIENT_FAIL LIGHT_CYAN "Client authentication failed. Connection closed." RESET
-#define AUTHENTICATE_CLIENT_SUCCESS LIGHT_CYAN "Client authenticated succesfully." RESET
+#define CLIENT_REGISTER_SUCCESS LIGHT_CYAN "Client registered succesfully." RESET
 #define SERVER_RUN LIGHT_CYAN "Server is running and waiting for connections..." RESET
 #define HANDLE_CLIENT_FAIL LIGHT_CYAN "Client disconnected or error occured." RESET
 #define CLIENT_CONNECTED LIGHT_GREEN "Connected to the server.\n" RESET

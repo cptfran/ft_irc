@@ -40,13 +40,6 @@ availableChannelModes("-")
 {
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
-	this->replies[001] = rplWelcome;
-	this->replies[002] = rplYourHost;
-	this->replies[003] = rplCreated;
-	this->replies[004] = rplMyInfo;
-	this->replies[332] = rplNoTopic;
-	this->replies[421] = errUnknownCommand;
-	this->replies[471] = errChannelIsFull;
 }
 
 /**
@@ -151,7 +144,6 @@ void Server::init(const int port)
  * adds the client's socket to the list of client sockets, and calls the handleClientPrompt function to manage the client.
  * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
-// TODO: check line by line the difference between here and github code.
 void Server::run()
 {
 	Log::msgServer(INFO, SERVER_RUN);
@@ -188,21 +180,8 @@ void Server::run()
             	handleClientPrompt(this->clients.at(it->fd));
             }
         }
-
-    	// TODO: check if this is needed.
-        // Remove closed client sockets.
-        // for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); )
-        // {
-        //     if (it->fd == -1)
-        //     {
-        //         it = this->pollFds.erase(it);
-        //     }
-        // 	else
-        // 	{
-        //         ++it;
-        //     }
-        // }
     }
+	DEBUG_LOG("We done.");
 }
 
 void Server::connectClient()
@@ -233,74 +212,19 @@ void Server::connectClient()
 	// Set the client socket to non-blocking mode.
 	// if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1)
 	// {
-	// 	close(clientFd);
-	// 	throw std::runtime_error(ERROR F_SETFL_FAIL);
+		// close(clientFd);
+		// throw std::runtime_error(ERROR F_SETFL_FAIL);
 	// }
-
-	// Log::msgServer(INFO, "CLIENT", clientFd, AUTHENTICATE_CLIENT_SUCCESS);
 }
 
-
-// TODO: implement certain amount of time that client has to send authentication data.
-// bool Server::authenticateClient(Client& client) const
-// {
-// 	while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
-// 	{
-// 		char buffer[INPUT_BUFFER_SIZE] = {};
-// 		const ssize_t bytesRead = recv(client.getSocket(), buffer, sizeof(buffer) - 1, 0);
-// 		if (bytesRead <= 0)
-// 		{
-// 			if (errno == EAGAIN || errno == EWOULDBLOCK)
-// 			{
-// 				continue;
-// 			}
-// 			Log::msgServer(ERROR, "CLIENT", client.getSocket(), HANDLE_CLIENT_FAIL);
-// 			close(client.getSocket());
-// 			return false;
-// 		}
-// 		buffer[bytesRead] = '\0';
-// 		try
-// 		{
-// 			handleCommands(client, buffer);
-// 		}
-// 		catch (const std::exception& e)
-// 		{
-// 			Log::msgServer(ERROR,e.what());
-// 		}
-// 	}
-//
-// 	// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
-// 	// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
-// 	reply(client, 001, Utils::anyToVec(client.getNickname(), client.getUsername(), this->name));
-// 	reply(client, 002, Utils::anyToVec(this->name, this->version));
-// 	reply(client, 003, Utils::anyToVec(this->creationDate));
-// 	reply(client, 004, Utils::anyToVec(this->name, this->version, this->availableUserModes,
-// 		this->availableChannelModes));
-// 	return true;
-// }
-
-/**
- * @brief Handles communication with a connected client.
- *
- * This function enters a loop to continuously read data from the client socket, log the received messages,
- * and echo the messages back to the client. If an error occurs or the client disconnects, the function logs
- * an error message, closes the client socket, and breaks out of the loop.
- *
- * It performs the following steps:
- * 1. Reads data from the client socket into a buffer.
- * 2. Checks if the read operation was successful. If not, logs an error message, closes the client socket, and exits
- * the loop.
- * 3. Null-terminates the buffer and logs the received message.
- * 4. Sends the received message back to the client.
- *
- * @param clientFd The socket file descriptor for the client connection.
- */
 // TODO: need to check if I should only fetch the buffer once or till some point I should do it in a loop.
+// TODO: implement certain amount of time that client has to send authentication data.
 void Server::handleClientPrompt(Client& client)
 {
 	// while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
 	char buffer[INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
+	DEBUG_LOG(std::string("Buffer: \"") + buffer + "\"");
 	if (bytesRead <= 0)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -326,9 +250,8 @@ void Server::handleClientPrompt(Client& client)
 void Server::handleCommands(Client& client, const std::string& buffer) const
 {
 	ClientTranslator translator(buffer);
-	translator.fetchCommands(*this, client);
+	translator.fetchCommands();
 
-	std::cout << buffer << std::endl;
 	std::map<std::string, std::vector<std::string> > commands = translator.getCommands();
 	for (std::map<std::string, std::vector<std::string> >::iterator it = commands.begin(); it != commands.end(); ++it)
 	{
@@ -345,6 +268,7 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 				// TODO: check if server should send any capabilities or empty.
 				// There is no CAP LS response in replies as this negotiation protocol is part of IRCv3 extensions.
 				const std::string capResponse = ":server CAP * LS :\r\n";
+				DEBUG_LOG(capResponse);
 				send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
 			}
 		}
@@ -362,7 +286,7 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 
 			client.setUsername(it->second[0]);
 
-			// TODO: handle realname.
+			// TODO: handle realna1me.
 			// It must be noted that realname parameter must be the last parameter,
 			// because it may contain space characters and must be prefixed with a
 			// colon (':') to make sure this is recognised as such.
@@ -370,69 +294,99 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 		else if (it->first == "JOIN")
 		{
 			// TODO: handle this command properly. This is just a test code.
-			reply(client, 332, Utils::anyToVec(it->second[0]));
+			reply(client, rplNoTopic, Utils::anyToVec(it->second[0]));
+		}
+		else if (it->first == "PING")
+		{
+			reply(client, rplPong, Utils::anyToVec(it->second[0]));
+		}
+		else
+		{
+			this->reply(client, errUnknownCommand, it->second);
 		}
 	}
 	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
 	{
+		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
+
 		// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
 		// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
-		reply(client, 001, Utils::anyToVec(client.getNickname(), client.getUsername(), this->name));
-		reply(client, 002, Utils::anyToVec(this->name, this->version));
-		reply(client, 003, Utils::anyToVec(this->creationDate));
-		reply(client, 004, Utils::anyToVec(this->name, this->version, this->availableUserModes,
+		reply(client, rplWelcome, Utils::anyToVec(this->name, client.getNickname(), client.getUsername(), this->name));
+		reply(client, rplYourHost, Utils::anyToVec(this->name, this->version));
+		reply(client, rplCreated, Utils::anyToVec(this->name, this->creationDate));
+		reply(client, rplMyInfo, Utils::anyToVec(this->name, this->version, this->availableUserModes,
 			this->availableChannelModes));
-	}
 
-	// std::cout << "Client info:\n" << "socket: " << client.getSocket() << "\npassword: " << client.getPassword()
-	// << "\nnickname: " << client.getNickname() << "\nusername: " << client.getUsername() << "\ncap status: "
-	// << client.getCapEnd() << std::endl;
+		client.setWelcomeRepliesSent(true);
+	}
 }
 
-void Server::reply(const Client& client, const int replyCode, const std::vector<std::string>& args) const
+// void Server::reply(const Client& client, const int replyCode, const std::vector<std::string>& args) const
+// {
+// 	if (this->replies.find(replyCode) != this->replies.end())
+// 	{
+// 		std::ostringstream oss;
+// 		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
+// 		<< this->replies.at(replyCode)(args) << "\r\n";
+// 		const std::string reply = oss.str();
+// 		DEBUG_LOG(reply);
+// 		send(client.getFd(), reply.c_str(), reply.size(), 0);
+// 	}
+// }
+
+void Server::reply(const Client& client, const ReplyFunction func, const std::vector<std::string>& args) const
 {
-	if (this->replies.find(replyCode) != this->replies.end())
-	{
-		std::ostringstream oss;
-		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
-		<< this->replies.at(replyCode)(args) << "\r\n";
-		const std::string reply = oss.str();
-		send(client.getFd(), reply.c_str(), reply.size(), 0);
-	}
+	// std::ostringstream oss;
+	// oss << ":" << this->name << " " << client.getNickname() << " :" << func(args) << "\r\n";
+	// const std::string reply = oss.str();
+	const std::string reply = func(args);
+	DEBUG_LOG(reply);
+	send(client.getFd(), reply.c_str(), reply.size(), 0);
 }
 
+
+// std::ostringstream oss;
+// 		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
+// 		<< this->replies.at(replyCode)(args) << "\r\n";
 std::string Server::rplWelcome(const std::vector<std::string>& args)
 {
-	return "Welcome to the Internet Relay Network " + args[0] + "!" + args[1] + "@" + args[2];
+	return ":@" + args[0] + " 001 :Welcome to the Internet Relay Network " + args[1] + "!" + args[2] + "@" + args[3]
+	+ "\r\n";
 }
 
 std::string Server::rplYourHost(const std::vector<std::string>& args)
 {
-	return "Your host is " + args[0] + ", running version " + args[1];
+	return ":@" + args[0] + " 002 Your host is " + args[0] + ", running version " + args[1] + "\r\n";
 }
 
 std::string Server::rplCreated(const std::vector<std::string>& args)
 {
-	return "This server was created " + args[0];
+	return ":@" + args[0] + " 003 This server was created " + args[1] + "\r\n";
 }
 
 std::string Server::rplMyInfo(const std::vector<std::string>& args)
 {
-	return args[0] + " " + args[1] + " " + args[2] + " " + args[3];
+	return ":@" + args[0] + " 004 " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + "\r\n";
 }
+
+std::string Server::rplPong(const std::vector<std::string>& args)
+{
+	return "PONG :" + args[0] + "\r\n";
+}
+
 
 std::string Server::rplNoTopic(const std::vector<std::string>& args)
 {
-	return args[0] + " :No topic is set";
+	return "331 " + args[0] + " :No topic is set\r\n";
 }
 
 
 std::string Server::errUnknownCommand(const std::vector<std::string>& args)
 {
-	return args[0] + " :Unknown command";
+	return "331 " + args[0] + " :Unknown command\r\n";
 }
 
 std::string Server::errChannelIsFull(const std::vector<std::string>& args)
 {
-	return args[0] + " :Cannot join channel (+1)";
+	return "471 " + args[0] + " :Cannot join channel (+1)\r\n";
 }

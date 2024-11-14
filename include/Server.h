@@ -23,8 +23,7 @@ public:
 	void init(int port);
 	void run();
 
-	void reply(const Client& client, int replyCode, const std::vector<std::string>& args) const;
-
+	// void reply(const Client& client, int replyCode, const std::vector<std::string>& args) const;
 private:
 	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
 
@@ -35,10 +34,8 @@ private:
 	std::string creationDate;
 	std::string availableUserModes;
 	std::string availableChannelModes;
-	// std::vector<Client> clients;
 	std::map<int, Client> clients;
 	std::vector<pollfd> pollFds;
-	std::map<int, ReplyFunction> replies;
 
 	// New client connection.
 	void connectClient();
@@ -49,10 +46,12 @@ private:
 	void handleClientPrompt(Client& client);
 
 	// Reply functions.
+	void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args) const;
 	static std::string rplWelcome(const std::vector<std::string>& args);
 	static std::string rplYourHost(const std::vector<std::string>& args);
 	static std::string rplCreated(const std::vector<std::string>& args);
 	static std::string rplMyInfo(const std::vector<std::string>& args);
+	static std::string rplPong(const std::vector<std::string>& args);
 	static std::string rplNoTopic(const std::vector<std::string>& args);
 	static std::string errUnknownCommand(const std::vector<std::string>& args);
 	static std::string errChannelIsFull(const std::vector<std::string>& args);

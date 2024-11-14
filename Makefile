@@ -2,7 +2,7 @@
 
 NAME = ircserv
 CC = c++
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g
+FLAGS = -Wall -Wextra -std=c++98 -g
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -12,6 +12,9 @@ SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 all: $(NAME)
+
+debug: FLAGS += -DDEBUGGING=1
+debug: re
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJ)

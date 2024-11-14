@@ -11,7 +11,7 @@ int main(const int argc, char *argv[])
 		Log::msgServer(ERROR, USAGE);
 		return 2;
 	}
-	const int port = Utils::stringToPositiveInt(argv[1]);
+	const int port = Utils::cStringToPositiveInt(argv[1]);
 	if (!port)
 	{
 		Log::msgServer(ERROR, INVALID_PORT_INPUT);

@@ -1,10 +1,12 @@
 #pragma once
+#include <string>
 #include <vector>
 
 class Utils
 {
 public:
-	static int stringToPositiveInt(const char *str);
+	static int cStringToPositiveInt(const char *str);
+	static std::string intToString(int value);
 
 	template <typename T>
 	static std::vector<T> anyToVec(const T& arg1);

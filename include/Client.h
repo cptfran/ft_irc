@@ -21,8 +21,6 @@ public:
 	~Client();
 
 	int getFd() const;
-	// TODO: delete?
-	// pollfd getPollFd() const;
 	std::string getPassword() const;
 	std::string getNickname() const;
 	std::string getUsername() const;
@@ -31,6 +29,7 @@ public:
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
+	void setWelcomeRepliesSent(bool truefalse);
 	void setCapEnd(bool truefalse);
 
 	bool registered(const std::string& serverPassword) const;

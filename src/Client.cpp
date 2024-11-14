@@ -1,12 +1,4 @@
 #include "../include/Client.h"
-#include <unistd.h>
-
-// Client::Client(const int fd, const short int events, const short int revents) : fd(fd), pollFd(), capEnd(false)
-// {
-	// this->pollFd.fd = fd;
-	// this->pollFd.events = events;
-	// this->pollFd.revents = revents;
-// }
 
 Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), capEnd(false)
 {
@@ -15,22 +7,13 @@ Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), capEnd(false)
 
 Client::~Client()
 {
-	// if (this->fd != -1)
-	// {
-		// close(this->fd);
-	// }
+
 }
 
 int Client::getFd() const
 {
 	return this->fd;
 }
-
-// TODO: delete?
-// pollfd Client::getPollFd() const
-// {
-	// return this->pollFd;
-// }
 
 std::string Client::getPassword() const
 {
@@ -65,6 +48,11 @@ void Client::setNickname(const std::string& nickname)
 void Client::setUsername(const std::string& username)
 {
 	this->username = username;
+}
+
+void Client::setWelcomeRepliesSent(const bool truefalse)
+{
+	this->welcomeRepliesSent = truefalse;
 }
 
 void Client::setCapEnd(const bool truefalse)

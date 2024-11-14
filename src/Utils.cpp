@@ -11,7 +11,7 @@
  * @param str The C-style string to be converted to a positive integer.
  * @return The converted positive integer, or 0 if the conversion fails or the integer is not positive.
  */
-int Utils::stringToPositiveInt(const char *str)
+int Utils::cStringToPositiveInt(const char *str)
 {
 	std::stringstream ss(str);
 	int num;
@@ -21,4 +21,11 @@ int Utils::stringToPositiveInt(const char *str)
 		return 0;
 	}
 	return num;
+}
+
+std::string Utils::intToString(const int value)
+{
+	std::ostringstream oss;
+	oss << value;
+	return oss.str();
 }
