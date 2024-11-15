@@ -3,10 +3,24 @@
 #include <iostream>
 #include "Colors.h"
 
+/**
+ * @brief Enables or disables debug logging based on the DEBUGGING macro.
+ *
+ * To enable debug logging use 'make debug', it will set the DEBUGGING macro to '1' (implementation in the Makefile).
+ *
+ * If DEBUGGING is set to 1, DEBUG_LOG(msg) will log the message using Log::msgServer with DEBUG level.
+ * If DEBUGGING is set to 0, DEBUG_LOG(msg) will do nothing.
+ *
+ * Usage:
+ * @code
+ * DEBUG_LOG("This is a debug message");
+ * @endcode
+ *
+ * Define DEBUGGING if not already defined.
+ */
 #ifndef DEBUGGING
 #define DEBUGGING 0
 #endif
-
 #if DEBUGGING
 #define DEBUG_LOG(msg) Log::msgServer(DEBUG, msg)
 #else

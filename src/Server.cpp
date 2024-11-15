@@ -181,7 +181,6 @@ void Server::run()
             }
         }
     }
-	DEBUG_LOG("We done.");
 }
 
 void Server::connectClient()
@@ -218,13 +217,13 @@ void Server::connectClient()
 }
 
 // TODO: need to check if I should only fetch the buffer once or till some point I should do it in a loop.
-// TODO: implement certain amount of time that client has to send authentication data.
-void Server::handleClientPrompt(Client& client)
+// TODO: implement certain amount of time client has to send authentication data. (not sure if it's necessary though)
+void Server::handleClientPrompt(Client& client) const
 {
 	// while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
 	char buffer[INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
-	DEBUG_LOG(std::string("Buffer: \"") + buffer + "\"");
+	DEBUG_LOG(std::string("CLIENT: \"") + buffer + "\"");
 	if (bytesRead <= 0)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -247,6 +246,8 @@ void Server::handleClientPrompt(Client& client)
 	}
 }
 
+// TODO: most of the commands should be handled only if the user is registered.
+// TODO: most of the replies probably require to have protection check in case not enough args are provided.
 void Server::handleCommands(Client& client, const std::string& buffer) const
 {
 	ClientTranslator translator(buffer);
@@ -268,7 +269,7 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 				// TODO: check if server should send any capabilities or empty.
 				// There is no CAP LS response in replies as this negotiation protocol is part of IRCv3 extensions.
 				const std::string capResponse = ":server CAP * LS :\r\n";
-				DEBUG_LOG(capResponse);
+				// DEBUG_LOG(capResponse);
 				send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
 			}
 		}
@@ -286,7 +287,7 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 
 			client.setUsername(it->second[0]);
 
-			// TODO: handle realna1me.
+			// TODO: handle realname.
 			// It must be noted that realname parameter must be the last parameter,
 			// because it may contain space characters and must be prefixed with a
 			// colon (':') to make sure this is recognised as such.
@@ -298,7 +299,12 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 		}
 		else if (it->first == "PING")
 		{
-			reply(client, rplPong, Utils::anyToVec(it->second[0]));
+			if (it->second.size() == 0)
+			{
+				reply(client, rplPong, Utils::anyToVec(this->name));
+				break;
+			}
+			reply(client, rplPong, Utils::anyToVec(this->name, it->second[0]));
 		}
 		else
 		{
@@ -321,33 +327,13 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 	}
 }
 
-// void Server::reply(const Client& client, const int replyCode, const std::vector<std::string>& args) const
-// {
-// 	if (this->replies.find(replyCode) != this->replies.end())
-// 	{
-// 		std::ostringstream oss;
-// 		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
-// 		<< this->replies.at(replyCode)(args) << "\r\n";
-// 		const std::string reply = oss.str();
-// 		DEBUG_LOG(reply);
-// 		send(client.getFd(), reply.c_str(), reply.size(), 0);
-// 	}
-// }
-
 void Server::reply(const Client& client, const ReplyFunction func, const std::vector<std::string>& args) const
 {
-	// std::ostringstream oss;
-	// oss << ":" << this->name << " " << client.getNickname() << " :" << func(args) << "\r\n";
-	// const std::string reply = oss.str();
 	const std::string reply = func(args);
-	DEBUG_LOG(reply);
+	// DEBUG_LOG(reply);
 	send(client.getFd(), reply.c_str(), reply.size(), 0);
 }
 
-
-// std::ostringstream oss;
-// 		oss << ":" << this->name << " " << replyCode << " " << client.getNickname() << " :"
-// 		<< this->replies.at(replyCode)(args) << "\r\n";
 std::string Server::rplWelcome(const std::vector<std::string>& args)
 {
 	return ":@" + args[0] + " 001 :Welcome to the Internet Relay Network " + args[1] + "!" + args[2] + "@" + args[3]
@@ -371,7 +357,11 @@ std::string Server::rplMyInfo(const std::vector<std::string>& args)
 
 std::string Server::rplPong(const std::vector<std::string>& args)
 {
-	return "PONG :" + args[0] + "\r\n";
+	if (args.size() < 2)
+	{
+		return "PONG :" + args[0] + "\r\n";
+	}
+	return "Pong :" + args[0] + " " + args[1] + "\r\n";
 }
 
 

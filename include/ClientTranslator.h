@@ -7,6 +7,7 @@
 
 
 // TODO: delete this class and move fetchCommands() to server class?
+// If this will be used only in Server class yes, otherwise maybe leave it like this.
 class ClientTranslator
 {
 public:

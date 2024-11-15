@@ -3,7 +3,6 @@
 #include <map>
 #include "Client.h"
 #include <vector>
-#include <netinet/in.h>
 
 // Ports range:
 #define REGISTERED_PORT_MIN 1024
@@ -43,7 +42,7 @@ private:
 
 	// Handling new requests of already connected client.
 	void handleCommands(Client& client, const std::string& buffer) const;
-	void handleClientPrompt(Client& client);
+	void handleClientPrompt(Client& client) const;
 
 	// Reply functions.
 	void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args) const;

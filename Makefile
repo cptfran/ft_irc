@@ -13,6 +13,8 @@ OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 all: $(NAME)
 
+
+
 debug: FLAGS += -DDEBUGGING=1
 debug: re
 
