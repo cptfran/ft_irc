@@ -2,6 +2,7 @@
 
 #include <map>
 #include "Client.h"
+#include "commands/Command.h"
 #include <vector>
 
 // Ports range:
@@ -14,39 +15,20 @@
 class Server
 {
 public:
+	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
+
 	Server(const std::string& name, const std::string& version, const std::string& password, int port);
 	~Server();
 
 	void setVersion(const std::string& version);
 
-	void init(int port);
+	std::string getName() const;
+	std::string getPassword() const;
+
 	void run();
+	void stop();
 
-private:
-	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
-
-	int fd;
-	std::string name;
-	std::string version;
-	std::string password;
-	std::string creationDate;
-	std::string availableUserModes;
-	std::string availableChannelModes;
-	std::map<int, Client> clients;
-	std::vector<pollfd> pollFds;
-	std::vector<std::string> commandList;
-
-	// New client connection.
-	void connectClient();
-
-	// Handling new requests of already connected client.
-	void handleCommands(Client& client, const std::string& buffer) const;
-	void handleClientPrompt(Client& client) const;
-	void executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const;
-
-	bool isCommandValid(const std::string& command) const;
-	bool isRegistrationCommand(const std::string& command) const;
-
+	// TODO: maybe make Replier class so it is more flexible and more single responsibility approach.
 	// Reply functions.
 	void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args) const;
 	static std::string rplWelcome(const std::vector<std::string>& args); // 001
@@ -60,4 +42,32 @@ private:
 	static std::string errNotRegistered(const std::vector<std::string>& args); // 451
 	static std::string errPasswdMismatch(const std::vector<std::string>& args); // 464
 	static std::string errChannelIsFull(const std::vector<std::string>& args); // 471
+
+private:
+	static Server* instance;
+	bool running;
+	int fd;
+	std::string name;
+	std::string version;
+	std::string password;
+	std::string creationDate;
+	std::string availableUserModes;
+	std::string availableChannelModes;
+	std::map<int, Client> clients;
+	std::vector<pollfd> pollFds;
+	std::map<std::string, Command*> validCommands;
+
+	static void signalHandler(int signum);
+
+	void initSocket(int port);
+
+	// New client connection.
+	void connectClient();
+
+	// Handling new requests of already connected client.
+	void handleCommands(Client& client, const std::string& buffer) const;
+	void handleClientPrompt(Client& client) const;
+	void executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const;
+
+	bool isRegistrationCommand(const std::string& command) const;
 };

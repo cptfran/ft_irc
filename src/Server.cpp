@@ -11,13 +11,21 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <csignal>
 #include <poll.h>
 #include <sstream>
 #include "Utils.h"
 #include <ctime>
 #include <fcntl.h>
-#include <errno.h>
 #include <netdb.h>
+#include "../include/commands/Cap.h"
+#include "../include/commands/Join.h"
+#include "../include/commands/Nick.h"
+#include "../include/commands/Pass.h"
+#include "../include/commands/Ping.h"
+#include "../include/commands/User.h"
+
+Server* Server::instance = NULL;
 
 /**
  * @brief Constructor for the Server class.
@@ -35,20 +43,23 @@
  * @param password The password to be used for client authentication.
  */
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-: fd(-1), name(name), version(version), password(password), availableUserModes("-"),
+: running(true), fd(-1), name(name), version(version), password(password), availableUserModes("-"),
 availableChannelModes("-")
 {
-	this->commandList.push_back("CAP");
-	this->commandList.push_back("JOIN");
-	this->commandList.push_back("PASS");
-	this->commandList.push_back("NICK");
-	this->commandList.push_back("USER");
-	this->commandList.push_back("PING");
+	this->validCommands["CAP"] = new Cap();
+	this->validCommands["JOIN"] = new Join();
+	this->validCommands["PASS"] = new Pass();
+	this->validCommands["NICK"] = new Nick();
+	this->validCommands["USER"] = new User();
+	this->validCommands["PING"] = new Ping();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
 
-	init(port);
+	initSocket(port);
+
+	instance = this;
+	signal(SIGINT, signalHandler);
 }
 
 /**
@@ -76,11 +87,38 @@ Server::~Server()
 			close(clientFd);
 		}
 	}
+
+	for (std::map<std::string, Command*>::iterator it = this->validCommands.begin(); it != this->validCommands.end();
+		++it)
+	{
+		delete it->second;
+	}
+
+	instance = NULL;
 }
 
 void Server::setVersion(const std::string& version)
 {
 	this->version = version;
+}
+
+std::string Server::getName() const
+{
+	return this->name;
+}
+
+
+std::string Server::getPassword() const
+{
+	return this->password;
+}
+
+void Server::signalHandler(int signum)
+{
+	if (signum == SIGINT && instance)
+	{
+		instance->stop();
+	}
 }
 
 /**
@@ -98,7 +136,7 @@ void Server::setVersion(const std::string& version)
  * @param port The port number on which the server will listen for incoming connections.
  * @throws std::runtime_error If the port is out of range, socket creation fails, binding fails, or listening fails.
  */
-void Server::init(const int port)
+void Server::initSocket(const int port)
 {
 	if (port < REGISTERED_PORT_MIN || port > REGISTERED_PORT_MAX)
 	{
@@ -162,12 +200,16 @@ void Server::run()
     this->pollFds.push_back(listenFd);
 
 	// Main loop, handling new client connections and already running clients.
-    while (true)
+    while (running)
     {
-    	if (poll(this->pollFds.begin().base(), this->pollFds.size(), -1) < 0)
+    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
     	{
+    		if (errno == EINTR)
+    		{
+    			continue;
+    		}
     		Log::msgServer(ERROR, "Poll error");
-    		// continue;
+    		return;
     	}
     	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); ++it)
         {
@@ -175,6 +217,8 @@ void Server::run()
         	{
         		continue;
         	}
+    		// TODO: handle hang-up event (connection closed by peer)
+    		// remove the file descriptor from the poll list here .
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
         		break;
@@ -191,6 +235,12 @@ void Server::run()
         }
     }
 }
+
+void Server::stop()
+{
+	this->running = false;
+}
+
 
 void Server::connectClient()
 {
@@ -249,23 +299,23 @@ void Server::handleClientPrompt(Client& client) const
 
 void Server::handleCommands(Client& client, const std::string& buffer) const
 {
-	ClientTranslator translator(buffer);
-	translator.fetchCommands(this->commandList);
-
-	std::map<std::string, std::vector<std::string> > commands = translator.getCommands();
-	for (std::map<std::string, std::vector<std::string> >::iterator it = commands.begin(); it != commands.end(); ++it)
+	std::map<std::string, std::vector<std::string> > fetchedCommands =
+		ClientTranslator::fetchCommands(buffer, this->validCommands);
+	for (std::map<std::string, std::vector<std::string> >::iterator it = fetchedCommands.begin();
+		it != fetchedCommands.end(); ++it)
 	{
-		if (!isCommandValid(it->first))
+		if (this->validCommands.find(it->first) == this->validCommands.end())
 		{
 			reply(client, errUnknownCommand, Utils::anyToVec(it->first));
 			continue;
 		}
+		// TODO: maybe move registration check as a command feature
 		if (!isRegistrationCommand(it->first) && !client.registered(this->password))
 		{
 			reply(client, errNotRegistered, Utils::anyToVec(std::string("")));
 			continue;
 		}
-		executeCommand(client, it->first, it->second);
+		this->validCommands.at(it->first)->execute(*this, client, it->second);
 	}
 
 	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
@@ -282,15 +332,6 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 	}
 }
 
-bool Server::isCommandValid(const std::string& command) const
-{
-	if (find(this->commandList.begin(), this->commandList.end(), command) != this->commandList.end())
-	{
-		return true;
-	}
-	return false;
-}
-
 bool Server::isRegistrationCommand(const std::string& command) const
 {
 	if (command == "CAP" || command == "NICK" || command == "USER" || command == "PASS")
@@ -300,52 +341,10 @@ bool Server::isRegistrationCommand(const std::string& command) const
 	return false;
 }
 
+// TODO: check if there are specific error responses if there is something wrong with any of these commands.
 void Server::executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const
 {
-	// TODO: check if there are specific error responses if there is something wrong with any of these commands.
-	if (command == "CAP" && !args.empty() && args[0] == "LS")
-	{
-		// TODO: in the end check if it should send any capabilities
-		reply(client, rplCap, Utils::anyToVec(std::string("")));
-	}
-	else if (command == "PASS")
-	{
-		if (args[0] != this->password)
-		{
-			reply(client, errPasswdMismatch, Utils::anyToVec(this->name));
-			throw std::invalid_argument(WRONG_PASSWORD);
-		}
-		client.setPassword(args[0]);
-	}
-	else if (command == "NICK")
-	{
-		client.setNickname(args[0]);
-	}
-	else if (command == "USER")
-	{
-		// TODO: if less than 5 tokens, not enough information, return something to client.
-
-		client.setUsername(args[0]);
-
-		// TODO: handle realname.
-		// It must be noted that realname parameter must be the last parameter,
-		// because it may contain space characters and must be prefixed with a
-		// colon (':') to make sure this is recognised as such.
-	}
-	else if (command == "JOIN")
-	{
-		// TODO: handle this command properly. This is just a test code.
-		reply(client, rplNoTopic, Utils::anyToVec(args[0]));
-	}
-	else if (command == "PING")
-	{
-		if (args.empty())
-		{
-			reply(client, rplPong, Utils::anyToVec(this->name));
-			return;
-		}
-		reply(client, rplPong, Utils::anyToVec(this->name, args[0]));
-	}
+	this->validCommands.at(command)->execute(*this, client, args);
 }
 
 void Server::reply(const Client& client, const ReplyFunction func, const std::vector<std::string>& args) const

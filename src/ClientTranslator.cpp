@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include "Log.h"
 
-ClientTranslator::ClientTranslator(const std::string& buffer) : buffer(buffer)
+ClientTranslator::ClientTranslator()
 {
 
 }
@@ -15,10 +15,11 @@ ClientTranslator::~ClientTranslator()
 
 }
 
-void ClientTranslator::fetchCommands(std::vector<std::string> commandList)
+std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands(const std::string& buffer,
+	const std::map<std::string, Command*>& validServerCommands)
 {
 	// Split buffer to tokens.
-	std::istringstream iss(this->buffer);
+	std::istringstream iss(buffer);
 	std::string token;
 	std::vector<std::string> tokens;
 
@@ -31,6 +32,8 @@ void ClientTranslator::fetchCommands(std::vector<std::string> commandList)
 		throw std::runtime_error(ERROR EMPTY_CLIENT_PROMPT);
 	}
 
+	std::map<std::string, std::vector<std::string> > fetchedCommands;
+
 	// Separate commands and assign them with associating arguments.
 	while (!tokens.empty())
 	{
@@ -42,23 +45,14 @@ void ClientTranslator::fetchCommands(std::vector<std::string> commandList)
 		std::vector<std::string>::iterator it = tokens.begin() + 1;
 		for (; it != tokens.end(); ++it)
 		{
-			if (find(commandList.begin(), commandList.end(), *it) != commandList.end())
+			if (validServerCommands.find(*it) != validServerCommands.end())
 			{
 				break;
 			}
 			arguments.push_back(*it);
 		}
 		tokens.erase(tokens.begin(), it);
-		this->commands.insert(make_pair(command, arguments));
+		fetchedCommands.insert(make_pair(command, arguments));
 	}
-}
-
-std::string ClientTranslator::getBuffer() const
-{
-	return this->buffer;
-}
-
-std::map<std::string, std::vector<std::string> > ClientTranslator::getCommands() const
-{
-	return this->commands;
+	return fetchedCommands;
 }

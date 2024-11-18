@@ -13,6 +13,13 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Log.cpp" "CMakeFiles/ircserv.dir/src/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Log.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Server.cpp" "CMakeFiles/ircserv.dir/src/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Server.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Utils.cpp" "CMakeFiles/ircserv.dir/src/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Utils.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Cap.cpp" "CMakeFiles/ircserv.dir/src/commands/Cap.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Cap.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Command.cpp" "CMakeFiles/ircserv.dir/src/commands/Command.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Command.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Join.cpp" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Nick.cpp" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Ping.cpp" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/User.cpp" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
   )
 

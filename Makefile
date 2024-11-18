@@ -8,7 +8,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 INCLUDE_DIR = include
 
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
+SRC = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/commands/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 all: $(NAME)
@@ -22,11 +22,18 @@ $(NAME): $(OBJ)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
+$(OBJ_DIR)/commands/%.o: $(SRC_DIR)/commands/%.cpp | $(OBJ_DIR)/commands
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
+$(OBJ_DIR)/commands:
+	mkdir -p $(OBJ_DIR)/commands
+
 clean:
 	rm -f $(OBJ_DIR)/*.o
+	rm -f $(OBJ_DIR)/commands/*.o
 
 fclean: clean
 	rm -f $(NAME)

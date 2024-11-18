@@ -54,6 +54,7 @@
 #define WRONG_PASSWORD LIGHT_CYAN "Client entered wrong password." RESET
 #define RPL_WRONG_NUM_OF_ARGS(funcName) (std::string(LIGHT_CYAN) + (funcName) + ": wrong number of arguments." + RESET)
 #define CLIENT_DISCONNECTED LIGHT_CYAN "Client disconnected." RESET
+#define PASSWORD_EMPTY LIGHT_CYAN "Password is empty." RESET
 
 class Log
 {

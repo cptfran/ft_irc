@@ -11,17 +11,13 @@
 class ClientTranslator
 {
 public:
-	explicit ClientTranslator(const std::string& buffer);
 	~ClientTranslator();
 
 	std::string getBuffer() const;
-	std::map<std::string, std::vector<std::string> > getCommands() const;
 
-	void fetchCommands(std::vector<std::string> commandList);
+	static std::map<std::string, std::vector<std::string> > fetchCommands(const std::string& buffer,
+		const std::map<std::string, Command*>& validServerCommands);
 
 private:
 	ClientTranslator();
-
-	std::string buffer;
-	std::map<std::string, std::vector<std::string> > commands;
 };

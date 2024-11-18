@@ -249,6 +249,174 @@ src/Utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Utils.cpp.s
 .PHONY : src/Utils.cpp.s
 
+src/commands/Cap.o: src/commands/Cap.cpp.o
+.PHONY : src/commands/Cap.o
+
+# target to build an object file
+src/commands/Cap.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Cap.cpp.o
+.PHONY : src/commands/Cap.cpp.o
+
+src/commands/Cap.i: src/commands/Cap.cpp.i
+.PHONY : src/commands/Cap.i
+
+# target to preprocess a source file
+src/commands/Cap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Cap.cpp.i
+.PHONY : src/commands/Cap.cpp.i
+
+src/commands/Cap.s: src/commands/Cap.cpp.s
+.PHONY : src/commands/Cap.s
+
+# target to generate assembly for a file
+src/commands/Cap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Cap.cpp.s
+.PHONY : src/commands/Cap.cpp.s
+
+src/commands/Command.o: src/commands/Command.cpp.o
+.PHONY : src/commands/Command.o
+
+# target to build an object file
+src/commands/Command.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Command.cpp.o
+.PHONY : src/commands/Command.cpp.o
+
+src/commands/Command.i: src/commands/Command.cpp.i
+.PHONY : src/commands/Command.i
+
+# target to preprocess a source file
+src/commands/Command.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Command.cpp.i
+.PHONY : src/commands/Command.cpp.i
+
+src/commands/Command.s: src/commands/Command.cpp.s
+.PHONY : src/commands/Command.s
+
+# target to generate assembly for a file
+src/commands/Command.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Command.cpp.s
+.PHONY : src/commands/Command.cpp.s
+
+src/commands/Join.o: src/commands/Join.cpp.o
+.PHONY : src/commands/Join.o
+
+# target to build an object file
+src/commands/Join.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Join.cpp.o
+.PHONY : src/commands/Join.cpp.o
+
+src/commands/Join.i: src/commands/Join.cpp.i
+.PHONY : src/commands/Join.i
+
+# target to preprocess a source file
+src/commands/Join.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Join.cpp.i
+.PHONY : src/commands/Join.cpp.i
+
+src/commands/Join.s: src/commands/Join.cpp.s
+.PHONY : src/commands/Join.s
+
+# target to generate assembly for a file
+src/commands/Join.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Join.cpp.s
+.PHONY : src/commands/Join.cpp.s
+
+src/commands/Nick.o: src/commands/Nick.cpp.o
+.PHONY : src/commands/Nick.o
+
+# target to build an object file
+src/commands/Nick.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o
+.PHONY : src/commands/Nick.cpp.o
+
+src/commands/Nick.i: src/commands/Nick.cpp.i
+.PHONY : src/commands/Nick.i
+
+# target to preprocess a source file
+src/commands/Nick.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Nick.cpp.i
+.PHONY : src/commands/Nick.cpp.i
+
+src/commands/Nick.s: src/commands/Nick.cpp.s
+.PHONY : src/commands/Nick.s
+
+# target to generate assembly for a file
+src/commands/Nick.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Nick.cpp.s
+.PHONY : src/commands/Nick.cpp.s
+
+src/commands/Pass.o: src/commands/Pass.cpp.o
+.PHONY : src/commands/Pass.o
+
+# target to build an object file
+src/commands/Pass.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o
+.PHONY : src/commands/Pass.cpp.o
+
+src/commands/Pass.i: src/commands/Pass.cpp.i
+.PHONY : src/commands/Pass.i
+
+# target to preprocess a source file
+src/commands/Pass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Pass.cpp.i
+.PHONY : src/commands/Pass.cpp.i
+
+src/commands/Pass.s: src/commands/Pass.cpp.s
+.PHONY : src/commands/Pass.s
+
+# target to generate assembly for a file
+src/commands/Pass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Pass.cpp.s
+.PHONY : src/commands/Pass.cpp.s
+
+src/commands/Ping.o: src/commands/Ping.cpp.o
+.PHONY : src/commands/Ping.o
+
+# target to build an object file
+src/commands/Ping.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o
+.PHONY : src/commands/Ping.cpp.o
+
+src/commands/Ping.i: src/commands/Ping.cpp.i
+.PHONY : src/commands/Ping.i
+
+# target to preprocess a source file
+src/commands/Ping.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Ping.cpp.i
+.PHONY : src/commands/Ping.cpp.i
+
+src/commands/Ping.s: src/commands/Ping.cpp.s
+.PHONY : src/commands/Ping.s
+
+# target to generate assembly for a file
+src/commands/Ping.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Ping.cpp.s
+.PHONY : src/commands/Ping.cpp.s
+
+src/commands/User.o: src/commands/User.cpp.o
+.PHONY : src/commands/User.o
+
+# target to build an object file
+src/commands/User.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/User.cpp.o
+.PHONY : src/commands/User.cpp.o
+
+src/commands/User.i: src/commands/User.cpp.i
+.PHONY : src/commands/User.i
+
+# target to preprocess a source file
+src/commands/User.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/User.cpp.i
+.PHONY : src/commands/User.cpp.i
+
+src/commands/User.s: src/commands/User.cpp.s
+.PHONY : src/commands/User.s
+
+# target to generate assembly for a file
+src/commands/User.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/User.cpp.s
+.PHONY : src/commands/User.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -297,6 +465,27 @@ help:
 	@echo "... src/Utils.o"
 	@echo "... src/Utils.i"
 	@echo "... src/Utils.s"
+	@echo "... src/commands/Cap.o"
+	@echo "... src/commands/Cap.i"
+	@echo "... src/commands/Cap.s"
+	@echo "... src/commands/Command.o"
+	@echo "... src/commands/Command.i"
+	@echo "... src/commands/Command.s"
+	@echo "... src/commands/Join.o"
+	@echo "... src/commands/Join.i"
+	@echo "... src/commands/Join.s"
+	@echo "... src/commands/Nick.o"
+	@echo "... src/commands/Nick.i"
+	@echo "... src/commands/Nick.s"
+	@echo "... src/commands/Pass.o"
+	@echo "... src/commands/Pass.i"
+	@echo "... src/commands/Pass.s"
+	@echo "... src/commands/Ping.o"
+	@echo "... src/commands/Ping.i"
+	@echo "... src/commands/Ping.s"
+	@echo "... src/commands/User.o"
+	@echo "... src/commands/User.i"
+	@echo "... src/commands/User.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
