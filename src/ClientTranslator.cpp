@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include "Log.h"
 
-ClientTranslator::ClientTranslator(const std::string& buffer) : buffer(buffer)
+ClientTranslator::ClientTranslator()
 {
 
 }
@@ -15,10 +15,11 @@ ClientTranslator::~ClientTranslator()
 
 }
 
-void ClientTranslator::fetchCommands()
+std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands(const std::string& buffer,
+	const std::map<std::string, Command*>& validServerCommands)
 {
 	// Split buffer to tokens.
-	std::istringstream iss(this->buffer);
+	std::istringstream iss(buffer);
 	std::string token;
 	std::vector<std::string> tokens;
 
@@ -31,15 +32,12 @@ void ClientTranslator::fetchCommands()
 		throw std::runtime_error(ERROR EMPTY_CLIENT_PROMPT);
 	}
 
-	// Init list of available commands.
-	const std::string commandList[] = {"CAP", "JOIN", "PASS", "NICK", "USER", "PING"};
-	const std::string* commandListFirst = commandList;
-	const std::string* commandListLast = commandList + sizeof(commandList) / sizeof(commandList[0]);
+	std::map<std::string, std::vector<std::string> > fetchedCommands;
 
 	// Separate commands and assign them with associating arguments.
 	while (!tokens.empty())
 	{
-		// TODO: semicolon means, that everything after it is one message/argument, even if there are spaces,
+		// : semicolon means, that everything after it is one message/argument, even if there are spaces,
 		// for example, realname in USER command starts with ":" so everything after it should be saved to the realname.
 		// Need to implement it.
 		const std::string command = *tokens.begin();
@@ -47,23 +45,14 @@ void ClientTranslator::fetchCommands()
 		std::vector<std::string>::iterator it = tokens.begin() + 1;
 		for (; it != tokens.end(); ++it)
 		{
-			if (find(commandListFirst, commandListLast, *it) != commandListLast)
+			if (validServerCommands.find(*it) != validServerCommands.end())
 			{
 				break;
 			}
 			arguments.push_back(*it);
 		}
 		tokens.erase(tokens.begin(), it);
-		this->commands.insert(make_pair(command, arguments));
+		fetchedCommands.insert(make_pair(command, arguments));
 	}
-}
-
-std::string ClientTranslator::getBuffer() const
-{
-	return this->buffer;
-}
-
-std::map<std::string, std::vector<std::string> > ClientTranslator::getCommands() const
-{
-	return this->commands;
+	return fetchedCommands;
 }

@@ -1,6 +1,8 @@
 #include "../include/Client.h"
 
-Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), capEnd(false)
+#include "Log.h"
+
+Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false)
 {
 
 }
@@ -30,11 +32,6 @@ std::string Client::getUsername() const
 	return this->username;
 }
 
-bool Client::getCapEnd() const
-{
-	return this->capEnd;
-}
-
 void Client::setPassword(const std::string& password)
 {
 	this->password = password;
@@ -53,11 +50,6 @@ void Client::setUsername(const std::string& username)
 void Client::setWelcomeRepliesSent(const bool truefalse)
 {
 	this->welcomeRepliesSent = truefalse;
-}
-
-void Client::setCapEnd(const bool truefalse)
-{
-	this->capEnd = truefalse;
 }
 
 bool Client::registered(const std::string& serverPassword) const

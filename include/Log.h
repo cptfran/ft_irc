@@ -35,7 +35,6 @@
 // Log messages:
 #define USAGE LIGHT_CYAN "Usage: ./ircserv <port> <password>" RESET
 #define INVALID_PORT_INPUT LIGHT_CYAN "Invalid port input." RESET
-#define WRONG_PW LIGHT_CYAN "Password invalid." RESET
 #define WRONG_PORT_RANGE LIGHT_CYAN "Port is not within registered ports range. Try from 1024 to 49151." RESET
 #define SOCKET_FAIL LIGHT_CYAN "Socket initialization failed." RESET
 #define BIND_FAIL LIGHT_CYAN "Socket binding failed." RESET
@@ -52,6 +51,10 @@
 #define F_GETFL_FAIL LIGHT_CYAN "Failed to fetch socket flags." RESET
 #define F_SETFL_FAIL LIGHT_CYAN "Failed to set socket to non-blocking mode." RESET
 #define SETSOCKOPT_FAIL LIGHT_CYAN "Failed to set socket options." RESET
+#define WRONG_PASSWORD LIGHT_CYAN "Client entered wrong password." RESET
+#define RPL_WRONG_NUM_OF_ARGS(funcName) (std::string(LIGHT_CYAN) + (funcName) + ": wrong number of arguments." + RESET)
+#define CLIENT_DISCONNECTED LIGHT_CYAN "Client disconnected." RESET
+#define PASSWORD_EMPTY LIGHT_CYAN "Password is empty." RESET
 
 class Log
 {

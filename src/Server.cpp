@@ -11,13 +11,21 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <csignal>
 #include <poll.h>
 #include <sstream>
 #include "Utils.h"
 #include <ctime>
 #include <fcntl.h>
-#include <errno.h>
 #include <netdb.h>
+#include "../include/commands/Cap.h"
+#include "../include/commands/Join.h"
+#include "../include/commands/Nick.h"
+#include "../include/commands/Pass.h"
+#include "../include/commands/Ping.h"
+#include "../include/commands/User.h"
+
+Server* Server::instance = NULL;
 
 /**
  * @brief Constructor for the Server class.
@@ -34,12 +42,24 @@
  * @param version The current version of the server.
  * @param password The password to be used for client authentication.
  */
-Server::Server(const std::string& name, const std::string& version, const std::string& password)
-: fd(-1), name(name), version(version), password(password), availableUserModes("-"),
+Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
+: running(true), fd(-1), name(name), version(version), password(password), availableUserModes("-"),
 availableChannelModes("-")
 {
+	this->validCommands["CAP"] = new Cap();
+	this->validCommands["JOIN"] = new Join();
+	this->validCommands["PASS"] = new Pass();
+	this->validCommands["NICK"] = new Nick();
+	this->validCommands["USER"] = new User();
+	this->validCommands["PING"] = new Ping();
+
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
+
+	initSocket(port);
+
+	instance = this;
+	signal(SIGINT, signalHandler);
 }
 
 /**
@@ -67,11 +87,38 @@ Server::~Server()
 			close(clientFd);
 		}
 	}
+
+	for (std::map<std::string, Command*>::iterator it = this->validCommands.begin(); it != this->validCommands.end();
+		++it)
+	{
+		delete it->second;
+	}
+
+	instance = NULL;
 }
 
 void Server::setVersion(const std::string& version)
 {
 	this->version = version;
+}
+
+std::string Server::getName() const
+{
+	return this->name;
+}
+
+
+std::string Server::getPassword() const
+{
+	return this->password;
+}
+
+void Server::signalHandler(int signum)
+{
+	if (signum == SIGINT && instance)
+	{
+		instance->stop();
+	}
 }
 
 /**
@@ -89,7 +136,7 @@ void Server::setVersion(const std::string& version)
  * @param port The port number on which the server will listen for incoming connections.
  * @throws std::runtime_error If the port is out of range, socket creation fails, binding fails, or listening fails.
  */
-void Server::init(const int port)
+void Server::initSocket(const int port)
 {
 	if (port < REGISTERED_PORT_MIN || port > REGISTERED_PORT_MAX)
 	{
@@ -97,7 +144,7 @@ void Server::init(const int port)
 	}
 
 	this->fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (this->fd < -1)
+	if (this->fd < 0)
 	{
 		throw std::runtime_error(ERROR SOCKET_FAIL);
 	}
@@ -153,12 +200,16 @@ void Server::run()
     this->pollFds.push_back(listenFd);
 
 	// Main loop, handling new client connections and already running clients.
-    while (true)
+    while (running)
     {
-    	if (poll(this->pollFds.begin().base(), this->pollFds.size(), -1) < 0)
+    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
     	{
+    		if (errno == EINTR)
+    		{
+    			continue;
+    		}
     		Log::msgServer(ERROR, "Poll error");
-    		// continue;
+    		return;
     	}
     	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); ++it)
         {
@@ -166,6 +217,8 @@ void Server::run()
         	{
         		continue;
         	}
+    		// TODO: handle hang-up event (connection closed by peer)
+    		// remove the file descriptor from the poll list here .
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
         		break;
@@ -182,6 +235,12 @@ void Server::run()
         }
     }
 }
+
+void Server::stop()
+{
+	this->running = false;
+}
+
 
 void Server::connectClient()
 {
@@ -206,21 +265,11 @@ void Server::connectClient()
 	this->clients.insert(std::make_pair(clientFd, client));
 
 	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_SUCCESS);
-
-	// TODO: try to connect more than one client and check if fcntl for clients is necessary.
-	// Set the client socket to non-blocking mode.
-	// if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1)
-	// {
-		// close(clientFd);
-		// throw std::runtime_error(ERROR F_SETFL_FAIL);
-	// }
 }
 
-// TODO: need to check if I should only fetch the buffer once or till some point I should do it in a loop.
 // TODO: implement certain amount of time client has to send authentication data. (not sure if it's necessary though)
 void Server::handleClientPrompt(Client& client) const
 {
-	// while (client.getPassword() != this->password || client.getNickname().empty() || client.getUsername().empty())
 	char buffer[INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
 	DEBUG_LOG(std::string("CLIENT: \"") + buffer + "\"");
@@ -242,89 +291,60 @@ void Server::handleClientPrompt(Client& client) const
 	}
 	catch (const std::exception& e)
 	{
-		Log::msgServer(ERROR,e.what());
+		Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
+		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_DISCONNECTED);
+		close(client.getFd());
 	}
 }
 
-// TODO: most of the commands should be handled only if the user is registered.
-// TODO: most of the replies probably require to have protection check in case not enough args are provided.
 void Server::handleCommands(Client& client, const std::string& buffer) const
 {
-	ClientTranslator translator(buffer);
-	translator.fetchCommands();
-
-	std::map<std::string, std::vector<std::string> > commands = translator.getCommands();
-	for (std::map<std::string, std::vector<std::string> >::iterator it = commands.begin(); it != commands.end(); ++it)
+	std::map<std::string, std::vector<std::string> > fetchedCommands =
+		ClientTranslator::fetchCommands(buffer, this->validCommands);
+	for (std::map<std::string, std::vector<std::string> >::iterator it = fetchedCommands.begin();
+		it != fetchedCommands.end(); ++it)
 	{
-		// TODO: check if there are specific error responses if there is something wrong with any of these commands.
-		if (!client.getCapEnd() && it->first == "CAP" && !it->second.empty())
+		if (this->validCommands.find(it->first) == this->validCommands.end())
 		{
-			if (it->second[0] == "END")
-			{
-				client.setCapEnd(true);
-				continue;
-			}
-			if (it->second[0] == "LS")
-			{
-				// TODO: check if server should send any capabilities or empty.
-				// There is no CAP LS response in replies as this negotiation protocol is part of IRCv3 extensions.
-				const std::string capResponse = ":server CAP * LS :\r\n";
-				// DEBUG_LOG(capResponse);
-				send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
-			}
+			reply(client, errUnknownCommand, Utils::anyToVec(it->first));
+			continue;
 		}
-		else if (it->first == "PASS")
+		// TODO: maybe move registration check as a command feature
+		if (!isRegistrationCommand(it->first) && !client.registered(this->password))
 		{
-			client.setPassword(it->second[0]);
+			reply(client, errNotRegistered, Utils::anyToVec(std::string("")));
+			continue;
 		}
-		else if (it->first == "NICK")
-		{
-			client.setNickname(it->second[0]);
-		}
-		else if (it->first == "USER")
-		{
-			// TODO: if less than 5 tokens, not enough information, return something to client.
-
-			client.setUsername(it->second[0]);
-
-			// TODO: handle realname.
-			// It must be noted that realname parameter must be the last parameter,
-			// because it may contain space characters and must be prefixed with a
-			// colon (':') to make sure this is recognised as such.
-		}
-		else if (it->first == "JOIN")
-		{
-			// TODO: handle this command properly. This is just a test code.
-			reply(client, rplNoTopic, Utils::anyToVec(it->second[0]));
-		}
-		else if (it->first == "PING")
-		{
-			if (it->second.size() == 0)
-			{
-				reply(client, rplPong, Utils::anyToVec(this->name));
-				break;
-			}
-			reply(client, rplPong, Utils::anyToVec(this->name, it->second[0]));
-		}
-		else
-		{
-			this->reply(client, errUnknownCommand, it->second);
-		}
+		this->validCommands.at(it->first)->execute(*this, client, it->second);
 	}
+
 	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
-		// TODO: in the first reply check what exactly is hostname (3rd arg), because it should be hostname of the client.
-		// In the 4th reply check what exactly available modes (3rd, 4th arg) should it send to clients if any.
-		reply(client, rplWelcome, Utils::anyToVec(this->name, client.getNickname(), client.getUsername(), this->name));
-		reply(client, rplYourHost, Utils::anyToVec(this->name, this->version));
-		reply(client, rplCreated, Utils::anyToVec(this->name, this->creationDate));
+		reply(client, rplWelcome, Utils::anyToVec(this->name, client.getNickname(), client.getUsername()));
+		reply(client, rplYourHost, Utils::anyToVec(this->name, client.getNickname(), this->version));
+		reply(client, rplCreated, Utils::anyToVec(this->name, client.getNickname(), this->creationDate));
 		reply(client, rplMyInfo, Utils::anyToVec(this->name, this->version, this->availableUserModes,
 			this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
 	}
+}
+
+bool Server::isRegistrationCommand(const std::string& command) const
+{
+	if (command == "CAP" || command == "NICK" || command == "USER" || command == "PASS")
+	{
+		return true;
+	}
+	return false;
+}
+
+// TODO: check if there are specific error responses if there is something wrong with any of these commands.
+void Server::executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const
+{
+	this->validCommands.at(command)->execute(*this, client, args);
 }
 
 void Server::reply(const Client& client, const ReplyFunction func, const std::vector<std::string>& args) const
@@ -336,27 +356,47 @@ void Server::reply(const Client& client, const ReplyFunction func, const std::ve
 
 std::string Server::rplWelcome(const std::vector<std::string>& args)
 {
-	return ":@" + args[0] + " 001 :Welcome to the Internet Relay Network " + args[1] + "!" + args[2] + "@" + args[3]
-	+ "\r\n";
+	if (args.size() < 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplWelcome()"));
+	}
+	return ":@" + args[0] + " 001 " + args[1] + " :Welcome to the Internet Relay Network " + args[1] + "!" + args[2]
+	+ "@" + args[0] + "\r\n";
 }
 
 std::string Server::rplYourHost(const std::vector<std::string>& args)
 {
-	return ":@" + args[0] + " 002 Your host is " + args[0] + ", running version " + args[1] + "\r\n";
+	if (args.size() < 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplYourHost()"));
+	}
+	return ":@" + args[0] + " 002 " + args[1] + " :Your host is " + args[0] + ", running version " + args[2] + "\r\n";
 }
 
 std::string Server::rplCreated(const std::vector<std::string>& args)
 {
-	return ":@" + args[0] + " 003 This server was created " + args[1] + "\r\n";
+	if (args.size() < 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplCreated()"));
+	}
+	return ":@" + args[0] + " 003 " + args[1] + ": This server was created " + args[2] + "\r\n";
 }
 
 std::string Server::rplMyInfo(const std::vector<std::string>& args)
 {
+	if (args.size() < 4)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplMyInfo()"));
+	}
 	return ":@" + args[0] + " 004 " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + "\r\n";
 }
 
 std::string Server::rplPong(const std::vector<std::string>& args)
 {
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplPong()"));
+	}
 	if (args.size() < 2)
 	{
 		return "PONG :" + args[0] + "\r\n";
@@ -364,19 +404,55 @@ std::string Server::rplPong(const std::vector<std::string>& args)
 	return "Pong :" + args[0] + " " + args[1] + "\r\n";
 }
 
+std::string Server::rplCap(const std::vector<std::string>& args)
+{
+	(void)args;
+	return ":server CAP * LS :\r\n";
+}
+
 
 std::string Server::rplNoTopic(const std::vector<std::string>& args)
 {
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNoTopic()"));
+	}
 	return "331 " + args[0] + " :No topic is set\r\n";
 }
 
 
 std::string Server::errUnknownCommand(const std::vector<std::string>& args)
 {
-	return "331 " + args[0] + " :Unknown command\r\n";
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUnknownCommand()"));
+	}
+	return "421 " + args[0] + " :Unknown command\r\n";
+}
+
+std::string Server::errNotRegistered(const std::vector<std::string>& args)
+{
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNotRegistered()"));
+	}
+	return "451 " + args[0] + " :You have not registered\r\n";
+}
+
+std::string Server::errPasswdMismatch(const std::vector<std::string>& args)
+{
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errPasswdMismatch()"));
+	}
+	return "464 " + args[0] + " :Password incorrect.\r\n";
 }
 
 std::string Server::errChannelIsFull(const std::vector<std::string>& args)
 {
+	if (args.empty())
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChannelIsFull()"));
+	}
 	return "471 " + args[0] + " :Cannot join channel (+1)\r\n";
 }
