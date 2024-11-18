@@ -6,7 +6,7 @@
 #include "Client.h"
 
 
-// TODO: delete this class and move fetchCommands() to server class?
+// : delete this class and move fetchCommands() to server class?
 // If this will be used only in Server class yes, otherwise maybe leave it like this.
 class ClientTranslator
 {
@@ -17,8 +17,7 @@ public:
 	std::string getBuffer() const;
 	std::map<std::string, std::vector<std::string> > getCommands() const;
 
-	// void fetchCommands(const Server& server, const Client& client);
-	void fetchCommands();
+	void fetchCommands(std::vector<std::string> commandList);
 
 private:
 	ClientTranslator();

@@ -15,7 +15,7 @@ ClientTranslator::~ClientTranslator()
 
 }
 
-void ClientTranslator::fetchCommands()
+void ClientTranslator::fetchCommands(std::vector<std::string> commandList)
 {
 	// Split buffer to tokens.
 	std::istringstream iss(this->buffer);
@@ -31,15 +31,10 @@ void ClientTranslator::fetchCommands()
 		throw std::runtime_error(ERROR EMPTY_CLIENT_PROMPT);
 	}
 
-	// Init list of available commands.
-	const std::string commandList[] = {"CAP", "JOIN", "PASS", "NICK", "USER", "PING"};
-	const std::string* commandListFirst = commandList;
-	const std::string* commandListLast = commandList + sizeof(commandList) / sizeof(commandList[0]);
-
 	// Separate commands and assign them with associating arguments.
 	while (!tokens.empty())
 	{
-		// TODO: semicolon means, that everything after it is one message/argument, even if there are spaces,
+		// : semicolon means, that everything after it is one message/argument, even if there are spaces,
 		// for example, realname in USER command starts with ":" so everything after it should be saved to the realname.
 		// Need to implement it.
 		const std::string command = *tokens.begin();
@@ -47,7 +42,7 @@ void ClientTranslator::fetchCommands()
 		std::vector<std::string>::iterator it = tokens.begin() + 1;
 		for (; it != tokens.end(); ++it)
 		{
-			if (find(commandListFirst, commandListLast, *it) != commandListLast)
+			if (find(commandList.begin(), commandList.end(), *it) != commandList.end())
 			{
 				break;
 			}

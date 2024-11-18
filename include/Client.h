@@ -24,13 +24,11 @@ public:
 	std::string getPassword() const;
 	std::string getNickname() const;
 	std::string getUsername() const;
-	bool getCapEnd() const;
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
 	void setWelcomeRepliesSent(bool truefalse);
-	void setCapEnd(bool truefalse);
 
 	bool registered(const std::string& serverPassword) const;
 	bool getWelcomeRepliesSent() const;
@@ -43,5 +41,4 @@ private:
 	std::string nickname;
 	std::string username;
 	bool welcomeRepliesSent;
-	bool capEnd;
 };
