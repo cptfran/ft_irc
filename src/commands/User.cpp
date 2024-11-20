@@ -1,4 +1,6 @@
 #include "../../include/commands/User.h"
+
+#include "Log.h"
 #include "../../include/Server.h"
 #include "../../include/Utils.h"
 #include "../../include/Replier.h"
@@ -13,7 +15,7 @@ User::~User()
 
 }
 
-void User::execute(const Server& server, Client& client, const std::vector<std::string>& args) const
+void User::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	if (args.size() < 4 || args[3][0] != ':')
 	{

@@ -22,9 +22,12 @@ public:
 
 	std::string getName() const;
 	std::string getPassword() const;
+	std::map<int, Client> getClients() const;
 
 	void run();
 	void stop();
+
+	void handleNicknameCollision(const std::string& newClientNickname);
 
 private:
 	static Server* instance;
@@ -51,5 +54,4 @@ private:
 	// Handling new requests of already connected client.
 	void handleCommands(Client& client, const std::string& buffer) const;
 	void handleClientPrompt(Client& client);
-	void executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const;
 };

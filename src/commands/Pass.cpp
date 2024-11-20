@@ -14,7 +14,7 @@ Pass::~Pass()
 
 }
 
-void Pass::execute(const Server& server, Client& client, const std::vector<std::string>& args) const
+void Pass::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	if (args.empty())
 	{

@@ -13,7 +13,7 @@ Ping::~Ping()
 
 }
 
-void Ping::execute(const Server& server, Client& client, const std::vector<std::string>& args) const
+void Ping::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	if (args.empty())
 	{

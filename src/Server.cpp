@@ -114,6 +114,12 @@ std::string Server::getPassword() const
 	return this->password;
 }
 
+std::map<int, Client> Server::getClients() const
+{
+	return this->clients;
+}
+
+
 void Server::signalHandler(const int signum)
 {
 	if (signum == SIGINT && instance)
@@ -241,6 +247,18 @@ void Server::stop()
 	this->running = false;
 }
 
+void Server::handleNicknameCollision(const std::string& newClientNickname)
+{
+	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	{
+		if (newClientNickname == it->second.getNickname())
+		{
+			Replier::reply(it->second, Replier::errNickCollision, Utils::anyToVec(this->name));
+			this->disconnectClient(it->second);
+			return;
+		}
+	}
+}
 
 void Server::connectClient()
 {
@@ -335,10 +353,4 @@ void Server::handleCommands(Client& client, const std::string& buffer) const
 
 		client.setWelcomeRepliesSent(true);
 	}
-}
-
-// TODO: check if there are specific error responses if there is something wrong with any of these commands.
-void Server::executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const
-{
-	this->validCommands.at(command)->execute(*this, client, args);
 }
