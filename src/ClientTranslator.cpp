@@ -25,6 +25,14 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 
 	while (iss >> token)
 	{
+		if (!token.empty() && token[0] == ':')
+		{
+			std::string restOfBuffer;
+			std::getline(iss, restOfBuffer);
+			token += restOfBuffer;
+			tokens.push_back(token);
+			break;
+		}
 		tokens.push_back(token);
 	}
 	if (tokens.empty())

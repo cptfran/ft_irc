@@ -201,6 +201,30 @@ src/Log.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Log.cpp.s
 .PHONY : src/Log.cpp.s
 
+src/Replier.o: src/Replier.cpp.o
+.PHONY : src/Replier.o
+
+# target to build an object file
+src/Replier.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Replier.cpp.o
+.PHONY : src/Replier.cpp.o
+
+src/Replier.i: src/Replier.cpp.i
+.PHONY : src/Replier.i
+
+# target to preprocess a source file
+src/Replier.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Replier.cpp.i
+.PHONY : src/Replier.cpp.i
+
+src/Replier.s: src/Replier.cpp.s
+.PHONY : src/Replier.s
+
+# target to generate assembly for a file
+src/Replier.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Replier.cpp.s
+.PHONY : src/Replier.cpp.s
+
 src/Server.o: src/Server.cpp.o
 .PHONY : src/Server.o
 
@@ -459,6 +483,9 @@ help:
 	@echo "... src/Log.o"
 	@echo "... src/Log.i"
 	@echo "... src/Log.s"
+	@echo "... src/Replier.o"
+	@echo "... src/Replier.i"
+	@echo "... src/Replier.s"
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"

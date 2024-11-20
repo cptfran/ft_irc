@@ -28,6 +28,7 @@ public:
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
+	void setRealname(const std::string& realname);
 	void setWelcomeRepliesSent(bool truefalse);
 
 	bool registered(const std::string& serverPassword) const;
@@ -40,5 +41,6 @@ private:
 	std::string password;
 	std::string nickname;
 	std::string username;
+	std::string realname;
 	bool welcomeRepliesSent;
 };

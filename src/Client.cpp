@@ -47,6 +47,11 @@ void Client::setUsername(const std::string& username)
 	this->username = username;
 }
 
+void Client::setRealname(const std::string& realname)
+{
+	this->realname = realname;
+}
+
 void Client::setWelcomeRepliesSent(const bool truefalse)
 {
 	this->welcomeRepliesSent = truefalse;

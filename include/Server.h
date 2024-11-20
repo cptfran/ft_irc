@@ -15,8 +15,6 @@
 class Server
 {
 public:
-	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
-
 	Server(const std::string& name, const std::string& version, const std::string& password, int port);
 	~Server();
 
@@ -27,21 +25,6 @@ public:
 
 	void run();
 	void stop();
-
-	// TODO: maybe make Replier class so it is more flexible and more single responsibility approach.
-	// Reply functions.
-	void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args) const;
-	static std::string rplWelcome(const std::vector<std::string>& args); // 001
-	static std::string rplYourHost(const std::vector<std::string>& args); // 002
-	static std::string rplCreated(const std::vector<std::string>& args); // 003
-	static std::string rplMyInfo(const std::vector<std::string>& args); // 004
-	static std::string rplPong(const std::vector<std::string>& args); // none
-	static std::string rplCap(const std::vector<std::string>& args); // none
-	static std::string rplNoTopic(const std::vector<std::string>& args); // 331
-	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
-	static std::string errNotRegistered(const std::vector<std::string>& args); // 451
-	static std::string errPasswdMismatch(const std::vector<std::string>& args); // 464
-	static std::string errChannelIsFull(const std::vector<std::string>& args); // 471
 
 private:
 	static Server* instance;
@@ -61,13 +44,12 @@ private:
 
 	void initSocket(int port);
 
-	// New client connection.
+	// Client connection.
 	void connectClient();
+	void disconnectClient(Client& client);
 
 	// Handling new requests of already connected client.
 	void handleCommands(Client& client, const std::string& buffer) const;
-	void handleClientPrompt(Client& client) const;
+	void handleClientPrompt(Client& client);
 	void executeCommand(Client& client, const std::string& command, const std::vector<std::string>& args) const;
-
-	bool isRegistrationCommand(const std::string& command) const;
 };
