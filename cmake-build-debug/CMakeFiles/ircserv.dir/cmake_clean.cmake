@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/Log.cpp.o"
   "CMakeFiles/ircserv.dir/src/Log.cpp.o.d"
+  "CMakeFiles/ircserv.dir/src/Replier.cpp.o"
+  "CMakeFiles/ircserv.dir/src/Replier.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/Server.cpp.o"
   "CMakeFiles/ircserv.dir/src/Server.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/Utils.cpp.o"
