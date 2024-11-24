@@ -198,6 +198,7 @@ void Server::initSocket(const int port)
  * adds the client's socket to the list of client sockets, and calls the handleClientPrompt function to manage the client.
  * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
+// TODO: check how the server behaves after changing iteration after connectClient().
 void Server::run()
 {
 	Log::msgServer(INFO, SERVER_RUN);
@@ -218,26 +219,29 @@ void Server::run()
     		Log::msgServer(ERROR, "Poll error");
     		return;
     	}
-    	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end(); ++it)
+    	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
         {
     		if (it->revents == 0)
         	{
+    			++it;
         		continue;
         	}
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
             	this->disconnectClient(this->clients.at(it->fd));
-        		break;
+            	it = this->pollFds.erase(it);
+        		continue;
         	}
             if ((it->revents & POLLIN) == POLLIN)
             {
     			if (it->fd == this->fd)
                 {
                 	this->connectClient();
-                	break;
+    				break;
                 }
             	this->handleClientPrompt(this->clients.at(it->fd));
             }
+    		++it;
         }
     }
 }
@@ -288,8 +292,8 @@ void Server::connectClient()
 void Server::disconnectClient(Client& client)
 {
 	const int clientFd = client.getFd();
-	close(clientFd);
 	this->clients.erase(clientFd);
+	close(clientFd);
 	Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
 }
 
@@ -323,7 +327,7 @@ void Server::handleClientPrompt(Client& client)
 	}
 }
 
-void Server::handleCommands(Client& client, const std::string& buffer) const
+void Server::handleCommands(Client& client, const std::string& buffer)
 {
 	std::map<std::string, std::vector<std::string> > fetchedCommands =
 		ClientTranslator::fetchCommands(buffer, this->validCommands);

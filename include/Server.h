@@ -52,6 +52,6 @@ private:
 	void disconnectClient(Client& client);
 
 	// Handling new requests of already connected client.
-	void handleCommands(Client& client, const std::string& buffer) const;
+	void handleCommands(Client& client, const std::string& buffer);
 	void handleClientPrompt(Client& client);
 };
