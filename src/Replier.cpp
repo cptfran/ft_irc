@@ -95,6 +95,15 @@ std::string Replier::errUnknownCommand(const std::vector<std::string>& args)
 	return "421 " + args[0] + " :Unknown command\r\n";
 }
 
+std::string Replier::errNickCollision(const std::vector<std::string>& args)
+{
+	if (args.size() != 1)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNickCollision()"));
+	}
+	return "436 " + args[0] + " :Nickname collision KILL\r\n";
+}
+
 std::string Replier::errNotRegistered(const std::vector<std::string>& args)
 {
 	if (args.size() != 1)

@@ -13,7 +13,7 @@ Cap::~Cap()
 
 }
 
-void Cap::execute(const Server& server, Client& client, const std::vector<std::string>& args) const
+void Cap::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	(void)server;
 	if (!args.empty() && args[0] == "LS")

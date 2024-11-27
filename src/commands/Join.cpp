@@ -13,7 +13,7 @@ Join::~Join()
 
 }
 
-void Join::execute(const Server& server, Client& client, const std::vector<std::string>& args) const
+void Join::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	// TODO: handle this command properly. This is just a test code.
 	if (!client.registered(server.getPassword()))

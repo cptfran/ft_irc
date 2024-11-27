@@ -12,5 +12,5 @@ public:
 	Command();
 	virtual ~Command();
 
-	virtual void execute(const Server& server, Client& client, const std::vector<std::string>& args) const = 0;
+	virtual void execute(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
 };

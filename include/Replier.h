@@ -6,9 +6,12 @@
 class Replier
 {
 public:
+	~Replier();
+
+private:
 	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
 
-	~Replier();
+	Replier();
 
 	// Reply functions.
 	static void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args);
@@ -20,10 +23,17 @@ public:
 	static std::string rplCap(const std::vector<std::string>& args); // none
 	static std::string rplNoTopic(const std::vector<std::string>& args); // 331
 	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
+	static std::string errNickCollision(const std::vector<std::string>& args); // 436
 	static std::string errNotRegistered(const std::vector<std::string>& args); // 451
 	static std::string errNeedMoreParams(const std::vector<std::string>& args); // 461
 	static std::string errPasswdMismatch(const std::vector<std::string>& args); // 464
 	static std::string errChannelIsFull(const std::vector<std::string>& args); // 471
-private:
-	Replier();
+
+	friend class Server;
+	friend class Cap;
+	friend class Join;
+	friend class Nick;
+	friend class Pass;
+	friend class Ping;
+	friend class User;
 };
