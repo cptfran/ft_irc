@@ -16,6 +16,7 @@ add_executable(ircserv
         include/commands/Pass.h
         include/commands/Ping.h
         include/commands/User.h
+        include/Channel.h
         include/Log.h
         include/Replier.h
         include/Server.h
@@ -29,6 +30,7 @@ add_executable(ircserv
         src/commands/Pass.cpp
         src/commands/Ping.cpp
         src/commands/User.cpp
+        src/Channel.cpp
         src/Log.cpp
         src/main.cpp
         src/Replier.cpp

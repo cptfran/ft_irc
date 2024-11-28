@@ -28,6 +28,7 @@ private:
 	static std::string errNeedMoreParams(const std::vector<std::string>& args); // 461
 	static std::string errPasswdMismatch(const std::vector<std::string>& args); // 464
 	static std::string errChannelIsFull(const std::vector<std::string>& args); // 471
+	static std::string errInviteOnlyChan(const std::vector<std::string>& args); // 473
 
 	friend class Server;
 	friend class Cap;

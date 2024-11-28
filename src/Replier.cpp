@@ -134,9 +134,22 @@ std::string Replier::errPasswdMismatch(const std::vector<std::string>& args)
 
 std::string Replier::errChannelIsFull(const std::vector<std::string>& args)
 {
-	if (args.size() != 1)
+	if (args.size() != 2)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChannelIsFull()"));
 	}
-	return "471 " + args[0] + " :Cannot join channel (+1)\r\n";
+	const std::string serverName = args[0];
+	const std::string channelName = args[1];
+	return "471 " + serverName + " " + channelName + " :Cannot join channel (+1)\r\n";
+}
+
+std::string Replier::errInviteOnlyChan(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errInviteOnlyChan()"));
+	}
+	const std::string serverName = args[0];
+	const std::string channelName = args[1];
+	return "473 " + serverName + " " + channelName + " :Cannot join channel (+i)\r\n";
 }

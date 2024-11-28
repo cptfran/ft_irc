@@ -119,6 +119,10 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
+std::vector<Channel> Server::getChannels() const
+{
+	return this->channels;
+}
 
 void Server::signalHandler(const int signum)
 {
@@ -198,7 +202,6 @@ void Server::initSocket(const int port)
  * adds the client's socket to the list of client sockets, and calls the handleClientPrompt function to manage the client.
  * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
-// TODO: check how the server behaves after changing iteration after connectClient().
 void Server::run()
 {
 	Log::msgServer(INFO, SERVER_RUN);

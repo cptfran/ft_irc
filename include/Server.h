@@ -2,6 +2,7 @@
 
 #include <map>
 #include "Client.h"
+#include "Channel.h"
 #include "commands/Command.h"
 #include <vector>
 
@@ -23,6 +24,7 @@ public:
 	std::string getName() const;
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
+	std::vector<Channel> getChannels() const;
 
 	void run();
 	void stop();
@@ -42,6 +44,7 @@ private:
 	std::map<int, Client> clients;
 	std::vector<pollfd> pollFds;
 	std::map<std::string, Command*> validCommands;
+	std::vector<Channel> channels;
 
 	static void signalHandler(int signum);
 

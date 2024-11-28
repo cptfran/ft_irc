@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/ircserv.dir/src/Channel.cpp.o"
+  "CMakeFiles/ircserv.dir/src/Channel.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/Client.cpp.o"
   "CMakeFiles/ircserv.dir/src/Client.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o"
