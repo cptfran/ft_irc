@@ -1,8 +1,8 @@
-#include "../../include/commands/Pass.h"
-#include "../../include/Server.h"
-#include "../../include/Utils.h"
-#include "../../include/Log.h"
-#include "../../include/Replier.h"
+#include "commands/Pass.h"
+#include "Server.h"
+#include "Utils.h"
+#include "Log.h"
+#include "Replier.h"
 
 Pass::Pass()
 {

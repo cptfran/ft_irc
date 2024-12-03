@@ -1,9 +1,9 @@
-#include "../../include/commands/User.h"
+#include "commands/User.h"
 
 #include "Log.h"
-#include "../../include/Server.h"
-#include "../../include/Utils.h"
-#include "../../include/Replier.h"
+#include "Server.h"
+#include "Utils.h"
+#include "Replier.h"
 
 User::User()
 {

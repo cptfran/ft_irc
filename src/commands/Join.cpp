@@ -1,9 +1,8 @@
-#include "../../include/commands/Join.h"
-
+#include "commands/Join.h"
 #include "Log.h"
-#include "../../include/Server.h"
-#include "../../include/Utils.h"
-#include "../../include/Replier.h"
+#include "Server.h"
+#include "Utils.h"
+#include "Replier.h"
 
 Join::Join()
 {
@@ -29,8 +28,8 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 
 	// Check if the client joining didn't surpass maximum number of joined channels.
 	// If yes, don't join and send proper reply.
-	const int clientChannelsJoined = client.getChannelsJoined();
-	if (clientChannelsJoined == CHANNELS_MAX)
+	const int numOfChannelsClientJoined = client.getNumChannelsJoined();
+	if (numOfChannelsClientJoined == CHANNELS_MAX)
 	{
 		Replier::reply(client, Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
 		return;
@@ -59,16 +58,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 
 	// Join client to the channel.
 	channelToJoin->joinClient(client);
-	client.setChannelsJoined(clientChannelsJoined + 1);
-
-	// Prepare list of arguments to pass to rplNamReply function, which requires server name, channel name and list of
-	// nicknames with operator info.
-	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, channelName);
-	std::vector<std::string> channelsNicknamesList = channelToJoin->getNicknamesListWithOperatorInfo();
-	for (std::vector<std::string>::iterator it = channelsNicknamesList.begin(); it != channelsNicknamesList.end(); ++it)
-	{
-		rplNamReplyArgs.push_back(*it);
-	}
+	client.setNumChannelsJoined(numOfChannelsClientJoined + 1);
 
 	// Check if the channel has a topic set, based on the check send proper reply.
 	const std::string& channelTopic = channelToJoin->getTopic();
@@ -79,6 +69,15 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	else
 	{
 		Replier::reply(client, Replier::rplTopic, Utils::anyToVec(serverName, channelName, channelTopic));
+	}
+
+	// Prepare list of arguments to pass to rplNamReply function, which requires server name, channel name and list of
+	// nicknames with operator info.
+	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, channelName);
+	std::vector<std::string> channelsNicknamesList = channelToJoin->getNicknamesListWithOperatorInfo();
+	for (std::vector<std::string>::iterator it = channelsNicknamesList.begin(); it != channelsNicknamesList.end(); ++it)
+	{
+		rplNamReplyArgs.push_back(*it);
 	}
 
 	// Send replies after client successfuly joined the channel.

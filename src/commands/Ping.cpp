@@ -1,7 +1,7 @@
-#include "../../include/commands/Ping.h"
-#include "../../include/Server.h"
-#include "../../include/Utils.h"
-#include "../../include/Replier.h"
+#include "commands/Ping.h"
+#include "Server.h"
+#include "Utils.h"
+#include "Replier.h"
 
 Ping::Ping()
 {

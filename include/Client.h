@@ -31,11 +31,11 @@ public:
 	void setUsername(const std::string& username);
 	void setRealname(const std::string& realname);
 	void setWelcomeRepliesSent(bool truefalse);
-	void setChannelsJoined(int num);
+	void setNumChannelsJoined(int num);
 
 	bool registered(const std::string& serverPassword) const;
 	bool getWelcomeRepliesSent() const;
-	int getChannelsJoined() const;
+	int getNumChannelsJoined() const;
 
 private:
 	int fd;

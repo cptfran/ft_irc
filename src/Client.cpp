@@ -42,7 +42,7 @@ void Client::setWelcomeRepliesSent(const bool truefalse)
 	this->welcomeRepliesSent = truefalse;
 }
 
-void Client::setChannelsJoined(const int num)
+void Client::setNumChannelsJoined(const int num)
 {
 	this->channelsJoined = num;
 }
@@ -67,7 +67,7 @@ std::string Client::getUsername() const
 	return this->username;
 }
 
-int Client::getChannelsJoined() const
+int Client::getNumChannelsJoined() const
 {
 	return this->channelsJoined;
 }

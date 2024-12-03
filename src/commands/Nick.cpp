@@ -1,5 +1,5 @@
-#include "../../include/commands/Nick.h"
-#include "../../include/Server.h"
+#include "commands/Nick.h"
+#include "Server.h"
 
 Nick::Nick()
 {
