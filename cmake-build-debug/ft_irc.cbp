@@ -80,6 +80,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Channel.h">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Client.h">
 			<Option target="ircserv"/>
 		</Unit>
@@ -120,6 +123,9 @@
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/User.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Channel.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Client.cpp">

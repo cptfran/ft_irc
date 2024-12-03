@@ -119,9 +119,17 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-std::vector<Channel> Server::getChannels() const
+Channel* Server::findChannel(const std::string& channelToJoinName)
 {
-	return this->channels;
+	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	{
+		const std::string& channelName = it->getName();
+		if (channelName == channelToJoinName)
+		{
+			return &(*it);
+		}
+	}
+	return NULL;
 }
 
 void Server::signalHandler(const int signum)
@@ -265,6 +273,11 @@ void Server::handleNicknameCollision(const std::string& newClientNickname)
 			return;
 		}
 	}
+}
+
+void Server::addChannel(const Channel& channel)
+{
+	channels.push_back(channel);
 }
 
 void Server::connectClient()

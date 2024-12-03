@@ -1,7 +1,9 @@
 #pragma once
 
-#include <sys/poll.h>
 #include <iostream>
+
+// Maxium number of channels, client can join:
+#define CHANNELS_MAX 10
 
 /**
  * A client is anything connecting to a server that is not another
@@ -16,7 +18,6 @@
 class Client
 {
 public:
-	// Client(int fd, short int events, short int revents);
 	explicit Client(int fd);
 	~Client();
 
@@ -30,17 +31,20 @@ public:
 	void setUsername(const std::string& username);
 	void setRealname(const std::string& realname);
 	void setWelcomeRepliesSent(bool truefalse);
+	void setChannelsJoined(int num);
 
 	bool registered(const std::string& serverPassword) const;
 	bool getWelcomeRepliesSent() const;
+	int getChannelsJoined() const;
 
 private:
-	Client();
-
 	int fd;
 	std::string password;
 	std::string nickname;
 	std::string username;
 	std::string realname;
 	bool welcomeRepliesSent;
+	int channelsJoined;
+
+	Client();
 };

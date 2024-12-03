@@ -2,7 +2,12 @@
 
 #include "Log.h"
 
-Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false)
+Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), channelsJoined(0)
+{
+
+}
+
+Client::Client() : fd(), welcomeRepliesSent(false), channelsJoined(0)
 {
 
 }
@@ -10,26 +15,6 @@ Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false)
 Client::~Client()
 {
 
-}
-
-int Client::getFd() const
-{
-	return this->fd;
-}
-
-std::string Client::getPassword() const
-{
-	return this->password;
-}
-
-std::string Client::getNickname() const
-{
-	return this->nickname;
-}
-
-std::string Client::getUsername() const
-{
-	return this->username;
 }
 
 void Client::setPassword(const std::string& password)
@@ -55,6 +40,36 @@ void Client::setRealname(const std::string& realname)
 void Client::setWelcomeRepliesSent(const bool truefalse)
 {
 	this->welcomeRepliesSent = truefalse;
+}
+
+void Client::setChannelsJoined(const int num)
+{
+	this->channelsJoined = num;
+}
+
+int Client::getFd() const
+{
+	return this->fd;
+}
+
+std::string Client::getPassword() const
+{
+	return this->password;
+}
+
+std::string Client::getNickname() const
+{
+	return this->nickname;
+}
+
+std::string Client::getUsername() const
+{
+	return this->username;
+}
+
+int Client::getChannelsJoined() const
+{
+	return this->channelsJoined;
 }
 
 bool Client::registered(const std::string& serverPassword) const

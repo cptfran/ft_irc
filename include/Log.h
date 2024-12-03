@@ -55,6 +55,7 @@
 #define RPL_WRONG_NUM_OF_ARGS(funcName) (std::string(LIGHT_CYAN) + (funcName) + ": wrong number of arguments." + RESET)
 #define CLIENT_DISCONNECTED LIGHT_CYAN "Client disconnected." RESET
 #define PASSWORD_EMPTY LIGHT_CYAN "Password is empty." RESET
+#define FIND_CHANNEL_FAIL_AFTER_ADD LIGHT_CYAN "Failed to find the channel after adding it to the channels list." RESET
 
 class Log
 {

@@ -18,7 +18,7 @@ void Cap::execute(Server& server, Client& client, const std::vector<std::string>
 	(void)server;
 	if (!args.empty() && args[0] == "LS")
 	{
-		// TODO: in the end check if it should send any capabilities
+		// TODO: in the end check if it should send any capabilities.
 		Replier::reply(client, Replier::rplCap, Utils::anyToVec(std::string("")));
 	}
 }

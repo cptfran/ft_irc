@@ -1,8 +1,9 @@
 #include "../../include/commands/Join.h"
+
+#include "Log.h"
 #include "../../include/Server.h"
 #include "../../include/Utils.h"
 #include "../../include/Replier.h"
-#include <algorithm>
 
 Join::Join()
 {
@@ -16,21 +17,71 @@ Join::~Join()
 
 void Join::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-	// TODO: handle this command properly. This is just a test code.
-
-	const std::string channelName = args[0];
-	std::vector<Channel> availableChannels = server.getChannels();
-	const std::vector<Channel>::iterator it = std::find(availableChannels.begin(), availableChannels.end(),
-		channelName);
-	if (it != availableChannels.end() && it->isInviteOnly())
-	{
-		Replier::reply(client, Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
-	}
+	const std::string& serverName = server.getName();
 
 	if (!client.registered(server.getPassword()))
 	{
-		Replier::reply(client, Replier::errNotRegistered, Utils::anyToVec(std::string("")));
+		Replier::reply(client, Replier::errNotRegistered, Utils::anyToVec(serverName));
 		return;
 	}
-	Replier::reply(client, Replier::rplNoTopic, Utils::anyToVec(args[0]));
+
+	const std::string& channelName = args[0];
+
+	// Check if the client joining didn't surpass maximum number of joined channels.
+	// If yes, don't join and send proper reply.
+	const int clientChannelsJoined = client.getChannelsJoined();
+	if (clientChannelsJoined == CHANNELS_MAX)
+	{
+		Replier::reply(client, Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
+		return;
+	}
+
+	// Check available channels list to find required channel.
+	Channel* channelToJoin = server.findChannel(channelName);
+
+	// If channel is not found, create new channel and add it to the server's channels list.
+	if (channelToJoin == NULL)
+	{
+		server.addChannel(Channel(channelName, client, true));
+		channelToJoin = server.findChannel(channelName);
+		if (channelToJoin == NULL)
+		{
+			throw std::runtime_error(ERROR FIND_CHANNEL_FAIL_AFTER_ADD);
+		}
+	}
+
+	// If channel is invite only, don't join the client to it and send proper reply.
+	if (channelToJoin->isInviteOnly())
+	{
+		Replier::reply(client, Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
+		return;
+	}
+
+	// Join client to the channel.
+	channelToJoin->joinClient(client);
+	client.setChannelsJoined(clientChannelsJoined + 1);
+
+	// Prepare list of arguments to pass to rplNamReply function, which requires server name, channel name and list of
+	// nicknames with operator info.
+	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, channelName);
+	std::vector<std::string> channelsNicknamesList = channelToJoin->getNicknamesListWithOperatorInfo();
+	for (std::vector<std::string>::iterator it = channelsNicknamesList.begin(); it != channelsNicknamesList.end(); ++it)
+	{
+		rplNamReplyArgs.push_back(*it);
+	}
+
+	// Check if the channel has a topic set, based on the check send proper reply.
+	const std::string& channelTopic = channelToJoin->getTopic();
+	if (channelTopic.empty())
+	{
+		Replier::reply(client, Replier::rplNoTopic, Utils::anyToVec(serverName, channelName));
+	}
+	else
+	{
+		Replier::reply(client, Replier::rplTopic, Utils::anyToVec(serverName, channelName, channelTopic));
+	}
+
+	// Send replies after client successfuly joined the channel.
+	Replier::reply(client, Replier::rplNamReply, rplNamReplyArgs);
+	Replier::reply(client, Replier::rplEndOfNames, Utils::anyToVec(serverName, channelName));
 }
