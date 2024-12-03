@@ -8,122 +8,172 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option working_dir="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ircserv">
-				<Option output="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option output="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include"/>
-					<Add directory="/usr/include/c++/13"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/13"/>
-					<Add directory="/usr/include/c++/13/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/13/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Users/szymon/CLionProjects/ft_irc/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv"/>
-					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ircserv/fast">
-				<Option output="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option output="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/ircserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include"/>
-					<Add directory="/usr/include/c++/13"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/13"/>
-					<Add directory="/usr/include/c++/13/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/13/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Users/szymon/CLionProjects/ft_irc/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv/fast"/>
-					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 ircserv/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option working_dir="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug"/>
+				<Option working_dir="/Users/szymon/CLionProjects/ft_irc/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -j4 -f &quot;/mnt/c/Users/Szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Client.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Channel.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/ClientTranslator.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Client.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Colors.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/ClientTranslator.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Log.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Colors.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Server.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Log.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/include/Utils.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Replier.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Client.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Server.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/ClientTranslator.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Utils.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Log.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Cap.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Log.tpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Command.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Server.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Join.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/Utils.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Nick.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/main.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Pass.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/Szymon/CLionProjects/ft_irc/CMakeLists.txt">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Ping.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/User.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Channel.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Client.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/ClientTranslator.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Log.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Log.tpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Replier.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Server.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Utils.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Cap.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Command.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Join.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Ping.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/User.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/main.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

@@ -2,8 +2,10 @@
 
 #include <map>
 #include "Client.h"
+#include "Channel.h"
 #include "commands/Command.h"
 #include <vector>
+#include <sys/poll.h>
 
 // Ports range:
 #define REGISTERED_PORT_MIN 1024
@@ -23,11 +25,14 @@ public:
 	std::string getName() const;
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
+	Channel* findChannel(const std::string& channelToJoinName);
 
 	void run();
 	void stop();
 
 	void handleNicknameCollision(const std::string& newClientNickname);
+
+	void addChannel(const Channel& channel);
 
 private:
 	static Server* instance;
@@ -42,6 +47,7 @@ private:
 	std::map<int, Client> clients;
 	std::vector<pollfd> pollFds;
 	std::map<std::string, Command*> validCommands;
+	std::vector<Channel> channels;
 
 	static void signalHandler(int signum);
 

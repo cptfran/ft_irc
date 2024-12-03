@@ -22,12 +22,18 @@ private:
 	static std::string rplPong(const std::vector<std::string>& args); // none
 	static std::string rplCap(const std::vector<std::string>& args); // none
 	static std::string rplNoTopic(const std::vector<std::string>& args); // 331
+	static std::string rplTopic(const std::vector<std::string>& args); // 332
+	static std::string rplNamReply(const std::vector<std::string>& args); // 353
+	static std::string rplEndOfNames(const std::vector<std::string>& args); // 366
+	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
 	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
 	static std::string errNickCollision(const std::vector<std::string>& args); // 436
 	static std::string errNotRegistered(const std::vector<std::string>& args); // 451
 	static std::string errNeedMoreParams(const std::vector<std::string>& args); // 461
 	static std::string errPasswdMismatch(const std::vector<std::string>& args); // 464
 	static std::string errChannelIsFull(const std::vector<std::string>& args); // 471
+	static std::string errInviteOnlyChan(const std::vector<std::string>& args); // 47
+
 
 	friend class Server;
 	friend class Cap;

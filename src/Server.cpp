@@ -119,6 +119,18 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
+Channel* Server::findChannel(const std::string& channelToJoinName)
+{
+	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	{
+		const std::string& channelName = it->getName();
+		if (channelName == channelToJoinName)
+		{
+			return &(*it);
+		}
+	}
+	return NULL;
+}
 
 void Server::signalHandler(const int signum)
 {
@@ -198,7 +210,6 @@ void Server::initSocket(const int port)
  * adds the client's socket to the list of client sockets, and calls the handleClientPrompt function to manage the client.
  * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
-// TODO: check how the server behaves after changing iteration after connectClient().
 void Server::run()
 {
 	Log::msgServer(INFO, SERVER_RUN);
@@ -262,6 +273,11 @@ void Server::handleNicknameCollision(const std::string& newClientNickname)
 			return;
 		}
 	}
+}
+
+void Server::addChannel(const Channel& channel)
+{
+	channels.push_back(channel);
 }
 
 void Server::connectClient()

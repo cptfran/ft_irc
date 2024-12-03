@@ -4,6 +4,7 @@
 #include "../include/Log.h"
 #include "../include/Utils.h"
 
+// TODO: in functions with args vector argument add variables with names so functions are more readable.
 int main(const int argc, char *argv[])
 {
 	if (argc != 3)
