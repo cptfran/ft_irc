@@ -19,6 +19,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ircserv.dir/src/commands/Command.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o"
   "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o.d"
+  "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o"
+  "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o"
   "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o"

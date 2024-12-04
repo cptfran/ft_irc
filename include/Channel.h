@@ -24,25 +24,28 @@
 class Channel
 {
 public:
-	Channel(const std::string& name, const Client& client, bool isOperator);
-	~Channel();
-
-	std::string getName();
-	std::vector<std::string> getNicknamesListWithOperatorInfo();
-	bool isInviteOnly() const;
-	std::string getTopic() const;
-
-	void joinClient(const Client& newClient);
-
-private:
-	std::string name;
-	std::string password;
-	bool inviteOnly;
 	struct ClientData
 	{
 		bool isOperator;
 		Client client;
 	};
+
+	Channel(const std::string& name, const Client& client, bool isOperator);
+	~Channel();
+
+	std::string getName() const;
+	std::vector<std::string> getNicknamesListWithOperatorInfo();
+	bool isInviteOnly() const;
+	std::string getTopic() const;
+	ClientData* findClientData(Client& clientToFind) const;
+
+	void joinClient(const Client& newClient);
+	void ejectClient(const std::string& userToKick);
+
+private:
+	std::string name;
+	std::string password;
+	bool inviteOnly;
 	std::vector<ClientData> joinedClients;
 	std::string topic;
 

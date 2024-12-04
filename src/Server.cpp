@@ -18,13 +18,14 @@
 #include <ctime>
 #include <fcntl.h>
 #include <netdb.h>
-#include "../include/commands/Cap.h"
-#include "../include/commands/Join.h"
-#include "../include/commands/Nick.h"
-#include "../include/commands/Pass.h"
-#include "../include/commands/Ping.h"
-#include "../include/commands/User.h"
-#include "../include/Replier.h"
+#include "commands/Cap.h"
+#include "commands/Join.h"
+#include "commands/Nick.h"
+#include "commands/Pass.h"
+#include "commands/Ping.h"
+#include "commands/User.h"
+#include "commands/Kick.h"
+#include "Replier.h"
 
 Server* Server::instance = NULL;
 
@@ -53,6 +54,7 @@ availableChannelModes("-")
 	this->validCommands["NICK"] = new Nick();
 	this->validCommands["USER"] = new User();
 	this->validCommands["PING"] = new Ping();
+	this->validCommands["KICK"] = new Kick();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);

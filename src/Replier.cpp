@@ -19,6 +19,7 @@ void Replier::reply(const Client& client, const ReplyFunction func, const std::v
 	send(client.getFd(), reply.c_str(), reply.size(), 0);
 }
 
+// TODO: add colon before every serverName as per protocol requires and check if it's still working as it should.
 std::string Replier::rplWelcome(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
@@ -66,7 +67,7 @@ std::string Replier::rplPong(const std::vector<std::string>& args)
 	{
 		return "PONG :" + args[0] + "\r\n";
 	}
-	return "Pong :" + args[0] + " " + args[1] + "\r\n";
+	return "PONG :" + args[0] + " " + args[1] + "\r\n";
 }
 
 std::string Replier::rplCap(const std::vector<std::string>& args)
@@ -75,6 +76,26 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 	return ":server CAP * LS :\r\n";
 }
 
+std::string Replier::rplKick(const std::vector<std::string>& args)
+{
+	if (args.size() < 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplKick()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& kickedUser = args[1];
+	const std::string& channelName = args[2];
+
+	if (args.size() == 4)
+	{
+		const std::string& comment = args[3];
+		return ":" + serverName + " :KICK " + kickedUser + " from " + channelName + " using " + comment +
+			" as the reason (comment)\r\n";
+	}
+
+	return ":" + serverName + " :KICK " + kickedUser + " from	" + channelName + "\r\n";
+}
 
 std::string Replier::rplNoTopic(const std::vector<std::string>& args)
 {
@@ -142,6 +163,19 @@ std::string Replier::rplEndOfNames(const std::vector<std::string>& args)
 	return "366 " + serverName + " " + channelName + " :End of /NAMES list\r\n";
 }
 
+std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoSuchChannel()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+
+	return "403 " + serverName + " " + channelName + " :No such channel\r\n";
+}
+
 std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
@@ -175,6 +209,19 @@ std::string Replier::errNickCollision(const std::vector<std::string>& args)
 	return "436 " + args[0] + " :Nickname collision KILL\r\n";
 }
 
+std::string Replier::errNotOnChannel(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNotOnChannel()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+
+	return "442 " + serverName + " " + channelName + " :You're not on that channel\r\n";
+}
+
 std::string Replier::errNotRegistered(const std::vector<std::string>& args)
 {
 	if (args.size() != 1)
@@ -193,6 +240,9 @@ std::string Replier::errNeedMoreParams(const std::vector<std::string>& args)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNeedMoreParams()"));
 	}
+
+	const std::string& serverName = args[0];
+	const std::string& command = args[1];
 
 	return "461 " + args[0] + " " + args[1] + " :Not enough parameters\r\n";
 }
@@ -228,8 +278,21 @@ std::string Replier::errInviteOnlyChan(const std::vector<std::string>& args)
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errInviteOnlyChan()"));
 	}
 
-	const std::string serverName = args[0];
-	const std::string channelName = args[1];
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
 
 	return "473 " + serverName + " " + channelName + " :Cannot join channel (+i)\r\n";
+}
+
+std::string Replier::errChanOPrivsNeeded(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChanOprivsNeeded()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+
+	return "482 " + serverName + " " + channelName + " :You're not channel operator\r\n";
 }
