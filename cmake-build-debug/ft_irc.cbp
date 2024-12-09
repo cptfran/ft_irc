@@ -26,7 +26,7 @@
 				<Compiler>
 					<Add directory="/Users/szymon/CLionProjects/ft_irc/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/16/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
@@ -47,7 +47,7 @@
 				<Compiler>
 					<Add directory="/Users/szymon/CLionProjects/ft_irc/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/16/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
@@ -113,6 +113,9 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Join.h">
 			<Option target="ircserv"/>
 		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Kick.h">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Nick.h">
 			<Option target="ircserv"/>
 		</Unit>
@@ -156,6 +159,9 @@
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Join.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Kick.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp">

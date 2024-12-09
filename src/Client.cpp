@@ -12,6 +12,13 @@ Client::Client() : fd(), welcomeRepliesSent(false), channelsJoined(0)
 
 }
 
+bool Client::operator==(const Client& toCompare) const
+{
+	return this->fd == toCompare.fd && this->password == toCompare.password && this->nickname == toCompare.nickname
+		&& this->username == toCompare.username && this->realname == toCompare.realname
+		&& this->welcomeRepliesSent == toCompare.welcomeRepliesSent && this->channelsJoined == toCompare.channelsJoined;
+}
+
 Client::~Client()
 {
 
@@ -42,7 +49,7 @@ void Client::setWelcomeRepliesSent(const bool truefalse)
 	this->welcomeRepliesSent = truefalse;
 }
 
-void Client::setChannelsJoined(const int num)
+void Client::setNumChannelsJoined(const int num)
 {
 	this->channelsJoined = num;
 }
@@ -67,7 +74,7 @@ std::string Client::getUsername() const
 	return this->username;
 }
 
-int Client::getChannelsJoined() const
+int Client::getNumChannelsJoined() const
 {
 	return this->channelsJoined;
 }

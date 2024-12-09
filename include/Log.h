@@ -56,6 +56,7 @@
 #define CLIENT_DISCONNECTED LIGHT_CYAN "Client disconnected." RESET
 #define PASSWORD_EMPTY LIGHT_CYAN "Password is empty." RESET
 #define FIND_CHANNEL_FAIL_AFTER_ADD LIGHT_CYAN "Failed to find the channel after adding it to the channels list." RESET
+#define EJECT_CLIENT_FAIL LIGHT_CYAN "Cannot kick user, user not found." RESET
 
 class Log
 {

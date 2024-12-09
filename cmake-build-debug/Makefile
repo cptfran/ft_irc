@@ -369,6 +369,30 @@ src/commands/Join.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Join.cpp.s
 .PHONY : src/commands/Join.cpp.s
 
+src/commands/Kick.o: src/commands/Kick.cpp.o
+.PHONY : src/commands/Kick.o
+
+# target to build an object file
+src/commands/Kick.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o
+.PHONY : src/commands/Kick.cpp.o
+
+src/commands/Kick.i: src/commands/Kick.cpp.i
+.PHONY : src/commands/Kick.i
+
+# target to preprocess a source file
+src/commands/Kick.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Kick.cpp.i
+.PHONY : src/commands/Kick.cpp.i
+
+src/commands/Kick.s: src/commands/Kick.cpp.s
+.PHONY : src/commands/Kick.s
+
+# target to generate assembly for a file
+src/commands/Kick.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s
+.PHONY : src/commands/Kick.cpp.s
+
 src/commands/Nick.o: src/commands/Nick.cpp.o
 .PHONY : src/commands/Nick.o
 
@@ -528,6 +552,9 @@ help:
 	@echo "... src/commands/Join.o"
 	@echo "... src/commands/Join.i"
 	@echo "... src/commands/Join.s"
+	@echo "... src/commands/Kick.o"
+	@echo "... src/commands/Kick.i"
+	@echo "... src/commands/Kick.s"
 	@echo "... src/commands/Nick.o"
 	@echo "... src/commands/Nick.i"
 	@echo "... src/commands/Nick.s"

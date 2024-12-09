@@ -1,7 +1,7 @@
-#include "../../include/commands/Ping.h"
-#include "../../include/Server.h"
-#include "../../include/Utils.h"
-#include "../../include/Replier.h"
+#include "commands/Ping.h"
+#include "Server.h"
+#include "Utils.h"
+#include "Replier.h"
 
 Ping::Ping()
 {
@@ -17,8 +17,8 @@ void Ping::execute(Server& server, Client& client, const std::vector<std::string
 {
 	if (args.empty())
 	{
-		Replier::reply(client, Replier::rplPong, Utils::anyToVec(server.getName()));
+		Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
 		return;
 	}
-	Replier::reply(client, Replier::rplPong, Utils::anyToVec(server.getName(), args[0]));
+	Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), args[0]));
 }

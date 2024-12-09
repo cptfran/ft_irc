@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <sys/socket.h>
 #include "Log.h"
+#include "Utils.h"
 
 ClientTranslator::ClientTranslator()
 {
@@ -30,7 +31,10 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 			std::string restOfBuffer;
 			std::getline(iss, restOfBuffer);
 			token += restOfBuffer;
-			tokens.push_back(token);
+			if (token.length() > 2)
+			{
+				tokens.push_back(token);
+			}
 			break;
 		}
 		tokens.push_back(token);

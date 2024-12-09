@@ -18,13 +18,14 @@
 #include <ctime>
 #include <fcntl.h>
 #include <netdb.h>
-#include "../include/commands/Cap.h"
-#include "../include/commands/Join.h"
-#include "../include/commands/Nick.h"
-#include "../include/commands/Pass.h"
-#include "../include/commands/Ping.h"
-#include "../include/commands/User.h"
-#include "../include/Replier.h"
+#include "commands/Cap.h"
+#include "commands/Join.h"
+#include "commands/Nick.h"
+#include "commands/Pass.h"
+#include "commands/Ping.h"
+#include "commands/User.h"
+#include "commands/Kick.h"
+#include "Replier.h"
 
 Server* Server::instance = NULL;
 
@@ -53,6 +54,7 @@ availableChannelModes("-")
 	this->validCommands["NICK"] = new Nick();
 	this->validCommands["USER"] = new User();
 	this->validCommands["PING"] = new Ping();
+	this->validCommands["KICK"] = new Kick();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -66,7 +68,7 @@ availableChannelModes("-")
 /**
  * @brief Destructor for the Server class.
  *
- * This destructor is responsible for cleaning up resources when a Server object is destroyed.
+ * This destructor is responsible for cleaning up resource when a Server object is destroyed.
  * It performs the following steps:
  * 1. Iterates through the list of client sockets and closes each one.
  * 2. Closes the server's main socket if it is open.
@@ -268,7 +270,7 @@ void Server::handleNicknameCollision(const std::string& newClientNickname)
 	{
 		if (newClientNickname == it->second.getNickname())
 		{
-			Replier::reply(it->second, Replier::errNickCollision, Utils::anyToVec(this->name));
+			Replier::reply(it->second.getFd(), Replier::errNickCollision, Utils::anyToVec(this->name));
 			this->disconnectClient(it->second);
 			return;
 		}
@@ -352,7 +354,7 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 	{
 		if (this->validCommands.find(it->first) == this->validCommands.end())
 		{
-			Replier::reply(client, Replier::errUnknownCommand, Utils::anyToVec(it->first));
+			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(it->first));
 			continue;
 		}
 		this->validCommands.at(it->first)->execute(*this, client, it->second);
@@ -362,13 +364,13 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
-		Replier::reply(client, Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::reply(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
 			client.getUsername()));
-		Replier::reply(client, Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::reply(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
 			this->version));
-		Replier::reply(client, Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::reply(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
 			this->creationDate));
-		Replier::reply(client, Replier::rplMyInfo, Utils::anyToVec(this->name, this->version,
+		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, this->version,
 			this->availableUserModes, this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
