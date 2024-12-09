@@ -63,7 +63,6 @@
 			},
 			"sourceIndexes" : 
 			[
-				16,
 				17,
 				18,
 				19,
@@ -78,7 +77,9 @@
 				28,
 				29,
 				30,
-				32
+				31,
+				32,
+				34
 			]
 		}
 	],
@@ -126,14 +127,14 @@
 				12,
 				13,
 				14,
-				15
+				15,
+				16
 			]
 		},
 		{
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				16,
 				17,
 				18,
 				19,
@@ -148,14 +149,16 @@
 				28,
 				29,
 				30,
-				32
+				31,
+				32,
+				34
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				31
+				33
 			]
 		}
 	],
@@ -209,6 +212,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "include/commands/Ping.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/commands/Topic.h",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -293,6 +301,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/commands/Ping.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/commands/Topic.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{

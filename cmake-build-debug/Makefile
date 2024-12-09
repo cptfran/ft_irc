@@ -465,6 +465,30 @@ src/commands/Ping.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Ping.cpp.s
 .PHONY : src/commands/Ping.cpp.s
 
+src/commands/Topic.o: src/commands/Topic.cpp.o
+.PHONY : src/commands/Topic.o
+
+# target to build an object file
+src/commands/Topic.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o
+.PHONY : src/commands/Topic.cpp.o
+
+src/commands/Topic.i: src/commands/Topic.cpp.i
+.PHONY : src/commands/Topic.i
+
+# target to preprocess a source file
+src/commands/Topic.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Topic.cpp.i
+.PHONY : src/commands/Topic.cpp.i
+
+src/commands/Topic.s: src/commands/Topic.cpp.s
+.PHONY : src/commands/Topic.s
+
+# target to generate assembly for a file
+src/commands/Topic.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Topic.cpp.s
+.PHONY : src/commands/Topic.cpp.s
+
 src/commands/User.o: src/commands/User.cpp.o
 .PHONY : src/commands/User.o
 
@@ -564,6 +588,9 @@ help:
 	@echo "... src/commands/Ping.o"
 	@echo "... src/commands/Ping.i"
 	@echo "... src/commands/Ping.s"
+	@echo "... src/commands/Topic.o"
+	@echo "... src/commands/Topic.i"
+	@echo "... src/commands/Topic.s"
 	@echo "... src/commands/User.o"
 	@echo "... src/commands/User.i"
 	@echo "... src/commands/User.s"

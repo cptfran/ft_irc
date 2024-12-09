@@ -27,7 +27,6 @@ void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFuncti
 	}
 }
 
-
 // TODO: add colon before every serverName as per protocol requires and check if it's still working as it should.
 std::string Replier::rplWelcome(const std::vector<std::string>& args)
 {

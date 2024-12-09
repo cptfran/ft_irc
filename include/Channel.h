@@ -37,16 +37,19 @@ public:
 	std::vector<std::string> getNicknamesListWithOperatorInfo();
 	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
+	bool isTopicRestricted() const;
 	std::string getTopic() const;
 	ClientData* findClientData(const Client& clientToFind);
 
 	void joinClient(Client& newClient);
 	bool ejectClient(const std::string& userToKick);
+	void setTopic(const std::string& newTopic);
 
 private:
 	std::string name;
 	std::string password;
 	bool inviteOnly;
+	bool topicRestricted;
 	std::vector<ClientData> joinedClients;
 	std::string topic;
 

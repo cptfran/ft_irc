@@ -17,11 +17,12 @@ Kick::~Kick()
 void Kick::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
     const std::string& serverName = server.getName();
+    const int clientFd = client.getFd();
 
     if (args.size() < 2)
     {
         const std::string command = "KICK";
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+        Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
         return;
     }
 
@@ -33,7 +34,7 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(serverName, channelName));
+        Replier::reply(clientFd, Replier::errNoSuchChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
@@ -43,14 +44,14 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Client not on the channel.
     if (clientData == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
+        Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
     // Client is not an operator.
     if (!clientData->isOperator)
     {
-        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
+        Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
         return;
     }
 
@@ -62,7 +63,7 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Kick client from the channel.
     if (!channel->ejectClient(userToKick))
     {
-        Log::msgServer(INFO, "CLIENT", client.getFd(), EJECT_CLIENT_FAIL);
+        Log::msgServer(INFO, "CLIENT", clientFd, EJECT_CLIENT_FAIL);
         return;
     }
 

@@ -2,12 +2,12 @@
 #include "Log.h"
 
 // TODO: parse channel name properly (max 200 characters, spaces, etc.).
-Channel::Channel(const std::string& name) : name(name), inviteOnly(false)
+Channel::Channel(const std::string& name) : name(name), inviteOnly(false), topicRestricted(false)
 {
 
 }
 
-Channel::Channel() : inviteOnly(false)
+Channel::Channel() : inviteOnly(false), topicRestricted(false)
 {
 
 }
@@ -57,6 +57,11 @@ bool Channel::isInviteOnly() const
 	return this->inviteOnly;
 }
 
+bool Channel::isTopicRestricted() const
+{
+	return this->topicRestricted;
+}
+
 std::string Channel::getTopic() const
 {
 	return this->topic;
@@ -99,4 +104,9 @@ bool Channel::ejectClient(const std::string& userToKick)
 		}
 	}
 	return false;
+}
+
+void Channel::setTopic(const std::string& newTopic)
+{
+	this->topic = newTopic;
 }

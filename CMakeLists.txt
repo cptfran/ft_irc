@@ -16,6 +16,7 @@ add_executable(ircserv
         include/commands/Nick.h
         include/commands/Pass.h
         include/commands/Ping.h
+        include/commands/Topic.h
         include/commands/User.h
         include/Channel.h
         include/Log.h
@@ -31,6 +32,7 @@ add_executable(ircserv
         src/commands/Nick.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp
+        src/commands/Topic.cpp
         src/commands/User.cpp
         src/Channel.cpp
         src/Log.cpp
