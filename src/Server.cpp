@@ -25,6 +25,7 @@
 #include "commands/Ping.h"
 #include "commands/User.h"
 #include "commands/Kick.h"
+#include "commands/Topic.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -55,6 +56,7 @@ availableChannelModes("-")
 	this->validCommands["USER"] = new User();
 	this->validCommands["PING"] = new Ping();
 	this->validCommands["KICK"] = new Kick();
+	this->validCommands["TOPIC"] = new Topic();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);

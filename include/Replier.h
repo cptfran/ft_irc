@@ -47,4 +47,5 @@ private:
 	friend class Pass;
 	friend class Ping;
 	friend class User;
+	friend class Topic;
 };

@@ -27,6 +27,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o"
   "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
+  "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o"
+  "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/commands/User.cpp.o"
   "CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/main.cpp.o"

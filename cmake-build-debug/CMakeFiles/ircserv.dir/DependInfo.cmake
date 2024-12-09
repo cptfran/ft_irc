@@ -22,6 +22,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Ping.cpp" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/commands/Topic.cpp" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/User.cpp" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
   )
