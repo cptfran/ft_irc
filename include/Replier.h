@@ -14,7 +14,8 @@ private:
 	Replier();
 
 	// Reply functions.
-	static void reply(const Client& client, ReplyFunction func, const std::vector<std::string>& args);
+	static void reply(int clientFd, ReplyFunction func, const std::vector<std::string>& args);
+	static void broadcast(const std::vector<int>& clientsFdList, ReplyFunction func, const std::vector<std::string>& args);
 	static std::string rplWelcome(const std::vector<std::string>& args); // 001
 	static std::string rplYourHost(const std::vector<std::string>& args); // 002
 	static std::string rplCreated(const std::vector<std::string>& args); // 003

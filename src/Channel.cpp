@@ -2,11 +2,9 @@
 #include "Log.h"
 
 // TODO: parse channel name properly (max 200 characters, spaces, etc.).
-Channel::Channel(const std::string& name, const Client& client, const bool isOperator) :
-name(name), inviteOnly(false)
+Channel::Channel(const std::string& name) : name(name), inviteOnly(false)
 {
-	ClientData newClientData = {isOperator, client};
-	joinedClients.push_back(newClientData);
+
 }
 
 Channel::Channel() : inviteOnly(false)
@@ -32,17 +30,27 @@ std::vector<std::string> Channel::getNicknamesListWithOperatorInfo()
 	{
 		if (it->isOperator)
 		{
-			nicknamesList.push_back("@" + it->client.getNickname());
+			nicknamesList.push_back("@" + it->client->getNickname());
 		}
 		else
 		{
-			nicknamesList.push_back(it->client.getNickname());
+			nicknamesList.push_back(it->client->getNickname());
 		}
 	}
 
 	return nicknamesList;
 }
 
+std::vector<int> Channel::getFdsList() const
+{
+	std::vector<int> fdsList;
+	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
+		it != this->joinedClients.end(); ++it)
+	{
+		fdsList.push_back(it->client->getFd());
+	}
+	return fdsList;
+}
 
 bool Channel::isInviteOnly() const
 {
@@ -54,35 +62,41 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
-Channel::ClientData* Channel::findClientData(Client& clientToFind) const
+Channel::ClientData* Channel::findClientData(const Client& clientToFind)
 {
-	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
+	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
 		++it)
 	{
-		if (it->client == clientToFind)
+		if (*it->client == clientToFind)
 		{
-			return it;
+			return &(*it);
 		}
 	}
 	return NULL;
 }
 
-void Channel::joinClient(const Client& newClient)
+void Channel::joinClient(Client& newClient)
 {
-	const ClientData newClientData = {false, newClient};
+	bool isOperator = false;
+	if (this->joinedClients.empty())
+	{
+		isOperator = true;
+	}
+
+	const ClientData newClientData = {isOperator, &newClient};
 	this->joinedClients.push_back(newClientData);
 }
 
-void Channel::ejectClient(const std::string& userToKick)
+bool Channel::ejectClient(const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
-		if (it->client.getNickname() == userToKick)
+		if (it->client->getNickname() == userToKick)
 		{
-			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
+			it->client->setNumChannelsJoined(it->client->getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
-			return;
+			return true;
 		}
 	}
-	throw std::invalid_argument(ERROR EJECT_CLIENT_FAIL);
+	return false;
 }

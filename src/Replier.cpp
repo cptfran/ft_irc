@@ -12,12 +12,21 @@ Replier::~Replier()
 
 }
 
-void Replier::reply(const Client& client, const ReplyFunction func, const std::vector<std::string>& args)
+void Replier::reply(const int clientFd, const ReplyFunction func, const std::vector<std::string>& args)
 {
 	const std::string reply = func(args);
-	// DEBUG_LOG(reply);
-	send(client.getFd(), reply.c_str(), reply.size(), 0);
+	send(clientFd, reply.c_str(), reply.size(), 0);
 }
+
+void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFunction func,
+	const std::vector<std::string>& args)
+{
+	for (std::vector<int>::const_iterator it = clientsFdList.begin(); it != clientsFdList.end(); ++it)
+	{
+		Replier::reply(*it, func, args);
+	}
+}
+
 
 // TODO: add colon before every serverName as per protocol requires and check if it's still working as it should.
 std::string Replier::rplWelcome(const std::vector<std::string>& args)
@@ -83,18 +92,17 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplKick()"));
 	}
 
-	const std::string& serverName = args[0];
+	const std::string& kickerUser = args[0];
 	const std::string& kickedUser = args[1];
 	const std::string& channelName = args[2];
 
 	if (args.size() == 4)
 	{
-		const std::string& comment = args[3];
-		return ":" + serverName + " :KICK " + kickedUser + " from " + channelName + " using " + comment +
-			" as the reason (comment)\r\n";
+		const std::string& comment = args[3].substr(1, args[3].length() - 1);
+		return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + " :" + comment + "\r\n";
 	}
 
-	return ":" + serverName + " :KICK " + kickedUser + " from	" + channelName + "\r\n";
+	return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + "\r\n";
 }
 
 std::string Replier::rplNoTopic(const std::vector<std::string>& args)
@@ -244,7 +252,7 @@ std::string Replier::errNeedMoreParams(const std::vector<std::string>& args)
 	const std::string& serverName = args[0];
 	const std::string& command = args[1];
 
-	return "461 " + args[0] + " " + args[1] + " :Not enough parameters\r\n";
+	return "461 " + serverName + " " + command + " :Not enough parameters\r\n";
 }
 
 

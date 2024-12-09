@@ -20,7 +20,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 
 	if (!client.registered(server.getPassword()))
 	{
-		Replier::reply(client, Replier::errNotRegistered, Utils::anyToVec(serverName));
+		Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(serverName));
 		return;
 	}
 
@@ -31,7 +31,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	const int numOfChannelsClientJoined = client.getNumChannelsJoined();
 	if (numOfChannelsClientJoined == CHANNELS_MAX)
 	{
-		Replier::reply(client, Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 
@@ -41,7 +41,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If channel is not found, create new channel and add it to the server's channels list.
 	if (channelToJoin == NULL)
 	{
-		server.addChannel(Channel(channelName, client, true));
+		server.addChannel(Channel(channelName));
 		channelToJoin = server.findChannel(channelName);
 		if (channelToJoin == NULL)
 		{
@@ -52,7 +52,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If channel is invite only, don't join the client to it and send proper reply.
 	if (channelToJoin->isInviteOnly())
 	{
-		Replier::reply(client, Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 
@@ -64,11 +64,11 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	const std::string& channelTopic = channelToJoin->getTopic();
 	if (channelTopic.empty())
 	{
-		Replier::reply(client, Replier::rplNoTopic, Utils::anyToVec(serverName, channelName));
+		Replier::reply(client.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, channelName));
 	}
 	else
 	{
-		Replier::reply(client, Replier::rplTopic, Utils::anyToVec(serverName, channelName, channelTopic));
+		Replier::reply(client.getFd(), Replier::rplTopic, Utils::anyToVec(serverName, channelName, channelTopic));
 	}
 
 	// Prepare list of arguments to pass to rplNamReply function, which requires server name, channel name and list of
@@ -81,6 +81,6 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	}
 
 	// Send replies after client successfuly joined the channel.
-	Replier::reply(client, Replier::rplNamReply, rplNamReplyArgs);
-	Replier::reply(client, Replier::rplEndOfNames, Utils::anyToVec(serverName, channelName));
+	Replier::reply(client.getFd(), Replier::rplNamReply, rplNamReplyArgs);
+	Replier::reply(client.getFd(), Replier::rplEndOfNames, Utils::anyToVec(serverName, channelName));
 }

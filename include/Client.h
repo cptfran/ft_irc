@@ -19,6 +19,7 @@ class Client
 {
 public:
 	explicit Client(int fd);
+	bool operator==(const Client& toCompare) const;
 	~Client();
 
 	int getFd() const;

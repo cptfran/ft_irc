@@ -27,20 +27,21 @@ public:
 	struct ClientData
 	{
 		bool isOperator;
-		Client client;
+		Client* client;
 	};
 
-	Channel(const std::string& name, const Client& client, bool isOperator);
+	explicit Channel(const std::string& name);
 	~Channel();
 
 	std::string getName() const;
 	std::vector<std::string> getNicknamesListWithOperatorInfo();
+	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
 	std::string getTopic() const;
-	ClientData* findClientData(Client& clientToFind) const;
+	ClientData* findClientData(const Client& clientToFind);
 
-	void joinClient(const Client& newClient);
-	void ejectClient(const std::string& userToKick);
+	void joinClient(Client& newClient);
+	bool ejectClient(const std::string& userToKick);
 
 private:
 	std::string name;

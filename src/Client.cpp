@@ -12,6 +12,13 @@ Client::Client() : fd(), welcomeRepliesSent(false), channelsJoined(0)
 
 }
 
+bool Client::operator==(const Client& toCompare) const
+{
+	return this->fd == toCompare.fd && this->password == toCompare.password && this->nickname == toCompare.nickname
+		&& this->username == toCompare.username && this->realname == toCompare.realname
+		&& this->welcomeRepliesSent == toCompare.welcomeRepliesSent && this->channelsJoined == toCompare.channelsJoined;
+}
+
 Client::~Client()
 {
 
