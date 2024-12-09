@@ -85,6 +85,8 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 	return ":server CAP * LS :\r\n";
 }
 
+
+// TODO: 'M' is spawing for some reason at the end of the reply, need to fix.
 std::string Replier::rplKick(const std::vector<std::string>& args)
 {
 	if (args.size() < 3)
@@ -98,10 +100,9 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 
 	if (args.size() == 4)
 	{
-		const std::string& comment = args[3].substr(1, args[3].length() - 1);
+		const std::string& comment = args[3].substr(0);
 		return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + " :" + comment + "\r\n";
 	}
-
 	return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + "\r\n";
 }
 
