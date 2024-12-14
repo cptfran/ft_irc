@@ -1,8 +1,8 @@
-#include "../include/Server.h"
+#include "Server.h"
 #include <cerrno>
 #include <ClientTranslator.h>
 #include <cstdio>
-#include "../include/Log.h"
+#include "Log.h"
 #include <stdexcept>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -26,6 +26,8 @@
 #include "commands/User.h"
 #include "commands/Kick.h"
 #include "commands/Topic.h"
+#include "commands/Invite.h"
+#include "commands/Mode.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -46,8 +48,8 @@ Server* Server::instance = NULL;
  * @param password The password to be used for client authentication.
  */
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-: running(true), fd(-1), name(name), version(version), password(password), availableUserModes("-"),
-availableChannelModes("-")
+: running(true), fd(-1), name(name), version(version), password(password), availableUserModes(""),
+availableChannelModes("itkol")
 {
 	this->validCommands["CAP"] = new Cap();
 	this->validCommands["JOIN"] = new Join();
@@ -57,6 +59,8 @@ availableChannelModes("-")
 	this->validCommands["PING"] = new Ping();
 	this->validCommands["KICK"] = new Kick();
 	this->validCommands["TOPIC"] = new Topic();
+	this->validCommands["INVITE"] = new Invite();
+	this->validCommands["MODE"] = new Mode();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -123,17 +127,29 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-Channel* Server::findChannel(const std::string& channelToJoinName)
+Channel& Server::findChannel(const std::string& channelToJoinName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
 		const std::string& channelName = it->getName();
 		if (channelName == channelToJoinName)
 		{
-			return &(*it);
+			return *it;
 		}
 	}
-	return NULL;
+	throw std::runtime_error("Channel not found.");
+}
+
+Client& Server::findClientByNickname(const std::string& nicknameToFind)
+{
+	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	{
+		if (it->second.getNickname() == nicknameToFind)
+		{
+			return it->second;
+		}
+	}
+	throw std::runtime_error("Client not found.");
 }
 
 void Server::signalHandler(const int signum)

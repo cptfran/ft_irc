@@ -14,6 +14,8 @@ Kick::~Kick()
 
 }
 
+// TODO: infinite loop happening when client is kicked by another client and then tries to connect again to the same
+// channel.
 void Kick::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
     const std::string& serverName = server.getName();
@@ -27,22 +29,29 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     }
 
     const std::string& channelName = args[0];
+    Channel* channel;
 
     // Fetch channel from server's channel list.
-    Channel* channel = server.findChannel(channelName);
-
+    try
+    {
+        channel = &server.findChannel(channelName);
+    }
     // Channel not found.
-    if (channel == NULL)
+    catch (const std::exception&)
     {
         Replier::reply(clientFd, Replier::errNoSuchChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
-    // Fetch client data from channel's client list.
-    const Channel::ClientData* clientData = channel->findClientData(client);
+    Channel::ClientData* clientData;
 
-    // Client not on the channel.
-    if (clientData == NULL)
+    // Fetch client data from channel's client list.
+    try
+    {
+        clientData = &channel->findClientData(client);
+    }
+    // Client not on the channel->
+    catch (const std::exception&)
     {
         Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
@@ -60,7 +69,7 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Get fds list for broadcast message before client is kicked, so it will receive kick information.
     const std::vector<int>& clientsFdList = channel->getFdsList();
 
-    // Kick client from the channel.
+    // Kick client from the channel->
     if (!channel->ejectClient(userToKick))
     {
         Log::msgServer(INFO, "CLIENT", clientFd, EJECT_CLIENT_FAIL);

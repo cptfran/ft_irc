@@ -110,10 +110,16 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Command.h">
 			<Option target="ircserv"/>
 		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Invite.h">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Join.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Kick.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Mode.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Nick.h">
@@ -161,10 +167,16 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Command.cpp">
 			<Option target="ircserv"/>
 		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Invite.cpp">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Join.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Kick.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Mode.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp">

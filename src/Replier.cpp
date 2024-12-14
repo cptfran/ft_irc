@@ -104,6 +104,25 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 	}
 	return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + "\r\n";
 }
+// 324     RPL_CHANNELMODEIS
+// 				  "<channel> <mode> <mode params>"
+std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
+{
+	if (args.size() < 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplChannelModeIs()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+	std::string modeParams;
+	for (size_t i = 2; i < args.size(); ++i)
+	{
+		modeParams += args[i] + " ";
+	}
+
+	return "324 " + serverName + " " + channelName + " " + modeParams + "\r\n";
+}
 
 std::string Replier::rplNoTopic(const std::vector<std::string>& args)
 {
@@ -132,6 +151,33 @@ std::string Replier::rplTopic(const std::vector<std::string>& args)
 	return "332 " + serverName + " " + channelName + " :" + topic + "\r\n";
 }
 
+std::string Replier::rplInviting(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplInviting()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& channelName = args[2];
+
+	return "341 " + serverName + " " + nickname + " " + channelName + "\r\n";
+}
+
+std::string Replier::rplInvite(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplInvite()"));
+	}
+
+	const std::string& invitingNickname = args[0];
+	const std::string& invitedNickname = args[1];
+	const std::string& channelName = args[2];
+
+	return ":" + invitingNickname + " INVITE " + invitedNickname + " :" + channelName + "\r\n";
+}
 
 std::string Replier::rplNamReply(const std::vector<std::string>& args)
 {
@@ -169,6 +215,19 @@ std::string Replier::rplEndOfNames(const std::vector<std::string>& args)
 	const std::string& channelName = args[1];
 
 	return "366 " + serverName + " " + channelName + " :End of /NAMES list\r\n";
+}
+
+std::string Replier::errNoSuchNick(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNoSuchNick()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+	return "401 " + serverName + " " + nickname + " :No such nick/channel\r\n";
 }
 
 std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
@@ -230,6 +289,19 @@ std::string Replier::errNotOnChannel(const std::vector<std::string>& args)
 	return "442 " + serverName + " " + channelName + " :You're not on that channel\r\n";
 }
 
+std::string Replier::errUserOnChannel(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUserOnChannel()"));
+	}
+	const std::string& serverName = args[0];
+	const std::string& userToInvite = args[1];
+	const std::string& channelName = args[2];
+
+	return "443 " + serverName + " " + userToInvite + " " + channelName + " :is already on channel\r\n";
+}
+
 std::string Replier::errNotRegistered(const std::vector<std::string>& args)
 {
 	if (args.size() != 1)
@@ -266,6 +338,19 @@ std::string Replier::errPasswdMismatch(const std::vector<std::string>& args)
 	return "464 " + args[0] + " :Password incorrect.\r\n";
 }
 
+std::string Replier::errKeySet(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errKeySet()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+
+	return "467 " + serverName + " " + channelName + " :Channel key already set \r\n";
+}
+
 std::string Replier::errChannelIsFull(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
@@ -273,10 +358,23 @@ std::string Replier::errChannelIsFull(const std::vector<std::string>& args)
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChannelIsFull()"));
 	}
 
-	const std::string serverName = args[0];
-	const std::string channelName = args[1];
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
 
 	return "471 " + serverName + " " + channelName + " :Cannot join channel (+1)\r\n";
+}
+
+std::string Replier::errUnknownMode(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUnknownMode()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& modeChar = args[1];
+
+	return "472 " + serverName + " " + modeChar + " :is uknown mode char to me\r\n";
 }
 
 std::string Replier::errInviteOnlyChan(const std::vector<std::string>& args)
@@ -290,6 +388,19 @@ std::string Replier::errInviteOnlyChan(const std::vector<std::string>& args)
 	const std::string& channelName = args[1];
 
 	return "473 " + serverName + " " + channelName + " :Cannot join channel (+i)\r\n";
+}
+
+std::string Replier::errBadChannelKey(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errBadChannelKey()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& channelName = args[1];
+
+	return "475 " + serverName + " " + channelName + " :Cannot join channe (+k)\r\n";
 }
 
 std::string Replier::errChanOPrivsNeeded(const std::vector<std::string>& args)

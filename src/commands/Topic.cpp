@@ -35,28 +35,37 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     }
 
     const std::string& channelName = args[0];
+    Channel* channel;
 
     // Fetch channel from server's channel list.
-    Channel* channel = server.findChannel(channelName);
-
+    try
+    {
+        channel = &server.findChannel(channelName);
+    }
     // Channel not found.
-    if (channel == NULL)
+    catch (const std::exception&)
     {
         Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
-    // Fetch client data from channel's client list.
-    const Channel::ClientData* clientData = channel->findClientData(client);
+    Channel::ClientData* clientData;
 
-    // Client not on the channel.
-    if (clientData == NULL)
+    // Fetch client data from channel's client list.
+    try
+    {
+        clientData = &channel->findClientData(client);
+    }
+    // Client not on the channel->
+    catch (const std::exception&)
     {
         Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
     std::string topic;
+
+    // Only channel name provided by client. Sending back the topic if the topic is set.
     if (args.size() == 1)
     {
         topic = channel->getTopic();
@@ -69,7 +78,7 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
         return;
     }
 
-    // Check if topic is restricted and only operators can use it.
+    // Check if topic change is restricted and only operators can change it.
     if (channel->isTopicRestricted() && !clientData->isOperator)
     {
         Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));

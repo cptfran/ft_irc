@@ -11,8 +11,10 @@ add_executable(ircserv
         include/Colors.h
         include/commands/Cap.h
         include/commands/Command.h
+        include/commands/Invite.h
         include/commands/Join.h
         include/commands/Kick.h
+        include/commands/Mode.h
         include/commands/Nick.h
         include/commands/Pass.h
         include/commands/Ping.h
@@ -27,8 +29,10 @@ add_executable(ircserv
         src/ClientTranslator.cpp
         src/commands/Command.cpp
         src/commands/Cap.cpp
+        src/commands/Invite.cpp
         src/commands/Join.cpp
         src/commands/Kick.cpp
+        src/commands/Mode.cpp
         src/commands/Nick.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp

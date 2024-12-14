@@ -14,10 +14,18 @@ Join::~Join()
 
 }
 
+// TODO: verify why irssi sends PART command after joining a channel.
 void Join::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	const std::string& serverName = server.getName();
 	const int clientFd = client.getFd();
+
+	if (args.empty())
+	{
+		const std::string command = "JOIN";
+		Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+		return;
+	}
 
 	if (!client.registered(server.getPassword()))
 	{
@@ -36,25 +44,43 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 		return;
 	}
 
-	// Check available channels list to find required channel.
-	Channel* channelToJoin = server.findChannel(channelName);
+	Channel* channelToJoin;
 
+	// Check available channels list to find required channel.
 	// If channel is not found, create new channel and add it to the server's channels list.
-	if (channelToJoin == NULL)
+	try
+	{
+		channelToJoin = &server.findChannel(channelName);
+	}
+	catch (const std::exception&)
 	{
 		server.addChannel(Channel(channelName));
-		channelToJoin = server.findChannel(channelName);
-		if (channelToJoin == NULL)
-		{
-			throw std::runtime_error(ERROR FIND_CHANNEL_FAIL_AFTER_ADD);
-		}
+		channelToJoin = &server.findChannel(channelName);
 	}
 
-	// If channel is invite only, don't join the client to it and send proper reply.
-	if (channelToJoin->isInviteOnly())
+	// If channel is invite only and client is not invited, don't join the client to it and send proper reply.
+	const std::string& clientNickname = client.getNickname();
+	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(clientNickname))
 	{
 		Replier::reply(clientFd, Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
 		return;
+	}
+
+	// Check if channel requires key, if yes check if it's provided and correct.
+	const std::string& channelKey = channelToJoin->getKey();
+	if (!channelKey.empty())
+	{
+		if (args[1].empty())
+		{
+			Replier::reply(clientFd, Replier::errBadChannelKey, Utils::anyToVec(serverName, channelName));
+			return;
+		}
+		const std::string& clientKey = args[1];
+		if (channelKey != clientKey)
+		{
+			Replier::reply(clientFd, Replier::errBadChannelKey, Utils::anyToVec(serverName, channelName));
+			return;
+		}
 	}
 
 	// Join client to the channel.

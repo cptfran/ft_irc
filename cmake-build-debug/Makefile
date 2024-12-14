@@ -345,6 +345,30 @@ src/commands/Command.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Command.cpp.s
 .PHONY : src/commands/Command.cpp.s
 
+src/commands/Invite.o: src/commands/Invite.cpp.o
+.PHONY : src/commands/Invite.o
+
+# target to build an object file
+src/commands/Invite.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o
+.PHONY : src/commands/Invite.cpp.o
+
+src/commands/Invite.i: src/commands/Invite.cpp.i
+.PHONY : src/commands/Invite.i
+
+# target to preprocess a source file
+src/commands/Invite.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Invite.cpp.i
+.PHONY : src/commands/Invite.cpp.i
+
+src/commands/Invite.s: src/commands/Invite.cpp.s
+.PHONY : src/commands/Invite.s
+
+# target to generate assembly for a file
+src/commands/Invite.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Invite.cpp.s
+.PHONY : src/commands/Invite.cpp.s
+
 src/commands/Join.o: src/commands/Join.cpp.o
 .PHONY : src/commands/Join.o
 
@@ -392,6 +416,30 @@ src/commands/Kick.s: src/commands/Kick.cpp.s
 src/commands/Kick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s
 .PHONY : src/commands/Kick.cpp.s
+
+src/commands/Mode.o: src/commands/Mode.cpp.o
+.PHONY : src/commands/Mode.o
+
+# target to build an object file
+src/commands/Mode.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o
+.PHONY : src/commands/Mode.cpp.o
+
+src/commands/Mode.i: src/commands/Mode.cpp.i
+.PHONY : src/commands/Mode.i
+
+# target to preprocess a source file
+src/commands/Mode.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.i
+.PHONY : src/commands/Mode.cpp.i
+
+src/commands/Mode.s: src/commands/Mode.cpp.s
+.PHONY : src/commands/Mode.s
+
+# target to generate assembly for a file
+src/commands/Mode.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.s
+.PHONY : src/commands/Mode.cpp.s
 
 src/commands/Nick.o: src/commands/Nick.cpp.o
 .PHONY : src/commands/Nick.o
@@ -573,12 +621,18 @@ help:
 	@echo "... src/commands/Command.o"
 	@echo "... src/commands/Command.i"
 	@echo "... src/commands/Command.s"
+	@echo "... src/commands/Invite.o"
+	@echo "... src/commands/Invite.i"
+	@echo "... src/commands/Invite.s"
 	@echo "... src/commands/Join.o"
 	@echo "... src/commands/Join.i"
 	@echo "... src/commands/Join.s"
 	@echo "... src/commands/Kick.o"
 	@echo "... src/commands/Kick.i"
 	@echo "... src/commands/Kick.s"
+	@echo "... src/commands/Mode.o"
+	@echo "... src/commands/Mode.i"
+	@echo "... src/commands/Mode.s"
 	@echo "... src/commands/Nick.o"
 	@echo "... src/commands/Nick.i"
 	@echo "... src/commands/Nick.s"
