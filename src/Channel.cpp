@@ -1,5 +1,6 @@
 #include "Channel.h"
 #include "Log.h"
+#include <algorithm>
 
 // TODO: parse channel name properly (max 200 characters, spaces, etc.).
 Channel::Channel(const std::string& name)

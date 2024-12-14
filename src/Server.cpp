@@ -28,6 +28,7 @@
 #include "commands/Topic.h"
 #include "commands/Invite.h"
 #include "commands/Mode.h"
+#include "commands/Part.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -61,6 +62,7 @@ availableChannelModes("itkol")
 	this->validCommands["TOPIC"] = new Topic();
 	this->validCommands["INVITE"] = new Invite();
 	this->validCommands["MODE"] = new Mode();
+	this->validCommands["PART"] = new Part();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -127,12 +129,12 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-Channel& Server::findChannel(const std::string& channelToJoinName)
+Channel& Server::findChannel(const std::string& channelName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
-		const std::string& channelName = it->getName();
-		if (channelName == channelToJoinName)
+		const std::string& currChannelName = it->getName();
+		if (currChannelName == channelName)
 		{
 			return *it;
 		}

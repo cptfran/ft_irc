@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -7,6 +8,8 @@ class Utils
 public:
 	static int cStringToPositiveInt(const char *str);
 	static std::string intToString(int value);
+
+	static std::vector<std::string> splitStringByComma(const std::string& str);
 
 	template <typename T>
 	static std::vector<T> anyToVec(const T& arg1);
