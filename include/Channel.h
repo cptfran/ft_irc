@@ -27,29 +27,47 @@ public:
 	struct ClientData
 	{
 		bool isOperator;
-		Client* client;
+		Client& client;
+		ClientData& operator=(const ClientData& toCopy);
 	};
 
 	explicit Channel(const std::string& name);
+	Channel& operator=(const Channel& toCopy);
 	~Channel();
 
 	std::string getName() const;
+	std::string getKey() const;
 	std::vector<std::string> getNicknamesListWithOperatorInfo();
 	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
+	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;
+	bool isClientOnChannel(const std::string& nicknameToFind) const;
+	bool isClientOperator(const Client& clientToFind) const;
+	bool isUserLimitActive() const;
+	int getUserLimit() const;
 	std::string getTopic() const;
-	ClientData* findClientData(const Client& clientToFind);
+	ClientData& findClientData(const Client& clientToFind);
 
 	void joinClient(Client& newClient);
 	bool ejectClient(const std::string& userToKick);
+	void setChannelInviteOnly(bool isInviteOnly);
+	void addToInviteList(const std::string& invitedNickname);
+	void setTopicRestricted(bool isTopicRestricted);
+	void setKey(const std::string& key);
 	void setTopic(const std::string& newTopic);
+	void setOperator(const std::string& targetNickname, bool operatorPrivilege);
+	void setUserLimit(int limit);
+	void disableUserLimit();
 
 private:
 	std::string name;
-	std::string password;
+	std::string key;
 	bool inviteOnly;
+	std::vector<std::string> invitedUsers;
 	bool topicRestricted;
+	bool userLimitActive;
+	int userLimit;
 	std::vector<ClientData> joinedClients;
 	std::string topic;
 
