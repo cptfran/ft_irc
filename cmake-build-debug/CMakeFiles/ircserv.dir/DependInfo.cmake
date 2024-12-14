@@ -22,10 +22,12 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Kick.cpp" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Mode.cpp" "CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Nick.cpp" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Part.cpp" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Ping.cpp" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Topic.cpp" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/User.cpp" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d"
+  "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/commands/Who.cpp" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o.d"
   "/mnt/c/Users/Szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
   )
 

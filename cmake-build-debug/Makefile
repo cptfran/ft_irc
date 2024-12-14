@@ -465,6 +465,30 @@ src/commands/Nick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Nick.cpp.s
 .PHONY : src/commands/Nick.cpp.s
 
+src/commands/Part.o: src/commands/Part.cpp.o
+.PHONY : src/commands/Part.o
+
+# target to build an object file
+src/commands/Part.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.o
+.PHONY : src/commands/Part.cpp.o
+
+src/commands/Part.i: src/commands/Part.cpp.i
+.PHONY : src/commands/Part.i
+
+# target to preprocess a source file
+src/commands/Part.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.i
+.PHONY : src/commands/Part.cpp.i
+
+src/commands/Part.s: src/commands/Part.cpp.s
+.PHONY : src/commands/Part.s
+
+# target to generate assembly for a file
+src/commands/Part.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.s
+.PHONY : src/commands/Part.cpp.s
+
 src/commands/Pass.o: src/commands/Pass.cpp.o
 .PHONY : src/commands/Pass.o
 
@@ -561,6 +585,30 @@ src/commands/User.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/User.cpp.s
 .PHONY : src/commands/User.cpp.s
 
+src/commands/Who.o: src/commands/Who.cpp.o
+.PHONY : src/commands/Who.o
+
+# target to build an object file
+src/commands/Who.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Who.cpp.o
+.PHONY : src/commands/Who.cpp.o
+
+src/commands/Who.i: src/commands/Who.cpp.i
+.PHONY : src/commands/Who.i
+
+# target to preprocess a source file
+src/commands/Who.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Who.cpp.i
+.PHONY : src/commands/Who.cpp.i
+
+src/commands/Who.s: src/commands/Who.cpp.s
+.PHONY : src/commands/Who.s
+
+# target to generate assembly for a file
+src/commands/Who.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Who.cpp.s
+.PHONY : src/commands/Who.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -636,6 +684,9 @@ help:
 	@echo "... src/commands/Nick.o"
 	@echo "... src/commands/Nick.i"
 	@echo "... src/commands/Nick.s"
+	@echo "... src/commands/Part.o"
+	@echo "... src/commands/Part.i"
+	@echo "... src/commands/Part.s"
 	@echo "... src/commands/Pass.o"
 	@echo "... src/commands/Pass.i"
 	@echo "... src/commands/Pass.s"
@@ -648,6 +699,9 @@ help:
 	@echo "... src/commands/User.o"
 	@echo "... src/commands/User.i"
 	@echo "... src/commands/User.s"
+	@echo "... src/commands/Who.o"
+	@echo "... src/commands/Who.i"
+	@echo "... src/commands/Who.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

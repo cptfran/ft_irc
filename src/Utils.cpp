@@ -29,3 +29,17 @@ std::string Utils::intToString(const int value)
 	oss << value;
 	return oss.str();
 }
+
+std::vector<std::string> Utils::splitStringByComma(const std::string& str)
+{
+	std::vector<std::string> tokens;
+	std::string token;
+	std::stringstream ss(str);
+
+	while (std::getline(ss, token, ','))
+	{
+		tokens.push_back(token);
+	}
+
+	return tokens;
+}

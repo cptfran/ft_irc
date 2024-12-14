@@ -16,10 +16,12 @@ add_executable(ircserv
         include/commands/Kick.h
         include/commands/Mode.h
         include/commands/Nick.h
+        include/commands/Part.h
         include/commands/Pass.h
         include/commands/Ping.h
         include/commands/Topic.h
         include/commands/User.h
+        include/commands/Who.h
         include/Channel.h
         include/Log.h
         include/Replier.h
@@ -34,10 +36,12 @@ add_executable(ircserv
         src/commands/Kick.cpp
         src/commands/Mode.cpp
         src/commands/Nick.cpp
+        src/commands/Part.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp
         src/commands/Topic.cpp
         src/commands/User.cpp
+        src/commands/Who.cpp
         src/Channel.cpp
         src/Log.cpp
         src/main.cpp

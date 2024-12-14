@@ -34,7 +34,7 @@ std::string Replier::rplWelcome(const std::vector<std::string>& args)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplWelcome()"));
 	}
-	return ":@" + args[0] + " 001 " + args[1] + " :Welcome to the Internet Relay Network " + args[1] + "!" + args[2]
+	return ":" + args[0] + " 001 " + args[1] + " :Welcome to the Internet Relay Network " + args[1] + "!" + args[2]
 	+ "@" + args[0] + "\r\n";
 }
 

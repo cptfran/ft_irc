@@ -58,4 +58,5 @@ private:
 	friend class Topic;
 	friend class Invite;
 	friend class Mode;
+	friend class Part;
 };
