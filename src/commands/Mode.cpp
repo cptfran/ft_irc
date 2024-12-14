@@ -14,11 +14,6 @@ Mode::~Mode()
 
 }
 
-//          ERR_NEEDMOREPARAMS (V)          RPL_CHANNELMODEIS (V)
-//          ERR_CHANOPRIVSNEEDED (V)        ERR_NOSUCHNICK (V)
-//          ERR_NOTONCHANNEL (V)            ERR_KEYSET (V)
-//          ERR_UNKNOWNMODE (V)             ERR_NOSUCHCHANNEL (V)
-
 // TODO: some of the code is repeating in few execute methods, maybe can be done better. (like another mutual methods)
 // TODO: maybe rebuild getClientData as I don't need to fetch everything?
 // TODO: make funcs for checks that return numeric reply and then reply based on the return?
@@ -166,7 +161,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
                 Replier::reply(clientFd, Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
                 continue;
             }
-            bool operatorPrivilege = (action == "+");
+            const bool operatorPrivilege = (action == "+");
             channel->setOperator(targetNickname, operatorPrivilege);
         }
         else if (modes[i] == 'l')
@@ -181,7 +176,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
                     Utils::anyToVec(serverName, std::string(1, modes[i])));
                 continue;
             }
-            const int limit = std::stoi(args[argsI]);
+            const int limit = Utils::cStringToPositiveInt(args[argsI].c_str());
             channel->setUserLimit(limit);
         }
     }

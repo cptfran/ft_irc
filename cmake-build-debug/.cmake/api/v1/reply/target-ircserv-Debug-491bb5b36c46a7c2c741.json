@@ -42,14 +42,14 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -fcolor-diagnostics"
+					"fragment" : "-g -std=gnu++98 -fdiagnostics-color=always"
 				}
 			],
 			"includes" : 
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/Users/szymon/CLionProjects/ft_irc/include"
+					"path" : "/mnt/c/Users/Szymon/CLionProjects/ft_irc/include"
 				}
 			],
 			"language" : "CXX",
