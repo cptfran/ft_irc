@@ -2,11 +2,10 @@
 #include "Log.h"
 #include <algorithm>
 
-// TODO: parse channel name properly (max 200 characters, spaces, etc.).
 Channel::Channel(const std::string& name)
-: name(name), inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
+: inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
 {
-
+	this->name = sanitizeChannelName(name);
 }
 
 Channel::Channel() : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
@@ -227,4 +226,37 @@ void Channel::setUserLimit(const int limit)
 void Channel::disableUserLimit()
 {
 	this->userLimitActive = false;
+}
+
+std::string Channel::sanitizeChannelName(const std::string& name) const
+{
+	std::string sanitized = name;
+
+	if (name[0] != '#')
+	{
+		sanitized = "#" + sanitized;
+	}
+
+	if (name.length() > CHANNEL_NAME_MAX_LENGTH)
+	{
+		sanitized = sanitized.substr(0, CHANNEL_NAME_MAX_LENGTH);
+	}
+
+	size_t pos = sanitized.find(' ');
+	if (pos != std::string::npos)
+	{
+		sanitized = sanitized.substr(0, pos);
+	}
+	pos = sanitized.find(',');
+	if (pos != std::string::npos)
+	{
+		sanitized = sanitized.substr(0, pos);
+	}
+	pos = sanitized.find('\a');
+	if (pos != std::string::npos)
+	{
+		sanitized = sanitized.substr(0, pos);
+	}
+
+	return sanitized;
 }

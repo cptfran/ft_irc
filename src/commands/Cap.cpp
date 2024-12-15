@@ -15,10 +15,10 @@ Cap::~Cap()
 
 void Cap::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-	(void)server;
+	const std::string& serverName = server.getName();
 	if (!args.empty() && args[0] == "LS")
 	{
 		// TODO: in the end check if it should send any capabilities.
-		Replier::reply(client.getFd(), Replier::rplCap, Utils::anyToVec(std::string("")));
+		Replier::reply(client.getFd(), Replier::rplCap, Utils::anyToVec(serverName));
 	}
 }

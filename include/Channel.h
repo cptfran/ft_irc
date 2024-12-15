@@ -4,6 +4,8 @@
 #include <vector>
 #include "Client.h"
 
+#define CHANNEL_NAME_MAX_LENGTH 50
+
 // PROBABLY rules for joining:
 // 1.  the user must be invited if the channel is invite-only;
 // 2.  the user's nick/username/hostname must not match any active bans;
@@ -59,6 +61,8 @@ public:
 	void setOperator(const std::string& targetNickname, bool operatorPrivilege);
 	void setUserLimit(int limit);
 	void disableUserLimit();
+
+	std::string sanitizeChannelName(const std::string& name) const;
 
 private:
 	std::string name;
