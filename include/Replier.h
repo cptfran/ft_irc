@@ -45,6 +45,7 @@ private:
 	static std::string errUnknownMode(const std::vector<std::string>& args); // 472
 	static std::string errInviteOnlyChan(const std::vector<std::string>& args); // 473
 	static std::string errBadChannelKey(const std::vector<std::string>& args); // 475
+	static std::string errBadChanMask(const std::vector<std::string>& args); // 476
 	static std::string errChanOPrivsNeeded(const std::vector<std::string>& args); // 482
 
 	friend class Server;

@@ -48,7 +48,10 @@ Who::~Who()
 
 }
 
+// TODO: need to implement.
 void Who::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-
+	(void)server;
+	(void)client;
+	(void)args;
 }

@@ -15,10 +15,13 @@ Ping::~Ping()
 
 void Ping::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
+	const std::string& serverName = server.getName();
+	const std::string& serverToReply = args[0];
+
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
+		Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(serverName));
 		return;
 	}
-	Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), args[0]));
+	Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(serverName, serverToReply));
 }

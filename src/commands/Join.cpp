@@ -54,7 +54,14 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	}
 	catch (const std::exception&)
 	{
-		server.addChannel(Channel(channelName));
+		try
+		{
+			server.addChannel(Channel(channelName));
+		}
+		catch (const std::exception&)
+		{
+			Replier::reply(clientFd, Replier::errBadChanMask, Utils::anyToVec(serverName, channelName));
+		}
 		channelToJoin = &server.findChannel(channelName);
 	}
 
@@ -62,7 +69,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	const std::string& clientNickname = client.getNickname();
 	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(clientNickname))
 	{
-		Replier::reply(clientFd, Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(clientFd, Replier::errInviteOnlyChan, Utils::anyToVec(serverName, channelName));
 		return;
 	}
 
