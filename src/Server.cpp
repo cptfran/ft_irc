@@ -129,29 +129,29 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-Channel& Server::getChannel(const std::string& channelName)
+Channel* Server::getChannel(const std::string& channelName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
 		const std::string& currChannelName = it->getName();
 		if (currChannelName == channelName)
 		{
-			return *it;
+			return &(*it);
 		}
 	}
-	throw std::runtime_error("Channel not found.");
+	return NULL;
 }
 
-Client& Server::findClientByNickname(const std::string& nicknameToFind)
+Client* Server::findClientByNickname(const std::string& nicknameToFind)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
 		if (it->second.getNickname() == nicknameToFind)
 		{
-			return it->second;
+			return &it->second;
 		}
 	}
-	throw std::runtime_error("Client not found.");
+	return NULL;
 }
 
 void Server::signalHandler(const int signum)

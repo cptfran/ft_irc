@@ -25,8 +25,8 @@ public:
 	std::string getName() const;
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
-	Channel& getChannel(const std::string& channelName);
-	Client& findClientByNickname(const std::string& nicknameToFind);
+	Channel* getChannel(const std::string& channelName);
+	Client* findClientByNickname(const std::string& nicknameToFind);
 
 	void run();
 	void stop();

@@ -49,7 +49,6 @@ public:
 	bool isUserLimitActive() const;
 	int getUserLimit() const;
 	std::string getTopic() const;
-	ClientData& findClientData(const Client& clientToFind);
 
 	void joinUser(Client& newClient);
 	bool ejectUser(const std::string& userToKick);

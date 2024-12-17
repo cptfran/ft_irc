@@ -22,32 +22,33 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        handleMissingParams("KICK", client.getFd(), server.getName());
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "KICK"));
         return;
     }
 
     // Find the channel.
     const std::string& channelName = args[0];
-    Channel* channel = findChannel(server, channelName);
+    Channel* channel = server.getChannel(channelName);
 
     // Channel not found.
     if (channel == NULL)
     {
-        handleChannelNotFound(client, server.getName(), NULL, channelName);
+        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(), channelName));
         return;
     }
 
     // Client not on the channel.
     if (!channel->isUserOnChannel(client.getNickname()))
     {
-        handleUserNotOnChannel(client.getFd(), server.getName(),channelName);
+        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(), channelName));
         return;
     }
 
     // Client is not an operator.
     if (!channel->isUserOperator(client.getNickname()))
     {
-        handleNoOperatorPriv(client.getFd(), server.getName(), channelName);
+        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded,
+            Utils::anyToVec(server.getName(), channelName));
         return;
     }
 
@@ -65,7 +66,8 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     // Kick user from the channel.
     if (!channel.ejectUser(userToKick))
     {
-        handleUserNotInChannel(requestor.getFd(), serverName, userToKick, channel.getName());
+        Replier::reply(requestor.getFd(), Replier::errUserNotInChannel,
+            Utils::anyToVec(serverName, userToKick, channel.getName()));
         return;
     }
 

@@ -19,14 +19,14 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// Not enough arguments provided.
 	if (args.empty())
 	{
-		handleMissingParams("JOIN", client.getFd(), server.getName());
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "JOIN"));
 		return;
 	}
 
 	// User is not registered.
 	if (!client.registered(server.getPassword()))
 	{
-		handleNotRegistered(client.getFd(), server.getName());
+		Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName()));
 		return;
 	}
 
@@ -36,7 +36,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If yes, don't join and send proper reply.
 	if (client.getNumChannelsJoined() == CHANNELS_MAX)
 	{
-		handleTooManyChannels(client.getFd(), server.getName(), channelName);
+		Replier::reply(client.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 
@@ -46,51 +46,30 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If channel is invite only and client is not invited, don't join the client to it and send proper reply.
 	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(client.getNickname()))
 	{
-		handleInviteOnly(client.getFd(), server.getName(), channelName);
+		Replier::reply(client.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 
 	// Check if channel requires key, if yes, check if it's provided and correct.
 	if (!channelToJoin->getKey().empty() && !isValidChannelKey(args, channelToJoin->getKey()))
 	{
-		handleInvalidChannelKey(client.getFd(), server.getName(), channelName);
+		Replier::reply(client.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 
 	joinChannel(client, channelToJoin, server.getName());
 }
 
-void Join::handleNotRegistered(const int clientFd, const std::string& serverName) const
-{
-	Replier::reply(clientFd, Replier::errNotRegistered, Utils::anyToVec(serverName));
-}
-
-void Join::handleTooManyChannels(const int clientFd, const std::string& serverName,
-	const std::string& channelName) const
-{
-	Replier::reply(clientFd, Replier::errTooManyChannels, Utils::anyToVec(serverName, channelName));
-}
-
 Channel* Join::findOrCreateChannel(Server& server, const std::string& channelName) const
 {
-	Channel* channelToJoin;
-
-	try
-	{
-		channelToJoin = &server.getChannel(channelName);
-	}
-	catch (const std::exception&)
+	Channel* channelToJoin = server.getChannel(channelName);
+	if (channelToJoin == NULL)
 	{
 		server.addChannel(Channel(channelName));
-		channelToJoin = &server.getChannel(channelName);
+		channelToJoin = server.getChannel(channelName);
 	}
 
 	return channelToJoin;
-}
-
-void Join::handleInviteOnly(const int clientFd, const std::string& serverName, const std::string& channelName) const
-{
-	Replier::reply(clientFd, Replier::errInviteOnlyChan, Utils::anyToVec(serverName, channelName));
 }
 
 bool Join::isValidChannelKey(const std::vector<std::string>& args, const std::string& channelKey) const
@@ -108,12 +87,6 @@ bool Join::isValidChannelKey(const std::vector<std::string>& args, const std::st
 	}
 
 	return true;
-}
-
-void Join::handleInvalidChannelKey(const int clientFd, const std::string& serverName,
-	const std::string& channelName) const
-{
-	Replier::reply(clientFd, Replier::errBadChannelKey, Utils::anyToVec(serverName, channelName));
 }
 
 void Join::joinChannel(Client& client, Channel* channelToJoin, const std::string& serverName) const

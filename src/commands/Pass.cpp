@@ -19,12 +19,15 @@ void Pass::execute(Server& server, Client& client, const std::vector<std::string
 	if (args.empty())
 	{
 		Replier::reply(client.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName()));
-		throw std::invalid_argument(PASSWORD_EMPTY);
+		return;
 	}
-	if (args[0] != server.getPassword())
+
+	const std::string& enteredPassword = args[0];
+	if (enteredPassword != server.getPassword())
 	{
 		Replier::reply(client.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName()));
-		throw std::invalid_argument(WRONG_PASSWORD);
+		return;
 	}
+
 	client.setPassword(args[0]);
 }

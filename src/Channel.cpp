@@ -142,18 +142,6 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
-Channel::ClientData& Channel::findClientData(const Client& clientToFind)
-{
-	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
-	{
-		if (it->client == clientToFind)
-		{
-			return *it;
-		}
-	}
-	throw std::runtime_error("Client not found.");
-}
-
 void Channel::joinUser(Client& newClient)
 {
 	bool isOperator = false;
