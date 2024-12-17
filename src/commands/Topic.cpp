@@ -40,7 +40,7 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     // Fetch channel from server's channel list.
     try
     {
-        channel = &server.findChannel(channelName);
+        channel = &server.getChannel(channelName);
     }
     // Channel not found.
     catch (const std::exception&)
@@ -49,15 +49,9 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
         return;
     }
 
-    Channel::ClientData* clientData;
-
-    // Fetch client data from channel's client list.
-    try
-    {
-        clientData = &channel->findClientData(client);
-    }
-    // Client not on the channel->
-    catch (const std::exception&)
+    // Client not on the channel.
+    const std::string& clientNickname = client.getNickname();
+    if (!channel->isUserOnChannel(clientNickname))
     {
         Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
@@ -79,7 +73,7 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     }
 
     // Check if topic change is restricted and only operators can change it.
-    if (channel->isTopicRestricted() && !clientData->isOperator)
+    if (channel->isTopicRestricted() && !channel->isUserOperator(clientNickname))
     {
         Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
         return;

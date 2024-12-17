@@ -35,6 +35,7 @@ private:
 	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
 	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
 	static std::string errNickCollision(const std::vector<std::string>& args); // 436
+	static std::string errUserNotInChannel(const std::vector<std::string>& args); // 441
 	static std::string errNotOnChannel(const std::vector<std::string>& args); // 442
 	static std::string errUserOnChannel(const std::vector<std::string>& args); // 443
 	static std::string errNotRegistered(const std::vector<std::string>& args); // 451
@@ -49,6 +50,7 @@ private:
 	static std::string errChanOPrivsNeeded(const std::vector<std::string>& args); // 482
 
 	friend class Server;
+	friend class Command;
 	friend class Cap;
 	friend class Join;
 	friend class Kick;

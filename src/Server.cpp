@@ -129,7 +129,7 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-Channel& Server::findChannel(const std::string& channelName)
+Channel& Server::getChannel(const std::string& channelName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{

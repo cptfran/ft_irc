@@ -44,15 +44,15 @@ public:
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;
-	bool isClientOnChannel(const std::string& nicknameToFind) const;
-	bool isClientOperator(const Client& clientToFind) const;
+	bool isUserOnChannel(const std::string& nicknameToFind) const;
+	bool isUserOperator(const std::string& nicknameToFind) const;
 	bool isUserLimitActive() const;
 	int getUserLimit() const;
 	std::string getTopic() const;
 	ClientData& findClientData(const Client& clientToFind);
 
-	void joinClient(Client& newClient);
-	bool ejectClient(const std::string& userToKick);
+	void joinUser(Client& newClient);
+	bool ejectUser(const std::string& userToKick);
 	void setChannelInviteOnly(bool isInviteOnly);
 	void addToInviteList(const std::string& invitedNickname);
 	void setTopicRestricted(bool isTopicRestricted);

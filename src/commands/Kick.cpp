@@ -14,70 +14,63 @@ Kick::~Kick()
 
 }
 
+// TODO: after kick broadcast is only showing message for kicked user.
 // TODO: infinite loop happening when client is kicked by another client and then tries to connect again to the same
 // channel.
 void Kick::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-    const std::string& serverName = server.getName();
-    const int clientFd = client.getFd();
-
+    // Not enough parameters provided.
     if (args.size() < 2)
     {
-        const std::string command = "KICK";
-        Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+        handleMissingParams("KICK", client.getFd(), server.getName());
         return;
     }
 
+    // Find the channel.
     const std::string& channelName = args[0];
-    Channel* channel;
+    Channel* channel = findChannel(server, channelName);
 
-    // Fetch channel from server's channel list.
-    try
-    {
-        channel = &server.findChannel(channelName);
-    }
     // Channel not found.
-    catch (const std::exception&)
+    if (channel == NULL)
     {
-        Replier::reply(clientFd, Replier::errNoSuchChannel, Utils::anyToVec(serverName, channelName));
+        handleChannelNotFound(client, server.getName(), NULL, channelName);
         return;
     }
 
-    Channel::ClientData* clientData;
-
-    // Fetch client data from channel's client list.
-    try
+    // Client not on the channel.
+    if (!channel->isUserOnChannel(client.getNickname()))
     {
-        clientData = &channel->findClientData(client);
-    }
-    // Client not on the channel->
-    catch (const std::exception&)
-    {
-        Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
+        handleUserNotOnChannel(client.getFd(), server.getName(),channelName);
         return;
     }
 
     // Client is not an operator.
-    if (!clientData->isOperator)
+    if (!channel->isUserOperator(client.getNickname()))
     {
-        Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
+        handleNoOperatorPriv(client.getFd(), server.getName(), channelName);
         return;
     }
 
+    kickUser(args, *channel, client, server.getName());
+}
+
+void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requestor,
+    const std::string& serverName) const
+{
     const std::string& userToKick = args[1];
 
     // Get fds list for broadcast message before client is kicked, so it will receive kick information.
-    const std::vector<int>& clientsFdList = channel->getFdsList();
+    const std::vector<int>& clientsFdList = channel.getFdsList();
 
-    // Kick client from the channel->
-    if (!channel->ejectClient(userToKick))
+    // Kick user from the channel.
+    if (!channel.ejectUser(userToKick))
     {
-        Log::msgServer(INFO, "CLIENT", clientFd, EJECT_CLIENT_FAIL);
+        handleUserNotInChannel(requestor.getFd(), serverName, userToKick, channel.getName());
         return;
     }
 
     // Broadcast reply after kick.
-    std::vector<std::string> rplKickArgs = Utils::anyToVec(client.getNickname(), userToKick, channelName);
+    std::vector<std::string> rplKickArgs = Utils::anyToVec(requestor.getNickname(), userToKick, channel.getName());
     if (args.size() == 3)
     {
         const std::string& comment = args[2];

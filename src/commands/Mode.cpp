@@ -14,9 +14,6 @@ Mode::~Mode()
 
 }
 
-// TODO: some of the code is repeating in few execute methods, maybe can be done better. (like another mutual methods)
-// TODO: maybe rebuild getClientData as I don't need to fetch everything?
-// TODO: make funcs for checks that return numeric reply and then reply based on the return?
 void Mode::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
     const int clientFd = client.getFd();
@@ -36,7 +33,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     // Fetch channel from server's channel list.
     try
     {
-        channel = &server.findChannel(channelName);
+        channel = &server.getChannel(channelName);
     }
     // Channel not found.
     catch (const std::exception&)
@@ -47,22 +44,35 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
 
     // Client not a member of the channel.
     const std::string& requestorNickname = client.getNickname();
-    if (!channel->isClientOnChannel(requestorNickname))
+    if (!channel->isUserOnChannel(requestorNickname))
     {
         Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
         return;
     }
 
     // No operator privileges.
-    if (!channel->isClientOperator(client))
+    if (!channel->isUserOperator(requestorNickname))
     {
         Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
         return;
     }
 
-    // Client prompting for current modes.
-    if (args.size() == 1)
+    // Client requesting to see current channel modes.
+    if (sendCurrentChannelModes(args.size(), serverName, channel, clientFd))
     {
+       return;
+    }
+
+    // Client requesting to modify channel modes.
+    editChannelModes(args, clientFd, serverName, channel);
+}
+
+bool Mode::sendCurrentChannelModes(const size_t argsSize, const std::string& serverName, const Channel* channel,
+    const int clientFd) const
+{
+    if (argsSize == 1)
+    {
+        const std::string& channelName = channel->getName();
         std::string modes = "+";
         std::vector<std::string> replyParams = Utils::anyToVec(serverName, channelName);
 
@@ -96,33 +106,49 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
         }
 
         Replier::reply(clientFd, Replier::rplChannelModeIs, replyParams);
-        return;
+        return true;
     }
 
+    return false;
+}
+
+void Mode::editChannelModes(const std::vector<std::string>& args, const int clientFd,
+    const std::string& serverName, Channel* channel) const
+{
     const std::string& modes = args[1];
     std::string action;
     size_t argsI = 2;
+
     for (size_t i = 0; i < modes.length(); ++i)
     {
+        // Check if user requests to add or remove a mode.
         if (modes[i] == '+' || modes[i] == '-')
         {
             action = modes[i];
         }
+
+        // Action sign not found.
         else if (action.empty())
         {
             Replier::reply(clientFd, Replier::errUnknownMode,
                 Utils::anyToVec(serverName, std::string(1, modes[i])));
         }
+
+        // Switch on/off invite-only mode.
         else if (modes[i] == 'i')
         {
-            bool isInviteOnly (action == "+");
+            const bool isInviteOnly (action == "+");
             channel->setChannelInviteOnly(isInviteOnly);
         }
+
+        // Switch on/off topic change available only for channel operators.
         else if (modes[i] == 't')
         {
-            bool isTopicRestricted = (action == "+");
+            const bool isTopicRestricted = (action == "+");
             channel->setTopicRestricted(isTopicRestricted);
         }
+
+        // Remove/add channel key(password).
         else if (modes[i] == 'k')
         {
             if (action == "-")
@@ -139,6 +165,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
             const std::string& key = channel->getKey();
             if (!key.empty())
             {
+                const std::string& channelName = channel->getName();
                 Replier::reply(clientFd, Replier::errKeySet, Utils::anyToVec(serverName, channelName));
                 continue;
             }
@@ -146,6 +173,8 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
             ++argsI;
             channel->setKey(newKey);
         }
+
+        // Give/remove channel operator privilege to/from user.
         else if (modes[i] == 'o')
         {
             if (args[argsI].empty())
@@ -156,7 +185,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
             }
             const std::string& targetNickname = args[argsI];
             ++argsI;
-            if (!channel->isClientOnChannel(targetNickname))
+            if (!channel->isUserOnChannel(targetNickname))
             {
                 Replier::reply(clientFd, Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
                 continue;
@@ -164,6 +193,8 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
             const bool operatorPrivilege = (action == "+");
             channel->setOperator(targetNickname, operatorPrivilege);
         }
+
+        // Enable+set/remove user limit on the channel.
         else if (modes[i] == 'l')
         {
             if (action == "-")

@@ -101,7 +101,7 @@ bool Channel::isTopicRestricted() const
 	return this->topicRestricted;
 }
 
-bool Channel::isClientOnChannel(const std::string& nicknameToFind) const
+bool Channel::isUserOnChannel(const std::string& nicknameToFind) const
 {
 	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
 		it != this->joinedClients.end(); ++it)
@@ -114,12 +114,12 @@ bool Channel::isClientOnChannel(const std::string& nicknameToFind) const
 	return false;
 }
 
-bool Channel::isClientOperator(const Client& clientToFind) const
+bool Channel::isUserOperator(const std::string& nicknameToFind) const
 {
 	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
 		it != this->joinedClients.end(); ++it)
 	{
-		if (it->client == clientToFind && it->isOperator)
+		if (it->client.getNickname() == nicknameToFind && it->isOperator)
 		{
 			return true;
 		}
@@ -154,7 +154,7 @@ Channel::ClientData& Channel::findClientData(const Client& clientToFind)
 	throw std::runtime_error("Client not found.");
 }
 
-void Channel::joinClient(Client& newClient)
+void Channel::joinUser(Client& newClient)
 {
 	bool isOperator = false;
 	if (this->joinedClients.empty())
@@ -166,7 +166,7 @@ void Channel::joinClient(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::ejectClient(const std::string& userToKick)
+bool Channel::ejectUser(const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{

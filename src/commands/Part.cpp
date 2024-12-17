@@ -17,6 +17,8 @@ Part::~Part()
 
 // TODO: this command is switch off for now as it kicks user from the channel. Try to turn it on after implementing
 // 'WHO'.
+// Update[1]: irssi sends PART when '/window close' command is executed by user, it closes channel window and irssi
+// sends PART to leave the channel
 void Part::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	const std::string& serverName = server.getName();
@@ -38,7 +40,7 @@ void Part::execute(Server& server, Client& client, const std::vector<std::string
 		Channel* channelToLeave;
 		try
 		{
-			channelToLeave = &server.findChannel(channelToFindName);
+			channelToLeave = &server.getChannel(channelToFindName);
 		}
 		catch (const std::exception&)
 		{
@@ -46,14 +48,14 @@ void Part::execute(Server& server, Client& client, const std::vector<std::string
 			continue;
 		}
 
-		if (!channelToLeave->isClientOnChannel(channelToFindName))
+		if (!channelToLeave->isUserOnChannel(channelToFindName))
 		{
 			Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelToFindName));
 			continue;
 		}
 
 		const std::string& clientNickname = client.getNickname();
-		if (!channelToLeave->ejectClient(clientNickname))
+		if (!channelToLeave->ejectUser(clientNickname))
 		{
 			Log::msgServer(INFO, "CLIENT", clientFd, EJECT_CLIENT_FAIL);
 		}

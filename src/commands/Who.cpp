@@ -48,7 +48,7 @@ Who::~Who()
 
 }
 
-// TODO: need to implement.
+// TODO: need to implement (maybeee).
 void Who::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	(void)server;
