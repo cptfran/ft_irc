@@ -62,6 +62,7 @@ availableChannelModes("itkol")
 	this->validCommands["TOPIC"] = new Topic();
 	this->validCommands["INVITE"] = new Invite();
 	this->validCommands["MODE"] = new Mode();
+	this->validCommands["PART"] = new Part();
 	// this->validCommands["PART"] = new Part();
 
 	const std::time_t now = std::time(NULL);

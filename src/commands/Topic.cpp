@@ -22,7 +22,8 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     // Not enough parameters provided.
     if (args.empty())
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "TOPIC"));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            std::string("TOPIC")));
         return;
     }
 
@@ -57,6 +58,7 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     if (args.size() == 1)
     {
         sendTopic(*channel, client.getFd(), server.getName());
+        return;
     }
 
     // Check if topic change is restricted and only operators can change it.

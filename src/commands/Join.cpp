@@ -19,7 +19,8 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// Not enough arguments provided.
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "JOIN"));
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			std::string("JOIN")));
 		return;
 	}
 
@@ -54,6 +55,13 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	if (!channelToJoin->getKey().empty() && !isValidChannelKey(args, channelToJoin->getKey()))
 	{
 		Replier::reply(client.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(), channelName));
+		return;
+	}
+
+	// Check if channel has user limit, if yes check if it's not full.
+	if (channelToJoin->isUserLimitActive() && channelToJoin->getUserLimit() == channelToJoin->getNumOfJoinedUsers())
+	{
+		Replier::reply(client.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(), channelName));
 		return;
 	}
 

@@ -19,13 +19,15 @@ void User::execute(Server& server, Client& client, const std::vector<std::string
 {
 	if (args.size() < 4)
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "USER"));
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			std::string("USER")));
 	}
 
 	const std::string& realname = args[3];
 	if (realname[0] != ':')
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "USER"));
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			std::string("USER")));
 	}
 
 	const std::string& username = args[0];

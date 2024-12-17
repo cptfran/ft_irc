@@ -132,9 +132,14 @@ bool Channel::isUserLimitActive() const
 	return this->userLimitActive;
 }
 
-int Channel::getUserLimit() const
+unsigned int Channel::getUserLimit() const
 {
 	return this->userLimit;
+}
+
+unsigned int Channel::getNumOfJoinedUsers() const
+{
+	return this->joinedClients.size();
 }
 
 std::string Channel::getTopic() const

@@ -21,43 +21,39 @@ Part::~Part()
 // sends PART to leave the channel
 void Part::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-	const std::string& serverName = server.getName();
-	const int clientFd = client.getFd();
 
 	if (args.empty())
 	{
-		const std::string command = "PARt";
-		Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			std::string("PART")));
 		return;
 	}
 
-	const std::string& channelsToLeaveStack = args[0];
-	std::vector<std::string> channelsToLeaveSplit = Utils::splitStringByComma(channelsToLeaveStack);
+	const std::string& channelsToLeaveStacked = args[0];
+	std::vector<std::string> channelsToLeaveSplit = Utils::splitStringByComma(channelsToLeaveStacked);
 
 	for (std::vector<std::string>::iterator it = channelsToLeaveSplit.begin(); it != channelsToLeaveSplit.end(); ++it)
 	{
 		const std::string& channelToFindName = *it;
-		Channel* channelToLeave;
-		try
+		Channel* channelToLeave = server.getChannel(channelToFindName);
+
+		if (channelToLeave == NULL)
 		{
-			channelToLeave = &server.getChannel(channelToFindName);
-		}
-		catch (const std::exception&)
-		{
-			Replier::reply(clientFd, Replier::errNoSuchChannel, Utils::anyToVec(serverName, channelToFindName));
+			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+				channelToFindName));
 			continue;
 		}
 
-		if (!channelToLeave->isUserOnChannel(channelToFindName))
+		if (!channelToLeave->isUserOnChannel(client.getNickname()))
 		{
-			Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelToFindName));
+			Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+				channelToFindName));
 			continue;
 		}
 
-		const std::string& clientNickname = client.getNickname();
-		if (!channelToLeave->ejectUser(clientNickname))
+		if (!channelToLeave->ejectUser(client.getNickname()))
 		{
-			Log::msgServer(INFO, "CLIENT", clientFd, EJECT_CLIENT_FAIL);
+			Log::msgServer(INFO, "CLIENT", client.getFd(), EJECT_CLIENT_FAIL);
 		}
 	}
 }

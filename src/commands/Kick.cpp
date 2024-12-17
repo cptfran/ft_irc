@@ -22,7 +22,8 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "KICK"));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            std::string("KICK")));
         return;
     }
 

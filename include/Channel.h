@@ -47,7 +47,8 @@ public:
 	bool isUserOnChannel(const std::string& nicknameToFind) const;
 	bool isUserOperator(const std::string& nicknameToFind) const;
 	bool isUserLimitActive() const;
-	int getUserLimit() const;
+	unsigned int getUserLimit() const;
+	unsigned int getNumOfJoinedUsers() const;
 	std::string getTopic() const;
 
 	void joinUser(Client& newClient);

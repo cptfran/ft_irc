@@ -19,7 +19,7 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), "INVITE"));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), std::string("INVITE")));
         return;
     }
 
@@ -42,7 +42,7 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     if (channelToInvite == NULL)
     {
         Replier::reply(client.getFd(), Replier::rplInviting,
-            Utils::anyToVec(server.getName(), clientToInvite.getNickname(), channelToInviteName));
+            Utils::anyToVec(server.getName(), clientToInvite->getNickname(), channelToInviteName));
         Replier::reply(client.getFd(), Replier::rplInvite,
             Utils::anyToVec(client.getNickname(), client.getNickname(), channelToInviteName));
         return;

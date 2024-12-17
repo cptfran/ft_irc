@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/szymon/CLionProjects/ft_irc -B /Users/szymon/CLionProjects/ft_irc/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=98 -G "CodeBlocks - Unix Makefiles" -S /Users/szymon/CLionProjects/ft_irc -B /Users/szymon/CLionProjects/ft_irc/cmake-build-debug
 CMake Deprecation Warning:
   Support for "Extra Generators" like
 
@@ -21,6 +21,6 @@ CMake Deprecation Warning:
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- System: Darwin
--- Configuring done (1.1s)
+-- Configuring done (0.9s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/szymon/CLionProjects/ft_irc/cmake-build-debug
