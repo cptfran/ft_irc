@@ -54,6 +54,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     if (args.size() == 1)
     {
         sendCurrentChannelModes(server.getName(), *channel, client.getFd());
+        return;
     }
 
     // Client requesting to modify channel modes.
@@ -85,9 +86,8 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
 
     if (channel.isUserLimitActive())
     {
-        const int userLimit = channel.getUserLimit();
         modes += "l";
-        replyParams.push_back(Utils::intToString(userLimit));
+        replyParams.push_back(Utils::intToString(static_cast<int>(channel.getUserLimit())));
     }
 
     if (modes.length() > 1)

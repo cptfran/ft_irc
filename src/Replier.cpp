@@ -136,7 +136,7 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 		const std::string& comment = args[3].substr(0);
 		return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + " :" + comment + "\r\n";
 	}
-	return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + "\r\n";
+	return ":" + kickerUser + "!sfrankie@localhost KICK " + channelName + " " + kickedUser + "\r\n";
 }
 
 std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
