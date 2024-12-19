@@ -28,6 +28,7 @@ private:
 	static std::string rplTopic(const std::vector<std::string>& args); // 332
 	static std::string rplInviting(const std::vector<std::string>& args); // 341
 	static std::string rplInvite(const std::vector<std::string>& args); // none
+	static std::string rplJoin(const std::vector<std::string>& args); // none
 	static std::string rplNamReply(const std::vector<std::string>& args); // 353
 	static std::string rplEndOfNames(const std::vector<std::string>& args); // 366
 	static std::string errNoSuchNick(const std::vector<std::string>& args); // 401

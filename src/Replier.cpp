@@ -122,21 +122,25 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 // TODO: 'M' is spawning for some reason at the end of the reply, need to fix.
 std::string Replier::rplKick(const std::vector<std::string>& args)
 {
-	if (args.size() < 3)
+	if (args.size() < 5)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplKick()"));
 	}
 
-	const std::string& kickerUser = args[0];
-	const std::string& kickedUser = args[1];
-	const std::string& channelName = args[2];
+	const std::string& kickerNickname = args[0];
+	const std::string& kickerUsername = args[1];
+	const std::string& kickerHostname = args[2];
+	const std::string& kickedUser = args[3];
+	const std::string& channelName = args[4];
 
-	if (args.size() == 4)
+	if (args.size() == 6)
 	{
-		const std::string& comment = args[3].substr(0);
-		return ":" + kickerUser + " KICK " + channelName + " " + kickedUser + " :" + comment + "\r\n";
+		const std::string& comment = args[5].substr(0);
+		return ":" + kickerNickname + "!" + kickerUsername + "@" + kickerHostname + " KICK " + channelName + " " +
+			kickedUser + " :" + comment + "\r\n";
 	}
-	return ":" + kickerUser + "!sfrankie@localhost KICK " + channelName + " " + kickedUser + "\r\n";
+	return ":" + kickerNickname + "!" + kickerUsername + "@" + kickerHostname + " KICK " + channelName + " " +
+		kickedUser + "\r\n";
 }
 
 std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
@@ -212,22 +216,38 @@ std::string Replier::rplInvite(const std::vector<std::string>& args)
 	return ":" + invitingNickname + " INVITE " + invitedNickname + " :" + channelName + "\r\n";
 }
 
+std::string Replier::rplJoin(const std::vector<std::string>& args)
+{
+	if (args.size() != 4)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplJoin()"));
+	}
+
+	const std::string& nickname = args[0];
+	const std::string& username = args[1];
+	const std::string& hostname = args[2];
+	const std::string& channelName = args[3];
+
+	return ":" + nickname + "!" + username + "@" + hostname + " JOIN :" + channelName + "\r\n";
+}
+
 std::string Replier::rplNamReply(const std::vector<std::string>& args)
 {
-	if (args.size() < 3)
+	if (args.size() < 4)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNamReply()"));
 	}
 
 	const std::string& serverName = args[0];
-	const std::string& channelName = args[1];
+	const std::string& nickname = args[1];
+	const std::string& channelName = args[2];
 	std::vector<std::string> channelNicknames;
-	for (size_t i = 2; i < args.size(); ++i)
+	for (size_t i = 3; i < args.size(); ++i)
 	{
 		channelNicknames.push_back(args[i]);
 	}
 
-	std::string reply = "353 " + serverName + " " + channelName + " :";
+	std::string reply = ":" + serverName + " 353 " + nickname + " = " + channelName + " :";
 	for (size_t i = 0; i < channelNicknames.size(); ++i)
 	{
 		reply += channelNicknames[i] + " ";
@@ -238,6 +258,7 @@ std::string Replier::rplNamReply(const std::vector<std::string>& args)
 	}
 	reply += "\r\n";
 
+	DEBUG_LOG(reply);
 	return reply;
 }
 

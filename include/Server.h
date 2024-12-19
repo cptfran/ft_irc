@@ -5,6 +5,7 @@
 #include "Channel.h"
 #include "commands/Command.h"
 #include <vector>
+#include <netinet/in.h>
 #include <sys/poll.h>
 
 // Ports range:
@@ -13,6 +14,7 @@
 
 // Client message buffer size:
 #define INPUT_BUFFER_SIZE 512
+#define HOSTNAME_BUFFER_SIZE 1024
 
 class Server
 {
@@ -56,6 +58,7 @@ private:
 
 	// Client connection.
 	void connectClient();
+	std::string getClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
 	void disconnectClient(Client& client);
 
 	// Handling new requests of already connected client.

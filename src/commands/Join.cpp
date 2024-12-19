@@ -102,7 +102,8 @@ void Join::joinChannel(Client& client, Channel* channelToJoin, const std::string
 	channelToJoin->joinUser(client);
 	client.setNumChannelsJoined(client.getNumChannelsJoined() + 1);
 
-	std::cout << channelToJoin->getName() << std::endl;
+	Replier::reply(client.getFd(), Replier::rplJoin, Utils::anyToVec(client.getNickname(), client.getUsername(),
+		client.getHostname(), channelToJoin->getName()));
 
 	const std::string& channelTopic = channelToJoin->getTopic();
 	if (channelTopic.empty())
@@ -115,7 +116,8 @@ void Join::joinChannel(Client& client, Channel* channelToJoin, const std::string
 			channelTopic));
 	}
 
-	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, channelToJoin->getName());
+	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, client.getNickname(),
+		channelToJoin->getName());
 	std::vector<std::string> channelsNicknamesList = channelToJoin->getNicknamesListWithOperatorInfo();
 	rplNamReplyArgs.insert(rplNamReplyArgs.end(), channelsNicknamesList.begin(),
 		channelsNicknamesList.end());

@@ -73,7 +73,8 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     }
 
     // Broadcast reply after kick.
-    std::vector<std::string> rplKickArgs = Utils::anyToVec(requestor.getNickname(), userToKick, channel.getName());
+    std::vector<std::string> rplKickArgs = Utils::anyToVec(requestor.getNickname(), requestor.getUsername(),
+        requestor.getHostname(), userToKick, channel.getName());
     if (args.size() == 3)
     {
         const std::string& comment = args[2];

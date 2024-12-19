@@ -39,6 +39,12 @@ void Client::setUsername(const std::string& username)
 	this->username = username;
 }
 
+void Client::setHostname(const std::string& hostname)
+{
+	this->hostname = hostname;
+}
+
+
 void Client::setRealname(const std::string& realname)
 {
 	this->realname = realname;
@@ -72,6 +78,11 @@ std::string Client::getNickname() const
 std::string Client::getUsername() const
 {
 	return this->username;
+}
+
+std::string Client::getHostname() const
+{
+	return this->hostname;
 }
 
 int Client::getNumChannelsJoined() const

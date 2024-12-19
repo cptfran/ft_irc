@@ -26,10 +26,12 @@ public:
 	std::string getPassword() const;
 	std::string getNickname() const;
 	std::string getUsername() const;
+	std::string getHostname() const;
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
+	void setHostname(const std::string& hostname);
 	void setRealname(const std::string& realname);
 	void setWelcomeRepliesSent(bool truefalse);
 	void setNumChannelsJoined(int num);
@@ -43,6 +45,7 @@ private:
 	std::string password;
 	std::string nickname;
 	std::string username;
+	std::string hostname;
 	std::string realname;
 	bool welcomeRepliesSent;
 	int channelsJoined;

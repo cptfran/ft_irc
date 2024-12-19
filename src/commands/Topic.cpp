@@ -75,6 +75,7 @@ void Topic::sendTopic(const Channel& channel, const int requestorFd, const std::
 {
    const std::string& topic = channel.getTopic();
 
+    DEBUG_LOG("SENDING TOPIC");
     if (topic.empty())
     {
         Replier::reply(requestorFd, Replier::rplNoTopic, Utils::anyToVec(serverName, channel.getName()));
