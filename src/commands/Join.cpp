@@ -65,7 +65,7 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 		return;
 	}
 
-	joinChannel(client, channelToJoin, server.getName());
+	joinChannel(client, *channelToJoin, server.getName());
 }
 
 Channel* Join::findOrCreateChannel(Server& server, const std::string& channelName) const
@@ -97,31 +97,22 @@ bool Join::isValidChannelKey(const std::vector<std::string>& args, const std::st
 	return true;
 }
 
-void Join::joinChannel(Client& client, Channel* channelToJoin, const std::string& serverName) const
+void Join::joinChannel(Client& client, Channel& channelToJoin, const std::string& serverName) const
 {
-	channelToJoin->joinUser(client);
+	channelToJoin.joinUser(client);
 	client.setNumChannelsJoined(client.getNumChannelsJoined() + 1);
 
 	Replier::reply(client.getFd(), Replier::rplJoin, Utils::anyToVec(client.getNickname(), client.getUsername(),
-		client.getHostname(), channelToJoin->getName()));
+		client.getHostname(), channelToJoin.getName()));
 
-	const std::string& channelTopic = channelToJoin->getTopic();
-	if (channelTopic.empty())
-	{
-		Replier::reply(client.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, channelToJoin->getName()));
-	}
-	else
-	{
-		Replier::reply(client.getFd(), Replier::rplTopic, Utils::anyToVec(serverName, channelToJoin->getName(),
-			channelTopic));
-	}
+	sendTopic(channelToJoin, client, serverName);
 
 	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, client.getNickname(),
-		channelToJoin->getName());
-	std::vector<std::string> channelsNicknamesList = channelToJoin->getNicknamesListWithOperatorInfo();
+		channelToJoin.getName());
+	std::vector<std::string> channelsNicknamesList = channelToJoin.getNicknamesListWithOperatorInfo();
 	rplNamReplyArgs.insert(rplNamReplyArgs.end(), channelsNicknamesList.begin(),
 		channelsNicknamesList.end());
 
 	Replier::reply(client.getFd(), Replier::rplNamReply, rplNamReplyArgs);
-	Replier::reply(client.getFd(), Replier::rplEndOfNames, Utils::anyToVec(serverName, channelToJoin->getName()));
+	Replier::reply(client.getFd(), Replier::rplEndOfNames, Utils::anyToVec(serverName, channelToJoin.getName()));
 }

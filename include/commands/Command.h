@@ -14,4 +14,7 @@ public:
 	virtual ~Command();
 
 	virtual void execute(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
+
+protected:
+	void sendTopic(const Channel& channel, const Client& requestor, const std::string& serverName) const;
 };

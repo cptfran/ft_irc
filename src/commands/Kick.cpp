@@ -14,7 +14,6 @@ Kick::~Kick()
 
 }
 
-// TODO: after kick broadcast is only showing message for kicked user.
 // TODO: infinite loop happening when client is kicked by another client and then tries to connect again to the same
 // channel.
 void Kick::execute(Server& server, Client& client, const std::vector<std::string>& args) const

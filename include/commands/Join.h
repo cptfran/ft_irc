@@ -14,5 +14,5 @@ public:
 private:
 	Channel* findOrCreateChannel(Server& server, const std::string& channelName) const;
 	bool isValidChannelKey(const std::vector<std::string>& args, const std::string& channelKey) const;
-	void joinChannel(Client& client, Channel* channelToJoin, const std::string& serverName) const;
+	void joinChannel(Client& client, Channel& channelToJoin, const std::string& serverName) const;
 };

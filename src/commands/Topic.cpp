@@ -47,8 +47,7 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     }
 
     // Client not on the channel.
-    const std::string& clientNickname = client.getNickname();
-    if (!channel->isUserOnChannel(clientNickname))
+    if (!channel->isUserOnChannel(client.getNickname()))
     {
         Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(), channelName));
         return;
@@ -57,41 +56,32 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     // Only channel name provided by client. Sending back the topic if the topic is set.
     if (args.size() == 1)
     {
-        sendTopic(*channel, client.getFd(), server.getName());
+        sendTopic(*channel, client, server.getName());
         return;
     }
 
     // Check if topic change is restricted and only operators can change it.
-    if (channel->isTopicRestricted() && !channel->isUserOperator(clientNickname))
+    if (channel->isTopicRestricted() && !channel->isUserOperator(client.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(), channelName));
+        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+            channelName));
         return;
     }
 
-    setTopic(args, *channel, server.getName());
+    setTopic(args, client.getNickname(), *channel, server.getName());
 }
 
-void Topic::sendTopic(const Channel& channel, const int requestorFd, const std::string& serverName) const
-{
-   const std::string& topic = channel.getTopic();
-
-    DEBUG_LOG("SENDING TOPIC");
-    if (topic.empty())
-    {
-        Replier::reply(requestorFd, Replier::rplNoTopic, Utils::anyToVec(serverName, channel.getName()));
-        return;
-    }
-
-    Replier::reply(requestorFd, Replier::rplTopic, Utils::anyToVec(serverName, channel.getName(), topic));
-}
-
-void Topic::setTopic(const std::vector<std::string>& args, Channel& channel, const std::string& serverName) const
+void Topic::setTopic(const std::vector<std::string>& args, const std::string& requestorNickname, Channel& channel,
+    const std::string& serverName) const
 {
     // Set the new topic.
-    const std::string& topic = args[1].substr(1);
+    // TODO: implement sanitizeTopic method so it actually checks for ':' on the start and for unwanted chars in the
+    // end.
+    const std::string& topic = args[1].substr(1, args[1].length() - 2);
     channel.setTopic(topic);
 
     // Broadcast new topic to all channel members.
     const std::vector<int> clientsFdList = channel.getFdsList();
-    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, channel.getName(), topic));
+    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requestorNickname,
+        channel.getName(), topic));
 }

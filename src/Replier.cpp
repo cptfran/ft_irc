@@ -12,6 +12,8 @@ Replier::~Replier()
 
 }
 
+// TODO: probably the best pattern for message is :<servername> <number> <nickname> <rest>, check all the messages
+// (last fixed, rplTopic).
 void Replier::reply(const int clientFd, const ReplyFunction func, const std::vector<std::string>& args)
 {
 	const std::string reply = func(args);
@@ -98,7 +100,7 @@ std::string Replier::rplPong(const std::vector<std::string>& args)
 
 	if (args.size() == 1)
 	{
-		return "PONG :" + args[0] + "\r\n";
+		return "PONG :" + serverName + "\r\n";
 	}
 
 	const std::string& serverToReply = args[1];
@@ -118,8 +120,6 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 	return ":" + serverName + ": CAP * LS :\r\n";
 }
 
-
-// TODO: 'M' is spawning for some reason at the end of the reply, need to fix.
 std::string Replier::rplKick(const std::vector<std::string>& args)
 {
 	if (args.size() < 5)
@@ -158,7 +158,7 @@ std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
 		modeParams += args[i] + " ";
 	}
 
-	return "324 " + serverName + " " + channelName + " " + modeParams + "\r\n";
+	return ":" + serverName + " 324 " + channelName + " " + modeParams + "\r\n";
 }
 
 std::string Replier::rplNoTopic(const std::vector<std::string>& args)
@@ -171,21 +171,22 @@ std::string Replier::rplNoTopic(const std::vector<std::string>& args)
 	const std::string& serverName = args[0];
 	const std::string& channelName = args[1];
 
-	return "331 " + serverName + " " + channelName + " :No topic is set\r\n";
+	return ":" + serverName + " 331 " + channelName + " :No topic is set\r\n";
 }
 
 std::string Replier::rplTopic(const std::vector<std::string>& args)
 {
-	if (args.size() != 3)
+	if (args.size() != 4)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplTopic()"));
 	}
 
 	const std::string& serverName = args[0];
-	const std::string& channelName = args[1];
-	const std::string& topic = args[2];
+	const std::string& requestorNickname = args[1];
+	const std::string& channelName = args[2];
+	const std::string& topic = args[3];
 
-	return "332 " + serverName + " " + channelName + " :" + topic + "\r\n";
+	return ":" + serverName + " 332 " + requestorNickname + " " + channelName + " :" + topic + "\r\n";
 }
 
 std::string Replier::rplInviting(const std::vector<std::string>& args)
