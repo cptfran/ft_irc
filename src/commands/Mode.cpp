@@ -14,6 +14,8 @@ Mode::~Mode()
 
 }
 
+
+// TODO: handle ban list mode.
 void Mode::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
     // Not enough parameters.
@@ -31,7 +33,8 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(), channelName));
+        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
         return;
     }
 
@@ -53,25 +56,23 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     // Client requesting to see current channel modes.
     if (args.size() == 1)
     {
-        sendCurrentChannelModes(server.getName(), *channel, client.getFd());
+        sendCurrentChannelModes(server.getName(), *channel, client);
         return;
     }
 
     // Client requesting to modify channel modes.
-    editChannelModes(args, client.getFd(), server.getName(), *channel);
+    editChannelModes(args, client, server.getName(), *channel);
 }
 
-void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const int clientFd) const
+void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const Client& requestor) const
 {
-    const std::string& channelName = channel.getName();
     std::string modes = "+";
-    std::vector<std::string> replyParams = Utils::anyToVec(serverName, channelName);
+    std::vector<std::string> replyParams = Utils::anyToVec(serverName, requestor.getNickname(), channel.getName());
 
-    const std::string& key = channel.getKey();
-    if (!key.empty())
+    if (!channel.getKey().empty())
     {
         modes += "k";
-        replyParams.push_back(key);
+        replyParams.push_back(channel.getKey());
     }
 
     if (channel.isInviteOnly())
@@ -92,14 +93,14 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
 
     if (modes.length() > 1)
     {
-        replyParams.insert(replyParams.begin() + 2, modes);
+        replyParams.insert(replyParams.begin() + 3, modes);
     }
 
-    Replier::reply(clientFd, Replier::rplChannelModeIs, replyParams);
+    Replier::reply(requestor.getFd(), Replier::rplChannelModeIs, replyParams);
 }
 
-void Mode::editChannelModes(const std::vector<std::string>& args, const int clientFd, const std::string& serverName,
-    Channel& channel) const
+void Mode::editChannelModes(const std::vector<std::string>& args, const Client& requestor,
+    const std::string& serverName, Channel& channel) const
 {
     const std::string& modes = args[1];
     std::string action;
@@ -115,7 +116,7 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const int clie
         // Action sign not found.
         else if (action.empty())
         {
-            Replier::reply(clientFd, Replier::errUnknownMode,
+            Replier::reply(requestor.getFd(), Replier::errUnknownMode,
                 Utils::anyToVec(serverName, std::string(1, modes[i])));
         }
         // Switch on/off invite-only mode.
@@ -133,17 +134,17 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const int clie
         // Remove/add channel key(password).
         else if (modes[i] == 'k')
         {
-            handleKeyMode(channel, action, args, argsI, clientFd, serverName, modes[i]);
+            handleKeyMode(channel, action, args, argsI, requestor.getFd(), serverName, modes[i]);
         }
         // Give/remove channel operator privilege to/from user.
         else if (modes[i] == 'o')
         {
-            handleOperatorMode(channel, action, args, argsI, clientFd, serverName, modes[i]);
+            handleOperatorMode(channel, action, args, argsI, requestor, serverName, modes[i]);
         }
         // Enable+set/remove user limit on the channel.
         else if (modes[i] == 'l')
         {
-            handleUserLimitMode(channel, action, args, argsI, clientFd, serverName, modes[i]);
+            handleUserLimitMode(channel, action, args, argsI, requestor.getFd(), serverName, modes[i]);
         }
     }
 }
@@ -172,16 +173,16 @@ void Mode::handleKeyMode(Channel& channel, const std::string& action, const std:
     }
 
     const std::string& newKey = args[argsI];
-    ++argsI;
     channel.setKey(newKey);
 }
 
 void Mode::handleOperatorMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
-    size_t& argsI, const int clientFd, const std::string& serverName, const char mode) const
+    size_t& argsI, const Client& requestor, const std::string& serverName, const char mode) const
 {
     if (args[argsI].empty())
     {
-        Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, std::string(1, mode)));
+        Replier::reply(requestor.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName, std::string(1,
+         mode)));
         return;
     }
 
@@ -189,7 +190,7 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
     ++argsI;
     if (!channel.isUserOnChannel(targetNickname))
     {
-        Replier::reply(clientFd, Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
+        Replier::reply(requestor.getFd(), Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
         return;
     }
 

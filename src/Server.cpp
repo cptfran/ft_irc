@@ -419,13 +419,13 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
 		Replier::reply(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
-			client.getUsername()));
+			client.getUsername(), client.getHostname()));
 		Replier::reply(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
 			this->version));
 		Replier::reply(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
 			this->creationDate));
-		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, this->version,
-			this->availableUserModes, this->availableChannelModes));
+		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, client.getNickname(),
+			this->version, this->availableUserModes, this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
 	}

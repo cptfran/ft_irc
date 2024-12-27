@@ -19,10 +19,10 @@ void Command::sendTopic(const Channel& channel, const Client& requestor, const s
 {
 	const std::string& topic = channel.getTopic();
 
-	DEBUG_LOG("SENDING TOPIC");
 	if (topic.empty())
 	{
-		Replier::reply(requestor.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, channel.getName()));
+		Replier::reply(requestor.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, requestor.getNickname(),
+			channel.getName()));
 		return;
 	}
 

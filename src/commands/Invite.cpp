@@ -30,7 +30,8 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     // Invited user not found.
     if (clientToInvite == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(), nicknameToInvite));
+        Replier::reply(client.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            client.getNickname(), nicknameToInvite));
         return;
     }
 
@@ -41,8 +42,8 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     // Invitation channel not found.
     if (channelToInvite == NULL)
     {
-        Replier::reply(client.getFd(), Replier::rplInviting,
-            Utils::anyToVec(server.getName(), clientToInvite->getNickname(), channelToInviteName));
+        Replier::reply(client.getFd(), Replier::rplInviting, Utils::anyToVec(server.getName(), client.getNickname(),
+            clientToInvite->getNickname(), channelToInviteName));
         Replier::reply(client.getFd(), Replier::rplInvite,
             Utils::anyToVec(client.getNickname(), client.getNickname(), channelToInviteName));
         return;
@@ -83,8 +84,8 @@ void Invite::inviteUser(Channel& channelToInvite, const Client& invitingClient, 
     channelToInvite.addToInviteList(invitedClient.getNickname());
 
     // Send invite replies.
-    Replier::reply(invitingClient.getFd(), Replier::rplInviting,
-            Utils::anyToVec(serverName, invitedClient.getNickname(), channelToInvite.getName()));
+    Replier::reply(invitingClient.getFd(), Replier::rplInviting, Utils::anyToVec(serverName,
+        invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
     Replier::reply(invitedClient.getFd(), Replier::rplInvite,
         Utils::anyToVec(invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
 }

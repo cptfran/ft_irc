@@ -23,6 +23,8 @@
 //    channel name is that it may not contain any spaces (' '), a control G
 //    (^G or ASCII 7), or a comma (',' which is used as a list item
 //    separator by the protocol).
+
+// TODO: implement deleting channel when no users left.
 class Channel
 {
 public:

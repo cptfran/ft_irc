@@ -40,7 +40,7 @@ void Part::execute(Server& server, Client& client, const std::vector<std::string
 		if (channelToLeave == NULL)
 		{
 			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
-				channelToFindName));
+				client.getNickname(), channelToFindName));
 			continue;
 		}
 

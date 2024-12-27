@@ -33,7 +33,8 @@ void Kick::execute(Server& server, Client& client, const std::vector<std::string
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(), channelName));
+        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
         return;
     }
 
