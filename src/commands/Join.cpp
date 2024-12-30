@@ -20,14 +20,15 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	if (args.empty())
 	{
 		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
-			std::string("JOIN")));
+			client.getNickname(), std::string("JOIN")));
 		return;
 	}
 
 	// User is not registered.
 	if (!client.registered(server.getPassword()))
 	{
-		Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName()));
+		Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+			client.getNickname()));
 		return;
 	}
 
@@ -37,7 +38,8 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If yes, don't join and send proper reply.
 	if (client.getNumChannelsJoined() == CHANNELS_MAX)
 	{
-		Replier::reply(client.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(),
+			client.getNickname(), channelName));
 		return;
 	}
 
@@ -47,21 +49,24 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	// If channel is invite only and client is not invited, don't join the client to it and send proper reply.
 	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(client.getNickname()))
 	{
-		Replier::reply(client.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(),
+			client.getNickname(), channelName));
 		return;
 	}
 
 	// Check if channel requires key, if yes, check if it's provided and correct.
 	if (!channelToJoin->getKey().empty() && !isValidChannelKey(args, channelToJoin->getKey()))
 	{
-		Replier::reply(client.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(),
+			client.getNickname(), channelName));
 		return;
 	}
 
 	// Check if channel has user limit, if yes check if it's not full.
 	if (channelToJoin->isUserLimitActive() && channelToJoin->getUserLimit() == channelToJoin->getNumOfJoinedUsers())
 	{
-		Replier::reply(client.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(), channelName));
+		Replier::reply(client.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(),
+			client.getNickname(), channelName));
 		return;
 	}
 

@@ -4,6 +4,8 @@
 #include "../include/Log.h"
 #include "../include/Utils.h"
 
+// TODO: maybe use namespaces instead of defines? Need to check it.
+// TODO: server lags sometimes. FE if connecting multiple times with nickname collision, need to check that on mac.
 int main(const int argc, char *argv[])
 {
 	if (argc != 3)

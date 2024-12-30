@@ -64,7 +64,6 @@ availableChannelModes("itkol")
 	this->validCommands["INVITE"] = new Invite();
 	this->validCommands["MODE"] = new Mode();
 	this->validCommands["PART"] = new Part();
-	// this->validCommands["PART"] = new Part();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -286,13 +285,14 @@ void Server::stop()
 	this->running = false;
 }
 
-void Server::handleNicknameCollision(const std::string& newClientNickname)
+void Server::handleNicknameCollision(const int newClientFd, const std::string& newClientNickname)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
-		if (newClientNickname == it->second.getNickname())
+		if (newClientNickname == it->second.getNickname() && it->second.getFd() != newClientFd)
 		{
-			Replier::reply(it->second.getFd(), Replier::errNickCollision, Utils::anyToVec(this->name));
+			Replier::reply(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
+				newClientNickname, it->second.getUsername(), it->second.getHostname()));
 			this->disconnectClient(it->second);
 			return;
 		}
@@ -302,6 +302,19 @@ void Server::handleNicknameCollision(const std::string& newClientNickname)
 void Server::addChannel(const Channel& channel)
 {
 	channels.push_back(channel);
+}
+
+void Server::deleteChannelIfEmpty(const Channel& channel)
+{
+	if (channel.getNumOfJoinedUsers() == 0)
+	{
+		const std::vector<Channel>::iterator it = std::find(this->channels.begin(), this->channels.end(),
+			channel);
+		if (it != this->channels.end())
+		{
+			this->channels.erase(it);
+		}
+	}
 }
 
 void Server::connectClient()
@@ -408,7 +421,8 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 	{
 		if (this->validCommands.find(it->first) == this->validCommands.end())
 		{
-			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(it->first));
+			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
+				client.getNickname(), it->first));
 			continue;
 		}
 		this->validCommands.at(it->first)->execute(*this, client, it->second);

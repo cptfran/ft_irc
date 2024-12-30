@@ -12,5 +12,5 @@ public:
 
 private:
     void kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requestor,
-        const std::string& serverName) const;
+        Server& server) const;
 };

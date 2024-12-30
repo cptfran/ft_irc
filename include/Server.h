@@ -2,7 +2,6 @@
 
 #include <map>
 #include "Client.h"
-#include "Channel.h"
 #include "commands/Command.h"
 #include <vector>
 #include <netinet/in.h>
@@ -16,6 +15,9 @@
 #define INPUT_BUFFER_SIZE 512
 #define HOSTNAME_BUFFER_SIZE 1024
 
+class Channel;
+
+// TODO: add more logs of the server, so it logs whenever something imporant happens, like channel created etc.
 class Server
 {
 public:
@@ -33,9 +35,10 @@ public:
 	void run();
 	void stop();
 
-	void handleNicknameCollision(const std::string& newClientNickname);
+	void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
 
 	void addChannel(const Channel& channel);
+	void deleteChannelIfEmpty(const Channel& channel);
 
 private:
 	static Server* instance;

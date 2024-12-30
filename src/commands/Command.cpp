@@ -1,8 +1,6 @@
 #include "commands/Command.h"
-
-#include "Log.h"
+#include "Channel.h"
 #include "Replier.h"
-#include "Server.h"
 #include "Utils.h"
 
 Command::Command()

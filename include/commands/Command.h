@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../Client.h"
-#include "Channel.h"
 #include <string>
 #include <vector>
 
 class Server;
+class Channel;
 
 class Command
 {

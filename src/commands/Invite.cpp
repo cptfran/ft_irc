@@ -19,7 +19,8 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(), std::string("INVITE")));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            client.getNickname(), std::string("INVITE")));
         return;
     }
 
@@ -53,7 +54,7 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     if (!channelToInvite->isUserOnChannel(client.getNickname()))
     {
         Replier::reply(client.getFd(), Replier::errNotOnChannel,
-            Utils::anyToVec(server.getName(), channelToInviteName));
+            Utils::anyToVec(server.getName(), client.getNickname(), channelToInviteName));
         return;
     }
 
@@ -61,15 +62,15 @@ void Invite::execute(Server& server, Client& client, const std::vector<std::stri
     if (channelToInvite->isUserOnChannel(clientToInvite->getNickname()))
     {
         Replier::reply(client.getFd(), Replier::errUserOnChannel,
-          Utils::anyToVec(server.getName(), nicknameToInvite, channelToInviteName));
+          Utils::anyToVec(server.getName(), client.getNickname(), nicknameToInvite, channelToInviteName));
         return;
     }
 
     // Channel is invite-only and inviting client doesn't have operator privileges.
     if (channelToInvite->isInviteOnly() && !channelToInvite->isUserOperator(client.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded,
-            Utils::anyToVec(server.getName(), channelToInviteName));
+        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelToInviteName));
         return;
     }
 

@@ -2,6 +2,8 @@
 #include "Log.h"
 #include <algorithm>
 
+#include "Server.h"
+
 Channel::Channel(const std::string& name)
 : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
 {
@@ -32,6 +34,20 @@ Channel& Channel::operator=(const Channel& toCopy)
 	return *this;
 }
 
+bool Channel::operator==(const Channel& toCompare) const
+{
+	return this->name == toCompare.name &&
+		   this->key == toCompare.key &&
+	       this->inviteOnly == toCompare.inviteOnly &&
+		   this->invitedUsers == toCompare.invitedUsers &&
+           this->topicRestricted == toCompare.topicRestricted &&
+           this->userLimitActive == toCompare.userLimitActive &&
+           this->userLimit == toCompare.userLimit &&
+           this->joinedClients == toCompare.joinedClients &&
+           this->topic == toCompare.topic;
+}
+
+
 Channel::ClientData& Channel::ClientData::operator=(const ClientData& toCopy)
 {
 	if (this != &toCopy)
@@ -41,6 +57,13 @@ Channel::ClientData& Channel::ClientData::operator=(const ClientData& toCopy)
 	}
 	return *this;
 }
+
+bool Channel::ClientData::operator==(const ClientData& toCompare) const
+{
+	return this->isOperator == toCompare.isOperator &&
+		   this->client == toCompare.client;
+}
+
 
 std::string Channel::getName() const
 {
@@ -159,7 +182,7 @@ void Channel::joinUser(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::ejectUser(const std::string& userToKick)
+bool Channel::ejectUser(Server& server, const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
@@ -167,6 +190,9 @@ bool Channel::ejectUser(const std::string& userToKick)
 		{
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
+
+			server.deleteChannelIfEmpty(*this);
+
 			return true;
 		}
 	}

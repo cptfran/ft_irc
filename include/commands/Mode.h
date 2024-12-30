@@ -17,9 +17,9 @@ private:
     void editChannelModes(const std::vector<std::string>& args, const Client& requestor, const std::string& serverName,
         Channel& channel) const;
     void handleKeyMode(Channel& channel, const std::string& action, const std::vector<std::string>& args, size_t& argsI,
-        int clientFd, const std::string& serverName, char mode) const;
+        const Client& requestor, const std::string& serverName, char mode) const;
     void handleOperatorMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
         size_t& argsI, const Client& requestor, const std::string& serverName, char mode) const;
     void handleUserLimitMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
-        size_t& argsI, int clientFd, const std::string& serverName, char mode) const;
+        size_t& argsI, const Client& requestor, const std::string& serverName, char mode) const;
 };
