@@ -1,13 +1,13 @@
 #include "../include/Client.h"
-
 #include "Log.h"
+#include <ctime>
 
-Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
 {
 
 }
 
-Client::Client() : fd(), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
 {
 
 }
@@ -97,6 +97,11 @@ bool Client::registered(const std::string& serverPassword) const
 		return false;
 	}
 	return true;
+}
+
+time_t Client::getTimeConnected() const
+{
+	return this->timeConnected;
 }
 
 bool Client::getWelcomeRepliesSent() const

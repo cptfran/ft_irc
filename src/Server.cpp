@@ -244,7 +244,8 @@ void Server::run()
 	// Main loop, handling new client connections and already running clients.
     while (running)
     {
-    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
+    	const int pollResult = poll(&this->pollFds[0], this->pollFds.size(), 1000);
+    	if (pollResult < 0)
     	{
     		if (errno == EINTR)
     		{
@@ -253,6 +254,9 @@ void Server::run()
     		Log::msgServer(ERROR, "Poll error");
     		return;
     	}
+
+    	handleTimeouts();
+
     	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
         {
     		if (it->revents == 0)
@@ -262,7 +266,7 @@ void Server::run()
         	}
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
-            	this->disconnectClient(this->clients.at(it->fd));
+            	this->disconnectClient(it->fd);
             	it = this->pollFds.erase(it);
         		continue;
         	}
@@ -293,7 +297,7 @@ void Server::handleNicknameCollision(const int newClientFd, const std::string& n
 		{
 			Replier::reply(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
 				newClientNickname, it->second.getUsername(), it->second.getHostname()));
-			this->disconnectClient(it->second);
+			this->disconnectClient(it->second.getFd());
 			return;
 		}
 	}
@@ -374,22 +378,18 @@ std::string Server::getClientHostname(sockaddr_in& addr, socklen_t addrLen, cons
 	return std::string(host_entry->h_name);
 }
 
-void Server::disconnectClient(Client& client)
+void Server::disconnectClient(const int clientFd)
 {
-	const int clientFd = client.getFd();
 	this->clients.erase(clientFd);
 	close(clientFd);
 	Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
 }
 
-
-// TODO: implement certain amount of time client has to send authentication data. (not sure if it's necessary though)
 void Server::handleClientPrompt(Client& client)
 {
 	char buffer[INPUT_BUFFER_SIZE] = {};
-	const int clientFd = client.getFd();
-	const ssize_t bytesRead = recv(clientFd, buffer, sizeof(buffer) - 1, 0);
-	DEBUG_LOG(std::string("CLIENT: \"") + buffer + "\"");
+	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
+	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(client.getFd()) + "]: \"") + buffer + "\"");
 	if (bytesRead <= 0)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -397,7 +397,7 @@ void Server::handleClientPrompt(Client& client)
 			std::cout << "EAGAIN || EWOULDBLOCK" << std::endl;
 			return;
 		}
-		this->disconnectClient(client);
+		this->disconnectClient(client.getFd());
 		return;
 	}
 	buffer[bytesRead] = '\0';
@@ -407,8 +407,8 @@ void Server::handleClientPrompt(Client& client)
 	}
 	catch (const std::exception& e)
 	{
-		Log::msgServer(INFO, "CLIENT", clientFd, e.what());
-		this->disconnectClient(client);
+		Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
+		this->disconnectClient(client.getFd());
 	}
 }
 
@@ -442,5 +442,24 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 			this->version, this->availableUserModes, this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
+	}
+}
+
+void Server::handleTimeouts()
+{
+	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
+	{
+		std::map<int, Client>::iterator clientIt = this->clients.find(it->fd);
+		if (clientIt != this->clients.end() &&
+			!clientIt->second.registered(this->password) &&
+			difftime(std::time(0), clientIt->second.getTimeConnected()) > TIME_FOR_CLIENT_TO_REGISTER)
+		{
+			Replier::reply(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
+				clientIt->second.getHostname()));
+			disconnectClient(it->fd);
+			it = this->pollFds.erase(it);
+			continue;
+		}
+		++it;
 	}
 }

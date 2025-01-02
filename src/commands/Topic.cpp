@@ -76,13 +76,32 @@ void Topic::setTopic(const std::vector<std::string>& args, const std::string& re
     const std::string& serverName) const
 {
     // Set the new topic.
-    // TODO: implement sanitizeTopic method so it actually checks for ':' on the start and for unwanted chars in the
-    // end.
-    const std::string& topic = args[1].substr(1, args[1].length() - 2);
-    channel.setTopic(topic);
+    const std::string& topic = args[1];
+    channel.setTopic(sanitizeTopic(topic));
 
     // Broadcast new topic to all channel members.
     const std::vector<int> clientsFdList = channel.getFdsList();
     Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requestorNickname,
-        channel.getName(), topic));
+        channel.getName(), channel.getTopic()));
+}
+
+std::string Topic::sanitizeTopic(const std::string& topic) const
+{
+    std::string sanitized;
+
+    if (!topic.empty() && topic[0] == ':')
+    {
+        sanitized = topic.substr(1);
+    }
+
+    for (std::string::reverse_iterator it = sanitized.rbegin(); it != sanitized.rend(); ++it)
+    {
+        if (*it != '\r' && *it != '\n')
+        {
+            const std::string::size_type cutPos = sanitized.rend() - it;
+            return sanitized.substr(0, cutPos);
+        }
+    }
+
+    return sanitized;
 }

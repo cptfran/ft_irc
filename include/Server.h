@@ -15,6 +15,8 @@
 #define INPUT_BUFFER_SIZE 512
 #define HOSTNAME_BUFFER_SIZE 1024
 
+#define TIME_FOR_CLIENT_TO_REGISTER 15
+
 class Channel;
 
 // TODO: add more logs of the server, so it logs whenever something imporant happens, like channel created etc.
@@ -29,7 +31,6 @@ public:
 	std::string getName() const;
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
-	Channel* getChannel(const std::string& channelName);
 	Client* findClientByNickname(const std::string& nicknameToFind);
 
 	void run();
@@ -37,6 +38,8 @@ public:
 
 	void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
 
+	// Channels:
+	Channel* getChannel(const std::string& channelName);
 	void addChannel(const Channel& channel);
 	void deleteChannelIfEmpty(const Channel& channel);
 
@@ -62,9 +65,11 @@ private:
 	// Client connection.
 	void connectClient();
 	std::string getClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
-	void disconnectClient(Client& client);
+	void disconnectClient(int clientFd);
 
 	// Handling new requests of already connected client.
 	void handleCommands(Client& client, const std::string& buffer);
 	void handleClientPrompt(Client& client);
+
+	void handleTimeouts();
 };

@@ -31,6 +31,7 @@ private:
 	static std::string rplJoin(const std::vector<std::string>& args); // none
 	static std::string rplNamReply(const std::vector<std::string>& args); // 353
 	static std::string rplEndOfNames(const std::vector<std::string>& args); // 366
+	static std::string rplEndOfBanList(const std::vector<std::string>& args); // 368
 	static std::string errNoSuchNick(const std::vector<std::string>& args); // 401
 	static std::string errNoSuchChannel(const std::vector<std::string>& args); // 403
 	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
@@ -49,6 +50,7 @@ private:
 	static std::string errBadChannelKey(const std::vector<std::string>& args); // 475
 	static std::string errBadChanMask(const std::vector<std::string>& args); // 476
 	static std::string errChanOPrivsNeeded(const std::vector<std::string>& args); // 482
+	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
 	friend class Server;
 	friend class Command;

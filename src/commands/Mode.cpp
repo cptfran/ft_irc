@@ -14,8 +14,6 @@ Mode::~Mode()
 
 }
 
-
-// TODO: handle ban list mode.
 void Mode::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
     // Not enough parameters.
@@ -45,18 +43,27 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
         return;
     }
 
+    // Client requesting to see current channel modes.
+    if (args.size() == 1)
+    {
+        sendCurrentChannelModes(server.getName(), *channel, client);
+        return;
+    }
+
+    // Client requesting for ban list.
+    const std::string& modes = args[1];
+    if (args.size() == 2 && modes == "b")
+    {
+        Replier::reply(client.getFd(), Replier::rplEndOfBanList, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
+        return;
+    }
+
     // No operator privileges.
     if (!channel->isUserOperator(client.getNickname()))
     {
         Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
             client.getNickname(), channelName));
-        return;
-    }
-
-    // Client requesting to see current channel modes.
-    if (args.size() == 1)
-    {
-        sendCurrentChannelModes(server.getName(), *channel, client);
         return;
     }
 

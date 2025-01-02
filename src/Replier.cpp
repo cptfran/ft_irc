@@ -117,6 +117,8 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 
 	const std::string& serverName = args[0];
 
+	// Here if asked for capabilities, server sends empty list, because based on the project subject we don't implement
+	// fully any known capability.
 	return ":" + serverName + ": CAP * LS :\r\n";
 }
 
@@ -281,6 +283,20 @@ std::string Replier::rplEndOfNames(const std::vector<std::string>& args)
 	const std::string& channelName = args[2];
 
 	return ":" + serverName + " 366 " + nickname + " " + channelName + " :End of /NAMES list\r\n";
+}
+
+std::string Replier::rplEndOfBanList(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplEndOfBanList()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& channelName = args[2];
+
+	return ":" + serverName + " 368 " + nickname + " " + channelName + " :End of channel ban list\r\n";
 }
 
 std::string Replier::errNoSuchNick(const std::vector<std::string>& args)
@@ -536,4 +552,17 @@ std::string Replier::errChanOPrivsNeeded(const std::vector<std::string>& args)
 	const std::string& channelName = args[2];
 
 	return ":" + serverName + " 482 " + nickname + " " + channelName + " :You're not channel operator\r\n";
+}
+
+std::string Replier::errClosingLink(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
+	}
+
+	const std::string& nickname = args[0];
+	const std::string& hostname = args[1];
+
+	return "ERROR :Closing Link: " + nickname + "[" + hostname + "] (Registration timeout)\r\n";
 }

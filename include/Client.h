@@ -37,6 +37,7 @@ public:
 	void setNumChannelsJoined(int num);
 
 	bool registered(const std::string& serverPassword) const;
+	time_t getTimeConnected() const;
 	bool getWelcomeRepliesSent() const;
 	int getNumChannelsJoined() const;
 
@@ -47,6 +48,7 @@ private:
 	std::string username;
 	std::string hostname;
 	std::string realname;
+	time_t timeConnected;
 	bool welcomeRepliesSent;
 	int channelsJoined;
 
