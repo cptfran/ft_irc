@@ -50,6 +50,7 @@ private:
 	static std::string errBadChannelKey(const std::vector<std::string>& args); // 475
 	static std::string errBadChanMask(const std::vector<std::string>& args); // 476
 	static std::string errChanOPrivsNeeded(const std::vector<std::string>& args); // 482
+	static std::string errUModeUnknownFlag(const std::vector<std::string>& args); // 501
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
 	friend class Server;

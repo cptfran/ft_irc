@@ -26,6 +26,15 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
 
     // Fetch channel from server's channel list.
     const std::string& channelName = args[0];
+
+    // Prompting for user modes. User modes not handled by the server.
+    if (!channelName.empty() && channelName[0] != '#')
+    {
+        Replier::reply(client.getFd(), Replier::errUModeUnknownFlag, Utils::anyToVec(server.getName(),
+            client.getNickname()));
+        return;
+    }
+
     Channel* channel = server.getChannel(channelName);
 
     // Channel not found.
@@ -69,6 +78,11 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
 
     // Client requesting to modify channel modes.
     editChannelModes(args, client, server.getName(), *channel);
+}
+
+void Mode::handleUserModes() const
+{
+    
 }
 
 void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const Client& requestor) const

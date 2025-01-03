@@ -554,6 +554,19 @@ std::string Replier::errChanOPrivsNeeded(const std::vector<std::string>& args)
 	return ":" + serverName + " 482 " + nickname + " " + channelName + " :You're not channel operator\r\n";
 }
 
+std::string Replier::errUModeUnknownFlag(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+	return ":" + serverName + " 501 " + nickname + " :Unknown MODE flag\r\n";
+}
+
 std::string Replier::errClosingLink(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
