@@ -6,7 +6,6 @@
 
 // TODO: maybe use namespaces instead of defines? Need to check it.
 // TODO: server lags sometimes. FE if connecting multiple times with nickname collision, need to check that on mac.
-// TODO: implement response for user MODE?
 int main(const int argc, char *argv[])
 {
 	if (argc != 3)

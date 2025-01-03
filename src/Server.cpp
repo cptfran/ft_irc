@@ -50,8 +50,8 @@ Server* Server::instance = NULL;
  * @param password The password to be used for client authentication.
  */
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-: running(true), fd(-1), name(name), version(version), password(password), availableUserModes(""),
-availableChannelModes("itkol")
+: running(true), fd(-1), name(name), version(version), password(password), availableUserModes(std::string("i")),
+availableChannelModes(std::string("itkol"))
 {
 	this->validCommands["CAP"] = new Cap();
 	this->validCommands["JOIN"] = new Join();
@@ -141,6 +141,16 @@ Channel* Server::getChannel(const std::string& channelName)
 		}
 	}
 	return NULL;
+}
+
+std::string Server::getAvailableChannelModes() const
+{
+	return this->availableChannelModes;
+}
+
+std::string Server::getAvailableUserModes() const
+{
+	return this->availableUserModes;
 }
 
 Client* Server::findClientByNickname(const std::string& nicknameToFind)

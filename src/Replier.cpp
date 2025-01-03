@@ -54,7 +54,7 @@ std::string Replier::rplYourHost(const std::vector<std::string>& args)
 	const std::string& nickname = args[1];
 	const std::string& version = args[2];
 
-	return ":" + serverName + " 002 " + nickname + " :Your host is " + nickname + ", running version " + version
+	return ":" + serverName + " 002 " + nickname + " :Your host is " + serverName + ", running version " + version
 	+ "\r\n";
 }
 
@@ -143,6 +143,20 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 	}
 	return ":" + kickerNickname + "!" + kickerUsername + "@" + kickerHostname + " KICK " + channelName + " " +
 		kickedUser + "\r\n";
+}
+
+std::string Replier::rplUModeIs(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& modes = args[2];
+
+	return ":" + serverName + " 221 " + nickname + " " + modes + "\r\n";
 }
 
 std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
@@ -565,6 +579,19 @@ std::string Replier::errUModeUnknownFlag(const std::vector<std::string>& args)
 	const std::string& nickname = args[1];
 
 	return ":" + serverName + " 501 " + nickname + " :Unknown MODE flag\r\n";
+}
+
+std::string Replier::errUsersDontMatch(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUsersDontMatch()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+	return ":" + serverName + " 502 " + nickname + " :Cannot change mode for other users\r\n";
 }
 
 std::string Replier::errClosingLink(const std::vector<std::string>& args)

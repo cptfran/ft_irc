@@ -15,7 +15,6 @@ User::~User()
 
 }
 
-// TODO: maybe modify this command according with rfc2812 so the second arg is user mask.
 void User::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	if (args.size() < 4)

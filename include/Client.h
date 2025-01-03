@@ -27,14 +27,16 @@ public:
 	std::string getNickname() const;
 	std::string getUsername() const;
 	std::string getHostname() const;
+	bool isInvisible() const;
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
 	void setHostname(const std::string& hostname);
 	void setRealname(const std::string& realname);
-	void setWelcomeRepliesSent(bool truefalse);
+	void setWelcomeRepliesSent(bool sent);
 	void setNumChannelsJoined(int num);
+	void setInvisible(bool invisible);
 
 	bool registered(const std::string& serverPassword) const;
 	time_t getTimeConnected() const;
@@ -51,6 +53,7 @@ private:
 	time_t timeConnected;
 	bool welcomeRepliesSent;
 	int channelsJoined;
+	bool invisible;
 
 	Client();
 };

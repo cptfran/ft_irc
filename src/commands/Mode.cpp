@@ -30,8 +30,7 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     // Prompting for user modes. User modes not handled by the server.
     if (!channelName.empty() && channelName[0] != '#')
     {
-        Replier::reply(client.getFd(), Replier::errUModeUnknownFlag, Utils::anyToVec(server.getName(),
-            client.getNickname()));
+        handleUserModes(client, channelName, server, args);
         return;
     }
 
@@ -77,12 +76,50 @@ void Mode::execute(Server& server, Client& client, const std::vector<std::string
     }
 
     // Client requesting to modify channel modes.
-    editChannelModes(args, client, server.getName(), *channel);
+    editChannelModes(args, client, server, *channel);
 }
 
-void Mode::handleUserModes() const
+void Mode::handleUserModes(Client& requestor, const std::string& nickname, const Server& server,
+    const std::vector<std::string>& args) const
 {
-    
+    if (nickname != requestor.getNickname())
+    {
+        Replier::reply(requestor.getFd(), Replier::errUsersDontMatch, Utils::anyToVec(server.getName(),
+            requestor.getNickname()));
+        return;
+    }
+
+    if (args.size() < 2)
+    {
+        const std::string modes = requestor.isInvisible() ? std::string("+i") : std::string();
+        Replier::reply(requestor.getFd(), Replier::rplUModeIs, Utils::anyToVec(server.getName(),
+            requestor.getNickname(), modes));
+        return;
+    }
+
+    const std::string& modes = args[1];
+    std::string action;
+
+    for (size_t i = 0; i < modes.length(); ++i)
+    {
+        // Check if user requests to add or remove a mode.
+        if (modes[i] == '+' || modes[i] == '-')
+        {
+            action = modes[i];
+        }
+        // Action sign not found.
+        else if (action.empty() || server.getAvailableUserModes().find(modes[i]) == std::string::npos)
+        {
+            Replier::reply(requestor.getFd(), Replier::errUModeUnknownFlag, Utils::anyToVec(server.getName(),
+                requestor.getNickname()));
+        }
+        // Switch on/off invisible mode.
+        else
+        {
+            const bool invisible (action == "+");
+            requestor.setInvisible(invisible);
+        }
+    }
 }
 
 void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const Client& requestor) const
@@ -95,23 +132,19 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
         modes += "k";
         replyParams.push_back(channel.getKey());
     }
-
     if (channel.isInviteOnly())
     {
         modes += "i";
     }
-
     if (channel.isTopicRestricted())
     {
         modes += "t";
     }
-
     if (channel.isUserLimitActive())
     {
         modes += "l";
         replyParams.push_back(Utils::intToString(static_cast<int>(channel.getUserLimit())));
     }
-
     if (modes.length() > 1)
     {
         replyParams.insert(replyParams.begin() + 3, modes);
@@ -121,7 +154,7 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
 }
 
 void Mode::editChannelModes(const std::vector<std::string>& args, const Client& requestor,
-    const std::string& serverName, Channel& channel) const
+    const Server& server, Channel& channel) const
 {
     const std::string& modes = args[1];
     std::string action;
@@ -135,9 +168,9 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const Client& 
             action = modes[i];
         }
         // Action sign not found.
-        else if (action.empty())
+        else if (action.empty() || server.getAvailableChannelModes().find(modes[i]) == std::string::npos)
         {
-            Replier::reply(requestor.getFd(), Replier::errUnknownMode, Utils::anyToVec(serverName,
+            Replier::reply(requestor.getFd(), Replier::errUnknownMode, Utils::anyToVec(server.getName(),
                 requestor.getNickname(), std::string(1, modes[i])));
         }
         // Switch on/off invite-only mode.
@@ -155,17 +188,17 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const Client& 
         // Remove/add channel key(password).
         else if (modes[i] == 'k')
         {
-            handleKeyMode(channel, action, args, argsI, requestor, serverName, modes[i]);
+            handleKeyMode(channel, action, args, argsI, requestor, server.getName(), modes[i]);
         }
         // Give/remove channel operator privilege to/from user.
         else if (modes[i] == 'o')
         {
-            handleOperatorMode(channel, action, args, argsI, requestor, serverName, modes[i]);
+            handleOperatorMode(channel, action, args, argsI, requestor, server.getName(), modes[i]);
         }
         // Enable+set/remove user limit on the channel.
         else if (modes[i] == 'l')
         {
-            handleUserLimitMode(channel, action, args, argsI, requestor, serverName, modes[i]);
+            handleUserLimitMode(channel, action, args, argsI, requestor, server.getName(), modes[i]);
         }
     }
 }

@@ -23,6 +23,7 @@ private:
 	static std::string rplPong(const std::vector<std::string>& args); // none
 	static std::string rplCap(const std::vector<std::string>& args); // none
 	static std::string rplKick(const std::vector<std::string>& args); // none
+	static std::string rplUModeIs(const std::vector<std::string>& args); // 221
 	static std::string rplChannelModeIs(const std::vector<std::string>& args); // 324
 	static std::string rplNoTopic(const std::vector<std::string>& args); // 331
 	static std::string rplTopic(const std::vector<std::string>& args); // 332
@@ -51,6 +52,7 @@ private:
 	static std::string errBadChanMask(const std::vector<std::string>& args); // 476
 	static std::string errChanOPrivsNeeded(const std::vector<std::string>& args); // 482
 	static std::string errUModeUnknownFlag(const std::vector<std::string>& args); // 501
+	static std::string errUsersDontMatch(const std::vector<std::string>& args); // 502
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
 	friend class Server;

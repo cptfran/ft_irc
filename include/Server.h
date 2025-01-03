@@ -40,6 +40,8 @@ public:
 
 	// Channels:
 	Channel* getChannel(const std::string& channelName);
+	std::string getAvailableChannelModes() const;
+	std::string getAvailableUserModes() const;
 	void addChannel(const Channel& channel);
 	void deleteChannelIfEmpty(const Channel& channel);
 

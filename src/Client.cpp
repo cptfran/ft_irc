@@ -50,14 +50,19 @@ void Client::setRealname(const std::string& realname)
 	this->realname = realname;
 }
 
-void Client::setWelcomeRepliesSent(const bool truefalse)
+void Client::setWelcomeRepliesSent(const bool sent)
 {
-	this->welcomeRepliesSent = truefalse;
+	this->welcomeRepliesSent = sent;
 }
 
 void Client::setNumChannelsJoined(const int num)
 {
 	this->channelsJoined = num;
+}
+
+void Client::setInvisible(const bool invisible)
+{
+	this->invisible = invisible;
 }
 
 int Client::getFd() const
@@ -83,6 +88,11 @@ std::string Client::getUsername() const
 std::string Client::getHostname() const
 {
 	return this->hostname;
+}
+
+bool Client::isInvisible() const
+{
+	return this->invisible;
 }
 
 int Client::getNumChannelsJoined() const
