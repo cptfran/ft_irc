@@ -27,6 +27,7 @@ public:
 	std::string getNickname() const;
 	std::string getUsername() const;
 	std::string getHostname() const;
+	std::string getRealname() const;
 	bool isInvisible() const;
 
 	void setPassword(const std::string& password);

@@ -24,12 +24,14 @@ private:
 	static std::string rplCap(const std::vector<std::string>& args); // none
 	static std::string rplKick(const std::vector<std::string>& args); // none
 	static std::string rplUModeIs(const std::vector<std::string>& args); // 221
+	static std::string rplEndOfWho(const std::vector<std::string>& args); // 315
 	static std::string rplChannelModeIs(const std::vector<std::string>& args); // 324
 	static std::string rplNoTopic(const std::vector<std::string>& args); // 331
 	static std::string rplTopic(const std::vector<std::string>& args); // 332
 	static std::string rplInviting(const std::vector<std::string>& args); // 341
 	static std::string rplInvite(const std::vector<std::string>& args); // none
 	static std::string rplJoin(const std::vector<std::string>& args); // none
+	static std::string rplWhoReply(const std::vector<std::string>& args); // 352
 	static std::string rplNamReply(const std::vector<std::string>& args); // 353
 	static std::string rplEndOfNames(const std::vector<std::string>& args); // 366
 	static std::string rplEndOfBanList(const std::vector<std::string>& args); // 368
@@ -55,17 +57,18 @@ private:
 	static std::string errUsersDontMatch(const std::vector<std::string>& args); // 502
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
-	friend class Server;
 	friend class Command;
 	friend class Cap;
+	friend class Invite;
 	friend class Join;
 	friend class Kick;
+	friend class Mode;
 	friend class Nick;
+	friend class Part;
 	friend class Pass;
 	friend class Ping;
-	friend class User;
+	friend class Server;
 	friend class Topic;
-	friend class Invite;
-	friend class Mode;
-	friend class Part;
+	friend class User;
+	friend class Who;
 };

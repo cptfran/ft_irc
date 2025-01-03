@@ -90,6 +90,11 @@ std::string Client::getHostname() const
 	return this->hostname;
 }
 
+std::string Client::getRealname() const
+{
+	return this->realname;
+}
+
 bool Client::isInvisible() const
 {
 	return this->invisible;

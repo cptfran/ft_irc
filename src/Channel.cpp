@@ -170,6 +170,29 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
+std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName) const
+{
+	std::vector<std::string> list;
+
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
+		++it)
+	{
+		const std::string flags = it->isOperator ? "H@" : "H";
+		std::string userInfo;
+		userInfo.append(this->name).append(" ")
+		        .append(it->client.getUsername()).append(" ")
+		        .append(it->client.getHostname()).append(" ")
+		        .append(serverName).append(" ")
+		        .append(it->client.getNickname()).append(" ")
+		        .append(flags).append(" :0 ")
+		        .append(it->client.getRealname()).append("\r\n");
+
+		list.push_back(userInfo);
+	}
+
+	return list;
+}
+
 void Channel::joinUser(Client& newClient)
 {
 	bool isOperator = false;

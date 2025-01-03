@@ -159,6 +159,20 @@ std::string Replier::rplUModeIs(const std::vector<std::string>& args)
 	return ":" + serverName + " 221 " + nickname + " " + modes + "\r\n";
 }
 
+std::string Replier::rplEndOfWho(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& mask = args[2];
+
+	return ":" + serverName + " 315 " + nickname + " " + mask + " :End of WHO list\r\n";
+}
+
 std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
 {
 	if (args.size() < 2)
@@ -253,6 +267,20 @@ std::string Replier::rplJoin(const std::vector<std::string>& args)
 	const std::string& channelName = args[3];
 
 	return ":" + nickname + "!" + username + "@" + hostname + " JOIN :" + channelName + "\r\n";
+}
+
+std::string Replier::rplWhoReply(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplWhoReply()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& requestorNickname = args[1];
+	const std::string& sanitizedUserInfo = args[2];
+
+	return ":" + serverName + " 352 " + requestorNickname + sanitizedUserInfo;
 }
 
 std::string Replier::rplNamReply(const std::vector<std::string>& args)

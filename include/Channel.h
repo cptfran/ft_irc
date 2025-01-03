@@ -36,6 +36,7 @@ public:
 	unsigned int getUserLimit() const;
 	unsigned int getNumOfJoinedUsers() const;
 	std::string getTopic() const;
+	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName) const;
 
 	void joinUser(Client& newClient);
 	bool ejectUser(Server& server, const std::string& userToKick);

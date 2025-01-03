@@ -1,5 +1,6 @@
 #include "commands/Who.h"
 
+#include "Channel.h"
 #include "Log.h"
 #include "Replier.h"
 #include "Server.h"
@@ -51,7 +52,33 @@ Who::~Who()
 // TODO: need to implement (maybeee).
 void Who::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-	(void)server;
-	(void)client;
-	(void)args;
+	// Not enough parameters.
+	if (args.empty())
+	{
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			client.getNickname(), std::string("WHO")));
+		return;
+	}
+
+	const std::string& mask = args[0];
+	if (mask[0] == '#')
+	{
+		Channel* channel = server.getChannel(mask);
+		if (channel == NULL)
+		{
+			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+				client.getNickname(), mask));
+			return;
+		}
+		// :serverName 352 requestorNickname channel username hostname server nickname H@ :2 realname
+		const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName());
+		for (std::vector<std::string>::const_iterator it = userList.begin(); it != userList.end(); ++it)
+		{
+			Replier::reply(client.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
+				client.getNickname(), *it));
+		}
+		Replier::reply(client.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
+			client.getNickname(), mask));
+		return;
+	}
 }
