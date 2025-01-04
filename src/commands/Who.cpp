@@ -63,7 +63,7 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	const std::string& mask = args[0];
 	if (mask[0] == '#')
 	{
-		Channel* channel = server.getChannel(mask);
+		const Channel* channel = server.getChannel(mask);
 		if (channel == NULL)
 		{
 			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
@@ -82,3 +82,46 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 		return;
 	}
 }
+
+// pattern = use* str = user
+// pattern = se* str = ser
+// pattern = e* str = er
+// pattern = * str = r
+// pattern = \0 str = r || pattern = * str = \0
+// pattern = \0 str = \0
+
+bool matchWildcard(const char* pattern, const char* str, bool bracket)
+{
+	// Base case: if we reach the end of both the pattern and the string, it's a match
+	if (*pattern == '\0' && *str == '\0')
+	{
+		return true;
+	}
+
+	// If the current character in the pattern is '*', it can match zero or more characters in the string
+	if (*pattern == '*')
+	{
+		// Try to match the rest of the pattern with the current string or the rest of the string
+		return matchWildcard(pattern + 1, str, bracket) || (*str != '\0' && matchWildcard(pattern, str + 1, bracket));
+	}
+
+	if (*pattern == '[')
+	{
+		return matchWildcard()
+	}
+
+	// If the current character in the pattern is '?', it can match any single character in the string
+	if (*pattern == '?' || *pattern == *str)
+	{
+		return matchWildcard(pattern + 1, str + 1, false);
+	}
+
+	// If the current characters in the pattern and the string do not match, it's not a match
+	return false;
+}
+
+bool matchWildcard(const std::string& pattern, const std::string& str)
+{
+	return matchWildcard(pattern.c_str(), str.c_str());
+}
+
