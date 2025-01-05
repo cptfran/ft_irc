@@ -55,7 +55,7 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	// Not enough parameters.
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),                   
 			client.getNickname(), std::string("WHO")));
 		return;
 	}
@@ -83,14 +83,12 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	}
 }
 
-// pattern = use* str = user
-// pattern = se* str = ser
-// pattern = e* str = er
-// pattern = * str = r
-// pattern = \0 str = r || pattern = * str = \0
-// pattern = \0 str = \0
+bool Who::wildcardValidator(const std::string& pattern, const std::string& str)
+{
+	return matchWildcard(pattern.c_str(), str.c_str());
+}
 
-bool matchWildcard(const char* pattern, const char* str, bool bracket)
+bool Who::matchWildcard(const char* pattern, const char* str)
 {
 	// Base case: if we reach the end of both the pattern and the string, it's a match
 	if (*pattern == '\0' && *str == '\0')
@@ -102,26 +100,15 @@ bool matchWildcard(const char* pattern, const char* str, bool bracket)
 	if (*pattern == '*')
 	{
 		// Try to match the rest of the pattern with the current string or the rest of the string
-		return matchWildcard(pattern + 1, str, bracket) || (*str != '\0' && matchWildcard(pattern, str + 1, bracket));
-	}
-
-	if (*pattern == '[')
-	{
-		return matchWildcard()
+		return matchWildcard(pattern + 1, str) || (*str != '\0' && matchWildcard(pattern, str + 1));
 	}
 
 	// If the current character in the pattern is '?', it can match any single character in the string
 	if (*pattern == '?' || *pattern == *str)
 	{
-		return matchWildcard(pattern + 1, str + 1, false);
+		return matchWildcard(pattern + 1, str + 1);
 	}
 
 	// If the current characters in the pattern and the string do not match, it's not a match
 	return false;
 }
-
-bool matchWildcard(const std::string& pattern, const std::string& str)
-{
-	return matchWildcard(pattern.c_str(), str.c_str());
-}
-
