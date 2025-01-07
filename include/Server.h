@@ -32,6 +32,7 @@ public:
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
 	Client* findClientByNickname(const std::string& nicknameToFind);
+	bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
 
 	void run();
 	void stop();

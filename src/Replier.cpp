@@ -147,23 +147,28 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 
 std::string Replier::rplUModeIs(const std::vector<std::string>& args)
 {
-	if (args.size() != 3)
+	if (args.size() < 2)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
 	}
 
 	const std::string& serverName = args[0];
 	const std::string& nickname = args[1];
-	const std::string& modes = args[2];
 
-	return ":" + serverName + " 221 " + nickname + " " + modes + "\r\n";
+	if (args.size() == 3)
+	{
+		const std::string& modes = args[2];
+		return ":" + serverName + " 221 " + nickname + " " + modes + "\r\n";
+	}
+
+	return ":" + serverName + " 221 " + nickname + "\r\n";
 }
 
 std::string Replier::rplEndOfWho(const std::vector<std::string>& args)
 {
-	if (args.size() != 2)
+	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplEndOfWho()"));
 	}
 
 	const std::string& serverName = args[0];

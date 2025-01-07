@@ -1,7 +1,6 @@
 #include "Channel.h"
 #include "Log.h"
 #include <algorithm>
-
 #include "Server.h"
 
 Channel::Channel(const std::string& name)

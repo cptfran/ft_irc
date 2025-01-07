@@ -30,6 +30,7 @@
 #include "commands/Invite.h"
 #include "commands/Mode.h"
 #include "commands/Part.h"
+#include "commands/Who.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -64,6 +65,7 @@ availableChannelModes(std::string("itkol"))
 	this->validCommands["INVITE"] = new Invite();
 	this->validCommands["MODE"] = new Mode();
 	this->validCommands["PART"] = new Part();
+	this->validCommands["WHO"] = new Who();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -163,6 +165,19 @@ Client* Server::findClientByNickname(const std::string& nicknameToFind)
 		}
 	}
 	return NULL;
+}
+
+bool Server::usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const
+{
+	for (std::vector<Channel>::const_iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	{
+		if (it->isUserOnChannel(nickname1) && it->isUserOnChannel(nickname2))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Server::signalHandler(const int signum)

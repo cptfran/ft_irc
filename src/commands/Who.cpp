@@ -61,34 +61,77 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	}
 
 	const std::string& mask = args[0];
+
+	// User prompting for channel info.
 	if (mask[0] == '#')
 	{
-		const Channel* channel = server.getChannel(mask);
-		if (channel == NULL)
-		{
-			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
-				client.getNickname(), mask));
-			return;
-		}
-		// :serverName 352 requestorNickname channel username hostname server nickname H@ :2 realname
-		const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName());
-		for (std::vector<std::string>::const_iterator it = userList.begin(); it != userList.end(); ++it)
-		{
-			Replier::reply(client.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
-				client.getNickname(), *it));
-		}
-		Replier::reply(client.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
-			client.getNickname(), mask));
+		handleChannel(server, mask, client);
 		return;
 	}
+
+	// User prompting for users info.
+	handleUsers(server, client, mask);
 }
 
-bool Who::wildcardValidator(const std::string& pattern, const std::string& str)
+void Who::handleChannel(Server& server, const std::string& mask, Client& requester) const
 {
-	return matchWildcard(pattern.c_str(), str.c_str());
+	const Channel* channel = server.getChannel(mask);
+	if (channel == NULL)
+	{
+		Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+			requester.getNickname(), mask));
+		return;
+	}
+	// :serverName 352 requestorNickname channel username hostname server nickname H@ :2 realname
+	const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName());
+	for (std::vector<std::string>::const_iterator it = userList.begin(); it != userList.end(); ++it)
+	{
+		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
+			requester.getNickname(), *it));
+	}
+	Replier::reply(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
+		requester.getNickname(), mask));
 }
 
-bool Who::matchWildcard(const char* pattern, const char* str)
+
+// host, server, realname and nickname
+void Who::handleUsers(Server& server, Client& requester, const std::string& mask) const
+{
+	std::map<int, Client> users = server.getClients();
+
+	for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it)
+	{
+		if (!userMatchesMask(server, it->second, mask) ||
+			(it->second.isInvisible() &&
+			!server.usersHaveCommonChannel(requester.getNickname(), it->second.getNickname())))
+		{
+			continue;
+		}
+
+		const std::string sanitizedUserInfo = it->second.getUsername() + " " + it->second.getHostname() + " " +
+			server.getName() + " " + it->second.getNickname() + " H :0 " + it->second.getRealname() + "\r\n";
+
+		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
+			requester.getNickname(), sanitizedUserInfo));
+	}
+	Replier::reply(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
+		requester.getNickname(), mask));
+}
+
+bool Who::userMatchesMask(Server& server, Client& requester, const std::string& mask) const
+{
+	if (matchWildcard(mask.c_str(), requester.getHostname().c_str()) ||
+		matchWildcard(mask.c_str(), server.getName().c_str()) ||
+		matchWildcard(mask.c_str(), requester.getRealname().c_str()) ||
+		matchWildcard(mask.c_str(), requester.getNickname().c_str()))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Who::matchWildcard(const char* pattern, const char* str) const
 {
 	// Base case: if we reach the end of both the pattern and the string, it's a match
 	if (*pattern == '\0' && *str == '\0')

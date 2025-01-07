@@ -33,5 +33,5 @@ void User::execute(Server& server, Client& client, const std::vector<std::string
 	const std::string& username = args[0];
 	client.setUsername(username);
 
-	client.setRealname(realname.substr(1));
+	client.setRealname(Utils::sanitizeColonMessage(realname));
 }
