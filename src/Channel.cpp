@@ -169,13 +169,18 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
-std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName) const
+std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, const bool operatorOnly) const
 {
 	std::vector<std::string> list;
 
 	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
 		++it)
 	{
+		if (operatorOnly && !it->isOperator)
+		{
+			continue;
+		}
+
 		const std::string flags = it->isOperator ? "H@" : "H";
 		std::string userInfo;
 		userInfo.append(this->name).append(" ")

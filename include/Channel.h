@@ -7,6 +7,7 @@
 
 #define CHANNEL_NAME_MAX_LENGTH 50
 
+// TODO: When client disconnects I think client is not deleted from teh channel.
 class Channel
 {
 public:
@@ -36,7 +37,7 @@ public:
 	unsigned int getUserLimit() const;
 	unsigned int getNumOfJoinedUsers() const;
 	std::string getTopic() const;
-	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName) const;
+	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
 
 	void joinUser(Client& newClient);
 	bool ejectUser(Server& server, const std::string& userToKick);

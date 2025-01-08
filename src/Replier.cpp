@@ -285,7 +285,7 @@ std::string Replier::rplWhoReply(const std::vector<std::string>& args)
 	const std::string& requestorNickname = args[1];
 	const std::string& sanitizedUserInfo = args[2];
 
-	return ":" + serverName + " 352 " + requestorNickname + sanitizedUserInfo;
+	return ":" + serverName + " 352 " + requestorNickname + " " + sanitizedUserInfo;
 }
 
 std::string Replier::rplNamReply(const std::vector<std::string>& args)

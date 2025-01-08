@@ -49,7 +49,6 @@ Who::~Who()
 
 }
 
-// TODO: need to implement (maybeee).
 void Who::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
 	// Not enough parameters.
@@ -65,7 +64,8 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	// User prompting for channel info.
 	if (mask[0] == '#')
 	{
-		handleChannel(server, mask, client);
+		const bool operatorOnly(args.size() == 3 && args[2] == "o");
+		handleChannel(server, mask, client, operatorOnly);
 		return;
 	}
 
@@ -73,7 +73,7 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	handleUsers(server, client, mask);
 }
 
-void Who::handleChannel(Server& server, const std::string& mask, Client& requester) const
+void Who::handleChannel(Server& server, const std::string& mask, Client& requester, const bool operatorOnly) const
 {
 	const Channel* channel = server.getChannel(mask);
 	if (channel == NULL)
@@ -82,8 +82,8 @@ void Who::handleChannel(Server& server, const std::string& mask, Client& request
 			requester.getNickname(), mask));
 		return;
 	}
-	// :serverName 352 requestorNickname channel username hostname server nickname H@ :2 realname
-	const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName());
+
+	const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName(), operatorOnly);
 	for (std::vector<std::string>::const_iterator it = userList.begin(); it != userList.end(); ++it)
 	{
 		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
@@ -94,21 +94,20 @@ void Who::handleChannel(Server& server, const std::string& mask, Client& request
 }
 
 
-// host, server, realname and nickname
 void Who::handleUsers(Server& server, Client& requester, const std::string& mask) const
 {
 	std::map<int, Client> users = server.getClients();
 
 	for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it)
 	{
-		if (!userMatchesMask(server, it->second, mask) ||
+		if ((mask != "0" && !userMatchesMask(server, it->second, mask)) ||
 			(it->second.isInvisible() &&
 			!server.usersHaveCommonChannel(requester.getNickname(), it->second.getNickname())))
 		{
 			continue;
 		}
 
-		const std::string sanitizedUserInfo = it->second.getUsername() + " " + it->second.getHostname() + " " +
+		const std::string sanitizedUserInfo = "* " + it->second.getUsername() + " " + it->second.getHostname() + " " +
 			server.getName() + " " + it->second.getNickname() + " H :0 " + it->second.getRealname() + "\r\n";
 
 		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
