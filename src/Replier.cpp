@@ -354,10 +354,10 @@ std::string Replier::errNoSuchNick(const std::vector<std::string>& args)
 	}
 
 	const std::string& serverName = args[0];
-	const std::string& invitingNickname = args[1];
-	const std::string& invitedNickname = args[2];
+	const std::string& requestingNickname = args[1];
+	const std::string& target = args[2];
 
-	return ":" + serverName + " 401 " + invitingNickname + " " + invitedNickname + " :No such nick/channel\r\n";
+	return ":" + serverName + " 401 " + requestingNickname + " " + target + " :No such nick/channel\r\n";
 }
 
 std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
@@ -386,6 +386,50 @@ std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 	const std::string& channelName = args[2];
 
 	return ":" + serverName + " 405 " + nickname + " " + channelName + " :You have joined too many channels\r\n";
+}
+
+std::string Replier::errTooManyTargets(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errTooManyTargets()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& target = args[2];
+	const std::string& errorCode = args[3];
+	const std::string& abortMessage = args[4];
+
+	return ":" + serverName + " 407 " + nickname + " " + target + " :" + errorCode + " " + abortMessage + "\r\n";
+}
+
+std::string Replier::errNoRecipient(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoRecipient()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& command = args[2];
+
+	return ":" + serverName + " 411 " + nickname + " " + " :No recipient given " + command + "\r\n";
+}
+
+std::string Replier::errNoTextToSend(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoTextToSend()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+
+	return ":" + serverName + " 412 " + nickname + " " + " :No text to send\r\n";
 }
 
 std::string Replier::errUnknownCommand(const std::vector<std::string>& args)

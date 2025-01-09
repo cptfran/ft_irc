@@ -7,7 +7,6 @@
 
 #define CHANNEL_NAME_MAX_LENGTH 50
 
-// TODO: When client disconnects I think client is not deleted from teh channel.
 class Channel
 {
 public:
@@ -26,7 +25,7 @@ public:
 
 	std::string getName() const;
 	std::string getKey() const;
-	std::vector<std::string> getNicknamesListWithOperatorInfo();
+	std::vector<std::string> getNicknamesListWithOperatorInfo() const;
 	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
@@ -38,6 +37,7 @@ public:
 	unsigned int getNumOfJoinedUsers() const;
 	std::string getTopic() const;
 	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
+	std::vector<Client> getClientList() const;
 
 	void joinUser(Client& newClient);
 	bool ejectUser(Server& server, const std::string& userToKick);
@@ -50,6 +50,7 @@ public:
 	void setUserLimit(int limit);
 	void disableUserLimit();
 
+	// TODO: maybe move it to ClientTranslator.
 	std::string sanitizeChannelName(const std::string& name) const;
 
 private:

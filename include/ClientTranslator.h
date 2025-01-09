@@ -5,19 +5,14 @@
 #include "Server.h"
 #include "Client.h"
 
-
-// : delete this class and move fetchCommands() to server class?
-// If this will be used only in Server class yes, otherwise maybe leave it like this.
 class ClientTranslator
 {
 public:
 	~ClientTranslator();
 
-	std::string getBuffer() const;
-
 	static std::map<std::string, std::vector<std::string> > fetchCommands(const std::string& buffer,
 		const std::map<std::string, Command*>& validServerCommands);
-
+	static std::vector<std::string> extractPrivmsgTargets(const std::string& targets);
 private:
 	ClientTranslator();
 };

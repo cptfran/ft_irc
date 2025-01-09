@@ -74,11 +74,12 @@ std::string Channel::getKey() const
 	return this->key;
 }
 
-std::vector<std::string> Channel::getNicknamesListWithOperatorInfo()
+std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 {
 	std::vector<std::string> nicknamesList;
 
-	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); 
+		++it)
 	{
 		if (it->isOperator)
 		{
@@ -195,6 +196,19 @@ std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serv
 	}
 
 	return list;
+}
+
+std::vector<Client> Channel::getClientList() const
+{
+	std::vector<Client> clientList;
+
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
+		++it)
+	{
+		clientList.push_back(it->client);
+	}
+
+	return clientList;
 }
 
 void Channel::joinUser(Client& newClient)

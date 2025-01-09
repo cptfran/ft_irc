@@ -115,8 +115,7 @@ void Join::joinChannel(Client& client, Channel& channelToJoin, const std::string
 	std::vector<std::string> rplNamReplyArgs = Utils::anyToVec(serverName, client.getNickname(),
 		channelToJoin.getName());
 	std::vector<std::string> channelsNicknamesList = channelToJoin.getNicknamesListWithOperatorInfo();
-	rplNamReplyArgs.insert(rplNamReplyArgs.end(), channelsNicknamesList.begin(),
-		channelsNicknamesList.end());
+	rplNamReplyArgs.insert(rplNamReplyArgs.end(), channelsNicknamesList.begin(), channelsNicknamesList.end());
 
 	Replier::reply(client.getFd(), Replier::rplNamReply, rplNamReplyArgs);
 	Replier::reply(client.getFd(), Replier::rplEndOfNames, Utils::anyToVec(serverName, client.getNickname(),

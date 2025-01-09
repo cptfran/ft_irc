@@ -38,6 +38,9 @@ private:
 	static std::string errNoSuchNick(const std::vector<std::string>& args); // 401
 	static std::string errNoSuchChannel(const std::vector<std::string>& args); // 403
 	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
+	static std::string errTooManyTargets(const std::vector<std::string>& args); // 407
+	static std::string errNoRecipient(const std::vector<std::string>& args); // 411
+	static std::string errNoTextToSend(const std::vector<std::string>& args); // 412
 	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
 	static std::string errNickCollision(const std::vector<std::string>& args); // 436
 	static std::string errUserNotInChannel(const std::vector<std::string>& args); // 441
@@ -67,6 +70,7 @@ private:
 	friend class Part;
 	friend class Pass;
 	friend class Ping;
+	friend class Privmsg;
 	friend class Server;
 	friend class Topic;
 	friend class User;

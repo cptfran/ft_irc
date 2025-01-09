@@ -32,6 +32,8 @@ public:
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
 	Client* findClientByNickname(const std::string& nicknameToFind);
+	std::vector<Client> findClientsByNickUserHostServerName(const std::string& nickname, const std::string& username,
+		const std::string& hostOrServerName);
 	bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
 
 	void run();

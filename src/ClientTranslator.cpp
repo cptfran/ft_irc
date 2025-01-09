@@ -68,3 +68,18 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 	}
 	return fetchedCommands;
 }
+
+std::vector<std::string> ClientTranslator::extractPrivmsgTargets(const std::string& targets)
+{
+    // Split targets by commas.
+    std::istringstream iss(targets);
+    std::string token;
+    std::vector<std::string> tokens;
+
+    while (std::getline(iss, token, ','))
+    {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
