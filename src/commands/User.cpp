@@ -1,9 +1,9 @@
 #include "commands/User.h"
-
 #include "Log.h"
 #include "Server.h"
 #include "Utils.h"
 #include "Replier.h"
+#include "ClientTranslator.h"
 
 User::User()
 {
@@ -33,5 +33,5 @@ void User::execute(Server& server, Client& client, const std::vector<std::string
 	const std::string& username = args[0];
 	client.setUsername(username);
 
-	client.setRealname(Utils::sanitizeColonMessage(realname));
+	client.setRealname(ClientTranslator::sanitizeColonMessage(realname));
 }

@@ -346,6 +346,23 @@ std::string Replier::rplEndOfBanList(const std::vector<std::string>& args)
 	return ":" + serverName + " 368 " + nickname + " " + channelName + " :End of channel ban list\r\n";
 }
 
+std::string Replier::rplPrivmsg(const std::vector<std::string>& args)
+{
+	if (args.size() != 5)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplPrivmsg()"));
+	}
+
+	const std::string& senderNickname = args[0];
+	const std::string& senderUsername = args[1];
+	const std::string& senderHostname = args[2];
+	const std::string& targetNickname = args[3];
+	const std::string& message = args[4];
+
+	return ":" + senderNickname + "!" + senderUsername + "@" + senderHostname + " PRIVMSG " + targetNickname + " :" +
+		message + "\r\n";
+}
+
 std::string Replier::errNoSuchNick(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)

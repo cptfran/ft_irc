@@ -31,6 +31,7 @@
 #include "commands/Mode.h"
 #include "commands/Part.h"
 #include "commands/Who.h"
+#include "commands/Privmsg.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -55,16 +56,17 @@ Server::Server(const std::string& name, const std::string& version, const std::s
 availableChannelModes(std::string("itkol"))
 {
 	this->validCommands["CAP"] = new Cap();
-	this->validCommands["JOIN"] = new Join();
-	this->validCommands["PASS"] = new Pass();
-	this->validCommands["NICK"] = new Nick();
-	this->validCommands["USER"] = new User();
-	this->validCommands["PING"] = new Ping();
-	this->validCommands["KICK"] = new Kick();
-	this->validCommands["TOPIC"] = new Topic();
 	this->validCommands["INVITE"] = new Invite();
+	this->validCommands["JOIN"] = new Join();
+	this->validCommands["KICK"] = new Kick();
 	this->validCommands["MODE"] = new Mode();
+	this->validCommands["NICK"] = new Nick();
 	this->validCommands["PART"] = new Part();
+	this->validCommands["PASS"] = new Pass();
+	this->validCommands["PING"] = new Ping();
+	this->validCommands["PRIVMSG"] = new Privmsg();
+	this->validCommands["TOPIC"] = new Topic();
+	this->validCommands["USER"] = new User();
 	this->validCommands["WHO"] = new Who();
 
 	const std::time_t now = std::time(NULL);

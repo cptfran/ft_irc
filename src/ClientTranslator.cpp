@@ -108,3 +108,25 @@ bool ClientTranslator::matchWildcard(const char* pattern, const char* str)
 	// If the current characters in the pattern and the string do not match, it's not a match
 	return false;
 }
+
+
+std::string ClientTranslator::sanitizeColonMessage(const std::string& message)
+{
+	std::string sanitized;
+
+	if (!message.empty() && message[0] == ':')
+	{
+		sanitized = message.substr(1);
+	}
+
+	for (std::string::reverse_iterator it = sanitized.rbegin(); it != sanitized.rend(); ++it)
+	{
+		if (*it != '\r' && *it != '\n')
+		{
+			const std::string::size_type cutPos = sanitized.rend() - it;
+			return sanitized.substr(0, cutPos);
+		}
+	}
+
+	return sanitized;
+}

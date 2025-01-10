@@ -44,6 +44,15 @@ void Privmsg::execute(Server& server, Client& client, const std::vector<std::str
         std::vector<Client> foundTargets = findTargetsOnServer(client, server, *it);
         matchedTargets.insert(matchedTargets.end(), foundTargets.begin(), foundTargets.end());
     }
+
+    const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
+
+    for (std::vector<Client>::iterator it = matchedTargets.begin(); it != matchedTargets.end(); ++it)
+    {
+        std::cout << "replying privmsg" << std::endl;
+        Replier::reply(it->getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), client.getUsername(),
+            client.getHostname(), it->getNickname(), message));
+    }
 }
 
 std::vector<Client> Privmsg::findTargetsOnServer(Client& requester, Server& server,
@@ -103,23 +112,18 @@ std::vector<Client> Privmsg::findTargetsOnServer(Client& requester, Server& serv
                 return std::vector<Client>();
             }
 
-            // TODO: need to change this to match with the server name.
-            for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+            if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), server.getName().c_str()))
             {
-                if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), it->second.getHostname().c_str()))
+                for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
                 {
                     targets.push_back(it->second);
                 }
+                return targets;
             }
 
-            if (targets.empty())
-            {
-                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-                    requester.getNickname(), extrTarget));
-                return std::vector<Client>();
-            }
-
-            return targets;
+            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                requester.getNickname(), extrTarget));
+            return std::vector<Client>();
         }
     }
 

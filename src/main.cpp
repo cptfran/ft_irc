@@ -21,7 +21,7 @@ int main(const int argc, char *argv[])
 	}
 	try
 	{
-		Server server("ft_irc", "1.0", argv[2], port);
+		Server server("ft_irc.42wolfsburg.de", "1.0", argv[2], port);
 		server.run();
 	}
 	catch (const std::exception& e)

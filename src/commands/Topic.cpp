@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "Replier.h"
 #include "Channel.h"
+#include "ClientTranslator.h"
 
 Topic::Topic()
 {
@@ -77,7 +78,7 @@ void Topic::setTopic(const std::vector<std::string>& args, const std::string& re
 {
     // Set the new topic.
     const std::string& topic = args[1];
-    channel.setTopic(Utils::sanitizeColonMessage(topic));
+    channel.setTopic(ClientTranslator::sanitizeColonMessage(topic));
 
     // Broadcast new topic to all channel members.
     const std::vector<int> clientsFdList = channel.getFdsList();

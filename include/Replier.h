@@ -35,6 +35,7 @@ private:
 	static std::string rplNamReply(const std::vector<std::string>& args); // 353
 	static std::string rplEndOfNames(const std::vector<std::string>& args); // 366
 	static std::string rplEndOfBanList(const std::vector<std::string>& args); // 368
+	static std::string rplPrivmsg(const std::vector<std::string>& args); // none
 	static std::string errNoSuchNick(const std::vector<std::string>& args); // 401
 	static std::string errNoSuchChannel(const std::vector<std::string>& args); // 403
 	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
