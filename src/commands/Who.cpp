@@ -4,6 +4,7 @@
 #include "Replier.h"
 #include "Server.h"
 #include "Utils.h"
+#include "ClientTranslator.h"
 
 Who::Who()
 {
@@ -85,38 +86,13 @@ void Who::handleUsers(Server& server, Client& requester, const std::string& mask
 
 bool Who::userMatchesMask(Server& server, Client& requester, const std::string& mask) const
 {
-	if (matchWildcard(mask.c_str(), requester.getHostname().c_str()) ||
-		matchWildcard(mask.c_str(), server.getName().c_str()) ||
-		matchWildcard(mask.c_str(), requester.getRealname().c_str()) ||
-		matchWildcard(mask.c_str(), requester.getNickname().c_str()))
+	if (ClientTranslator::matchWildcard(mask.c_str(), requester.getHostname().c_str()) ||
+		ClientTranslator::matchWildcard(mask.c_str(), server.getName().c_str()) ||
+		ClientTranslator::matchWildcard(mask.c_str(), requester.getRealname().c_str()) ||
+		ClientTranslator::matchWildcard(mask.c_str(), requester.getNickname().c_str()))
 	{
 		return true;
 	}
 
-	return false;
-}
-
-bool Who::matchWildcard(const char* pattern, const char* str) const
-{
-	// Base case: if we reach the end of both the pattern and the string, it's a match
-	if (*pattern == '\0' && *str == '\0')
-	{
-		return true;
-	}
-
-	// If the current character in the pattern is '*', it can match zero or more characters in the string
-	if (*pattern == '*')
-	{
-		// Try to match the rest of the pattern with the current string or the rest of the string
-		return matchWildcard(pattern + 1, str) || (*str != '\0' && matchWildcard(pattern, str + 1));
-	}
-
-	// If the current character in the pattern is '?', it can match any single character in the string
-	if (*pattern == '?' || *pattern == *str)
-	{
-		return matchWildcard(pattern + 1, str + 1);
-	}
-
-	// If the current characters in the pattern and the string do not match, it's not a match
 	return false;
 }

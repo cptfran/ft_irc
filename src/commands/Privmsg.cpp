@@ -36,69 +36,128 @@ void Privmsg::execute(Server& server, Client& client, const std::vector<std::str
     }
 
     const std::string& targets = args[0];
-    std::vector<std::string> extractedTargets = ClientTranslator::extractPrivmsgTargets(targets);
+    std::vector<std::string> extrTargets = ClientTranslator::extractPrivmsgTargets(targets);
 
-    std::vector<Client> sanitizedTargets;
-    for (std::vector<std::string>::iterator it = extractedTargets.begin(); it != extractedTargets.end(); ++it)
+    std::vector<Client> matchedTargets;
+    for (std::vector<std::string>::iterator it = extrTargets.begin(); it != extrTargets.end(); ++it)
     {
         std::vector<Client> foundTargets = findTargetsOnServer(client, server, *it);
-        sanitizedTargets.insert(sanitizedTargets.end(), foundTargets.begin(), foundTargets.end());
+        matchedTargets.insert(matchedTargets.end(), foundTargets.begin(), foundTargets.end());
     }
 }
 
 std::vector<Client> Privmsg::findTargetsOnServer(Client& requester, Server& server,
-    const std::string& extractedTarget) const
+    const std::string& extrTarget) const
 {
     std::vector<Client> targets;
+    const std::map<int, Client>& clients = server.getClients();
 
-    if (extractedTarget[0] == '#')
+    if (extrTarget[0] == '#')
     {
-        const Channel* channel = server.getChannel(extractedTarget);
+        const Channel* channel = server.getChannel(extrTarget);
         if (channel != NULL)
         {
             return channel->getClientList();
         }
-        // TODO: handle hostname mask.
+
+        size_t dotPos = extrTarget.find('.');
+        if (dotPos != std::string::npos)
+        {
+            const std::string afterDot = extrTarget.substr(dotPos);
+            if (afterDot.empty() || afterDot.find('*') != std::string::npos)
+            {
+                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                    requester.getNickname(), extrTarget)); 
+                return std::vector<Client>();
+            }
+
+            for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+            {
+                if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), it->second.getHostname().c_str()))
+                {
+                    targets.push_back(it->second);
+                }
+            }
+            
+            if (targets.empty())
+            {
+                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                    requester.getNickname(), extrTarget));
+                return std::vector<Client>();
+            }
+
+            return targets;
+        }
     }
 
-    if (extractedTarget[0] == '$')
+    if (extrTarget[0] == '$')
     {
-        // TODO: handle servername mask.
+        size_t dotPos = extrTarget.find('.');
+        if (dotPos != std::string::npos)
+        {
+            const std::string afterDot = extrTarget.substr(dotPos);
+            if (afterDot.empty() || afterDot.find('*') != std::string::npos)
+            {
+                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                    requester.getNickname(), extrTarget));
+                return std::vector<Client>();
+            }
+
+            // TODO: need to change this to match with the server name.
+            for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+            {
+                if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), it->second.getHostname().c_str()))
+                {
+                    targets.push_back(it->second);
+                }
+            }
+
+            if (targets.empty())
+            {
+                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                    requester.getNickname(), extrTarget));
+                return std::vector<Client>();
+            }
+
+            return targets;
+        }
     }
 
     std::string nickname;
     std::string username;
     std::string hostOrServerName;
 
-    size_t splitNicknamePos = extractedTarget.find('!');
-    size_t splitUsernamePos = extractedTarget.find('%');
+    size_t splitNicknamePos = extrTarget.find('!');
+    size_t splitUsernamePos = extrTarget.find('%');
 
     if (splitNicknamePos != std::string::npos && splitUsernamePos != std::string::npos)
     {
         Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-            requester.getNickname(), extractedTarget));
+            requester.getNickname(), extrTarget));
         return std::vector<Client>();
     }
 
     if (splitNicknamePos != std::string::npos)
     {
-        nickname = extractedTarget.substr(0, splitNicknamePos);
-        hostOrServerName = extractedTarget.substr(splitNicknamePos);
+        nickname = extrTarget.substr(0, splitNicknamePos);
+        hostOrServerName = extrTarget.substr(splitNicknamePos);
     }
 
     if (splitUsernamePos != std::string::npos)
     {
-        username = extractedTarget.substr(0, splitUsernamePos);
-        hostOrServerName = extractedTarget.substr(splitUsernamePos);
+        username = extrTarget.substr(0, splitUsernamePos);
+        hostOrServerName = extrTarget.substr(splitUsernamePos);
     }
 
+    // TODO: delete this method as now Im fetching all client list from server. This can be done here without server
+    // method.
     targets = server.findClientsByNickUserHostServerName(nickname, username, hostOrServerName);
 
     if (targets.size() > 1)
     {
-        std::string errorCode = "Ambiguous " + extractedTarget + ".";
+        std::string errorCode = "Ambiguous " + extrTarget + ".";
         Replier::reply(requester.getFd(), Replier::errTooManyTargets, Utils::anyToVec(server.getName(),
-            requester.getNickname(), extractedTarget, errorCode, std::string("Message not sent.")));
+            requester.getNickname(), extrTarget, errorCode, std::string("Message not sent.")));
         return std::vector<Client>();
     }
 

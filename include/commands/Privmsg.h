@@ -13,5 +13,5 @@ public:
     void execute(Server& server, Client& client, const std::vector<std::string>& args) const;
 private:
     std::vector<Client> findTargetsOnServer(Client& requester, Server& server,
-        const std::string& extractedTarget) const;
+        const std::string& extrTarget) const;
 };

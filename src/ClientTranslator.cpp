@@ -83,3 +83,28 @@ std::vector<std::string> ClientTranslator::extractPrivmsgTargets(const std::stri
 
     return tokens;
 }
+
+bool ClientTranslator::matchWildcard(const char* pattern, const char* str)
+{
+	// Base case: if we reach the end of both the pattern and the string, it's a match
+	if (*pattern == '\0' && *str == '\0')
+	{
+		return true;
+	}
+
+	// If the current character in the pattern is '*', it can match zero or more characters in the string
+	if (*pattern == '*')
+	{
+		// Try to match the rest of the pattern with the current string or the rest of the string
+		return matchWildcard(pattern + 1, str) || (*str != '\0' && matchWildcard(pattern, str + 1));
+	}
+
+	// If the current character in the pattern is '?', it can match any single character in the string
+	if (*pattern == '?' || *pattern == *str)
+	{
+		return matchWildcard(pattern + 1, str + 1);
+	}
+
+	// If the current characters in the pattern and the string do not match, it's not a match
+	return false;
+}
