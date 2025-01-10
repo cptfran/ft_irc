@@ -19,6 +19,7 @@ add_executable(ircserv
         include/commands/Part.h
         include/commands/Pass.h
         include/commands/Ping.h
+        include/commands/Privmsg.h
         include/commands/Topic.h
         include/commands/User.h
         include/commands/Who.h
@@ -39,6 +40,7 @@ add_executable(ircserv
         src/commands/Part.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp
+        src/commands/Privmsg.cpp
         src/commands/Topic.cpp
         src/commands/User.cpp
         src/commands/Who.cpp

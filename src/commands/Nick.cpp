@@ -17,7 +17,8 @@ void Nick::execute(Server& server, Client& client, const std::vector<std::string
 
 	if (!args.empty())
 	{
-		server.handleNicknameCollision(args[0]);
+		const std::string& nickname = args[0];
+		server.handleNicknameCollision(client.getFd(), nickname);
 		client.setNickname(args[0]);
 	}
 }

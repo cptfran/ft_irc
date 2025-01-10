@@ -4,9 +4,8 @@
 #include "../include/Log.h"
 #include "../include/Utils.h"
 
-// TODO: in functions with args vector argument add variables with names so functions are more readable.
-// TODO: implement WHO cmd.
-// TODO: implement PART cmd.
+// TODO: maybe use namespaces instead of defines? Need to check it.
+// TODO: server lags sometimes. FE if connecting multiple times with nickname collision, need to check that on mac.
 int main(const int argc, char *argv[])
 {
 	if (argc != 3)
@@ -22,7 +21,7 @@ int main(const int argc, char *argv[])
 	}
 	try
 	{
-		Server server("ft_irc", "1.0", argv[2], port);
+		Server server("ft_irc.42wolfsburg.de", "1.0", argv[2], port);
 		server.run();
 	}
 	catch (const std::exception& e)

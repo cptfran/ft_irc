@@ -1,13 +1,13 @@
 #include "../include/Client.h"
-
 #include "Log.h"
+#include <ctime>
 
-Client::Client(const int fd) : fd(fd), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
 {
 
 }
 
-Client::Client() : fd(), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
 {
 
 }
@@ -39,19 +39,30 @@ void Client::setUsername(const std::string& username)
 	this->username = username;
 }
 
+void Client::setHostname(const std::string& hostname)
+{
+	this->hostname = hostname;
+}
+
+
 void Client::setRealname(const std::string& realname)
 {
 	this->realname = realname;
 }
 
-void Client::setWelcomeRepliesSent(const bool truefalse)
+void Client::setWelcomeRepliesSent(const bool sent)
 {
-	this->welcomeRepliesSent = truefalse;
+	this->welcomeRepliesSent = sent;
 }
 
 void Client::setNumChannelsJoined(const int num)
 {
 	this->channelsJoined = num;
+}
+
+void Client::setInvisible(const bool invisible)
+{
+	this->invisible = invisible;
 }
 
 int Client::getFd() const
@@ -74,6 +85,21 @@ std::string Client::getUsername() const
 	return this->username;
 }
 
+std::string Client::getHostname() const
+{
+	return this->hostname;
+}
+
+std::string Client::getRealname() const
+{
+	return this->realname;
+}
+
+bool Client::isInvisible() const
+{
+	return this->invisible;
+}
+
 int Client::getNumChannelsJoined() const
 {
 	return this->channelsJoined;
@@ -86,6 +112,11 @@ bool Client::registered(const std::string& serverPassword) const
 		return false;
 	}
 	return true;
+}
+
+time_t Client::getTimeConnected() const
+{
+	return this->timeConnected;
 }
 
 bool Client::getWelcomeRepliesSent() const

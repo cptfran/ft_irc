@@ -2,9 +2,9 @@
 
 #include <map>
 #include "Client.h"
-#include "Channel.h"
 #include "commands/Command.h"
 #include <vector>
+#include <netinet/in.h>
 #include <sys/poll.h>
 
 // Ports range:
@@ -13,7 +13,13 @@
 
 // Client message buffer size:
 #define INPUT_BUFFER_SIZE 512
+#define HOSTNAME_BUFFER_SIZE 1024
 
+#define TIME_FOR_CLIENT_TO_REGISTER 15
+
+class Channel;
+
+// TODO: add more logs of the server, so it logs whenever something imporant happens, like channel created etc.
 class Server
 {
 public:
@@ -25,15 +31,22 @@ public:
 	std::string getName() const;
 	std::string getPassword() const;
 	std::map<int, Client> getClients() const;
-	Channel& findChannel(const std::string& channelName);
-	Client& findClientByNickname(const std::string& nicknameToFind);
+	Client* findClientByNickname(const std::string& nicknameToFind);
+	std::vector<Client> findClientsByNickUserHostServerName(const std::string& nickname, const std::string& username,
+		const std::string& hostOrServerName);
+	bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
 
 	void run();
 	void stop();
 
-	void handleNicknameCollision(const std::string& newClientNickname);
+	void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
 
+	// Channels:
+	Channel* getChannel(const std::string& channelName);
+	std::string getAvailableChannelModes() const;
+	std::string getAvailableUserModes() const;
 	void addChannel(const Channel& channel);
+	void deleteChannelIfEmpty(const Channel& channel);
 
 private:
 	static Server* instance;
@@ -56,9 +69,12 @@ private:
 
 	// Client connection.
 	void connectClient();
-	void disconnectClient(Client& client);
+	std::string getClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
+	void disconnectClient(int clientFd);
 
 	// Handling new requests of already connected client.
 	void handleCommands(Client& client, const std::string& buffer);
 	void handleClientPrompt(Client& client);
+
+	void handleTimeouts();
 };

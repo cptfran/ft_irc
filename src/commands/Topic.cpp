@@ -1,8 +1,10 @@
 #include "commands/Topic.h"
-#include "Log.h"
+#include <sys/socket.h>
 #include "Server.h"
 #include "Utils.h"
 #include "Replier.h"
+#include "Channel.h"
+#include "ClientTranslator.h"
 
 Topic::Topic()
 {
@@ -16,80 +18,70 @@ Topic::~Topic()
 
 void Topic::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-    const std::string& serverName = server.getName();
-    const int clientFd = client.getFd();
-
     // Not enough parameters provided.
     if (args.empty())
     {
-        const std::string command = "TOPIC";
-        Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            client.getNickname(), std::string("TOPIC")));
         return;
     }
 
     // Client is not registered.
     if (!client.registered(server.getPassword()))
     {
-        Replier::reply(clientFd, Replier::errNotRegistered, Utils::anyToVec(serverName));
+        Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+            client.getNickname()));
         return;
     }
-
-    const std::string& channelName = args[0];
-    Channel* channel;
 
     // Fetch channel from server's channel list.
-    try
-    {
-        channel = &server.findChannel(channelName);
-    }
+    const std::string& channelName = args[0];
+    Channel* channel = server.getChannel(channelName);
+
     // Channel not found.
-    catch (const std::exception&)
+    if (channel == NULL)
     {
-        Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
+
+        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
         return;
     }
 
-    Channel::ClientData* clientData;
-
-    // Fetch client data from channel's client list.
-    try
+    // Client not on the channel.
+    if (!channel->isUserOnChannel(client.getNickname()))
     {
-        clientData = &channel->findClientData(client);
-    }
-    // Client not on the channel->
-    catch (const std::exception&)
-    {
-        Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelName));
+        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
         return;
     }
-
-    std::string topic;
 
     // Only channel name provided by client. Sending back the topic if the topic is set.
     if (args.size() == 1)
     {
-        topic = channel->getTopic();
-        if (topic.empty())
-        {
-            Replier::reply(clientFd, Replier::rplNoTopic, Utils::anyToVec(serverName, channelName));
-            return;
-        }
-        Replier::reply(clientFd, Replier::rplTopic, Utils::anyToVec(serverName, channelName, topic));
+        sendTopic(*channel, client, server.getName());
         return;
     }
 
     // Check if topic change is restricted and only operators can change it.
-    if (channel->isTopicRestricted() && !clientData->isOperator)
+    if (channel->isTopicRestricted() && !channel->isUserOperator(client.getNickname()))
     {
-        Replier::reply(clientFd, Replier::errChanOPrivsNeeded, Utils::anyToVec(serverName, channelName));
+        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelName));
         return;
     }
 
+    setTopic(args, client.getNickname(), *channel, server.getName());
+}
+
+void Topic::setTopic(const std::vector<std::string>& args, const std::string& requestorNickname, Channel& channel,
+    const std::string& serverName) const
+{
     // Set the new topic.
-    topic = args[1].substr(1);
-    channel->setTopic(topic);
+    const std::string& topic = args[1];
+    channel.setTopic(ClientTranslator::sanitizeColonMessage(topic));
 
     // Broadcast new topic to all channel members.
-    const std::vector<int> clientsFdList = channel->getFdsList();
-    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, channelName, topic));
+    const std::vector<int> clientsFdList = channel.getFdsList();
+    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requestorNickname,
+        channel.getName(), channel.getTopic()));
 }

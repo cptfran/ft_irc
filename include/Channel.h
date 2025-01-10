@@ -3,26 +3,10 @@
 #include <string>
 #include <vector>
 #include "Client.h"
+#include "Server.h"
 
 #define CHANNEL_NAME_MAX_LENGTH 50
 
-// PROBABLY rules for joining:
-// 1.  the user must be invited if the channel is invite-only;
-// 2.  the user's nick/username/hostname must not match any active bans;
-// 3.  the correct key (password) must be given if it is set.
-
-// A channel is a named group of one or more clients which will all
-//    receive messages addressed to that channel.  The channel is created
-//    implicitly when the first client joins it, and the channel ceases to
-//    exist when the last client leaves it.  While channel exists, any
-//    client can reference the channel using the name of the channel.
-//
-//    Channels names are strings (beginning with a '&' or '#' character) of
-//    length up to 200 characters.  Apart from the the requirement that the
-//    first character being either '&' or '#'; the only restriction on a
-//    channel name is that it may not contain any spaces (' '), a control G
-//    (^G or ASCII 7), or a comma (',' which is used as a list item
-//    separator by the protocol).
 class Channel
 {
 public:
@@ -31,28 +15,32 @@ public:
 		bool isOperator;
 		Client& client;
 		ClientData& operator=(const ClientData& toCopy);
+		bool operator==(const ClientData& toCompare) const;
 	};
 
 	explicit Channel(const std::string& name);
 	Channel& operator=(const Channel& toCopy);
+	bool operator==(const Channel& toCompare) const;
 	~Channel();
 
 	std::string getName() const;
 	std::string getKey() const;
-	std::vector<std::string> getNicknamesListWithOperatorInfo();
+	std::vector<std::string> getNicknamesListWithOperatorInfo() const;
 	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;
-	bool isClientOnChannel(const std::string& nicknameToFind) const;
-	bool isClientOperator(const Client& clientToFind) const;
+	bool isUserOnChannel(const std::string& nicknameToFind) const;
+	bool isUserOperator(const std::string& nicknameToFind) const;
 	bool isUserLimitActive() const;
-	int getUserLimit() const;
+	unsigned int getUserLimit() const;
+	unsigned int getNumOfJoinedUsers() const;
 	std::string getTopic() const;
-	ClientData& findClientData(const Client& clientToFind);
+	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
+	std::vector<Client> getClientList() const;
 
-	void joinClient(Client& newClient);
-	bool ejectClient(const std::string& userToKick);
+	void joinUser(Client& newClient);
+	bool ejectUser(Server& server, const std::string& userToKick);
 	void setChannelInviteOnly(bool isInviteOnly);
 	void addToInviteList(const std::string& invitedNickname);
 	void setTopicRestricted(bool isTopicRestricted);
@@ -62,6 +50,7 @@ public:
 	void setUserLimit(int limit);
 	void disableUserLimit();
 
+	// TODO: maybe move it to ClientTranslator.
 	std::string sanitizeChannelName(const std::string& name) const;
 
 private:

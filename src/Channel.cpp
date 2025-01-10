@@ -1,6 +1,7 @@
 #include "Channel.h"
 #include "Log.h"
 #include <algorithm>
+#include "Server.h"
 
 Channel::Channel(const std::string& name)
 : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
@@ -32,6 +33,20 @@ Channel& Channel::operator=(const Channel& toCopy)
 	return *this;
 }
 
+bool Channel::operator==(const Channel& toCompare) const
+{
+	return this->name == toCompare.name &&
+		   this->key == toCompare.key &&
+	       this->inviteOnly == toCompare.inviteOnly &&
+		   this->invitedUsers == toCompare.invitedUsers &&
+           this->topicRestricted == toCompare.topicRestricted &&
+           this->userLimitActive == toCompare.userLimitActive &&
+           this->userLimit == toCompare.userLimit &&
+           this->joinedClients == toCompare.joinedClients &&
+           this->topic == toCompare.topic;
+}
+
+
 Channel::ClientData& Channel::ClientData::operator=(const ClientData& toCopy)
 {
 	if (this != &toCopy)
@@ -41,6 +56,13 @@ Channel::ClientData& Channel::ClientData::operator=(const ClientData& toCopy)
 	}
 	return *this;
 }
+
+bool Channel::ClientData::operator==(const ClientData& toCompare) const
+{
+	return this->isOperator == toCompare.isOperator &&
+		   this->client == toCompare.client;
+}
+
 
 std::string Channel::getName() const
 {
@@ -52,11 +74,12 @@ std::string Channel::getKey() const
 	return this->key;
 }
 
-std::vector<std::string> Channel::getNicknamesListWithOperatorInfo()
+std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 {
 	std::vector<std::string> nicknamesList;
 
-	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); 
+		++it)
 	{
 		if (it->isOperator)
 		{
@@ -101,7 +124,7 @@ bool Channel::isTopicRestricted() const
 	return this->topicRestricted;
 }
 
-bool Channel::isClientOnChannel(const std::string& nicknameToFind) const
+bool Channel::isUserOnChannel(const std::string& nicknameToFind) const
 {
 	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
 		it != this->joinedClients.end(); ++it)
@@ -114,12 +137,12 @@ bool Channel::isClientOnChannel(const std::string& nicknameToFind) const
 	return false;
 }
 
-bool Channel::isClientOperator(const Client& clientToFind) const
+bool Channel::isUserOperator(const std::string& nicknameToFind) const
 {
 	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
 		it != this->joinedClients.end(); ++it)
 	{
-		if (it->client == clientToFind && it->isOperator)
+		if (it->client.getNickname() == nicknameToFind && it->isOperator)
 		{
 			return true;
 		}
@@ -132,9 +155,14 @@ bool Channel::isUserLimitActive() const
 	return this->userLimitActive;
 }
 
-int Channel::getUserLimit() const
+unsigned int Channel::getUserLimit() const
 {
 	return this->userLimit;
+}
+
+unsigned int Channel::getNumOfJoinedUsers() const
+{
+	return this->joinedClients.size();
 }
 
 std::string Channel::getTopic() const
@@ -142,19 +170,48 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
-Channel::ClientData& Channel::findClientData(const Client& clientToFind)
+std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, const bool operatorOnly) const
 {
-	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
+	std::vector<std::string> list;
+
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
+		++it)
 	{
-		if (it->client == clientToFind)
+		if (operatorOnly && !it->isOperator)
 		{
-			return *it;
+			continue;
 		}
+
+		const std::string flags = it->isOperator ? "H@" : "H";
+		std::string userInfo;
+		userInfo.append(this->name).append(" ")
+		        .append(it->client.getUsername()).append(" ")
+		        .append(it->client.getHostname()).append(" ")
+		        .append(serverName).append(" ")
+		        .append(it->client.getNickname()).append(" ")
+		        .append(flags).append(" :0 ")
+		        .append(it->client.getRealname()).append("\r\n");
+
+		list.push_back(userInfo);
 	}
-	throw std::runtime_error("Client not found.");
+
+	return list;
 }
 
-void Channel::joinClient(Client& newClient)
+std::vector<Client> Channel::getClientList() const
+{
+	std::vector<Client> clientList;
+
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end();
+		++it)
+	{
+		clientList.push_back(it->client);
+	}
+
+	return clientList;
+}
+
+void Channel::joinUser(Client& newClient)
 {
 	bool isOperator = false;
 	if (this->joinedClients.empty())
@@ -166,7 +223,7 @@ void Channel::joinClient(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::ejectClient(const std::string& userToKick)
+bool Channel::ejectUser(Server& server, const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
@@ -174,6 +231,9 @@ bool Channel::ejectClient(const std::string& userToKick)
 		{
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
+
+			server.deleteChannelIfEmpty(*this);
+
 			return true;
 		}
 	}

@@ -18,6 +18,7 @@
 #include <ctime>
 #include <fcntl.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 #include "commands/Cap.h"
 #include "commands/Join.h"
 #include "commands/Nick.h"
@@ -29,6 +30,8 @@
 #include "commands/Invite.h"
 #include "commands/Mode.h"
 #include "commands/Part.h"
+#include "commands/Who.h"
+#include "commands/Privmsg.h"
 #include "Replier.h"
 
 Server* Server::instance = NULL;
@@ -49,20 +52,22 @@ Server* Server::instance = NULL;
  * @param password The password to be used for client authentication.
  */
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-: running(true), fd(-1), name(name), version(version), password(password), availableUserModes(""),
-availableChannelModes("itkol")
+: running(true), fd(-1), name(name), version(version), password(password), availableUserModes(std::string("i")),
+availableChannelModes(std::string("itkol"))
 {
 	this->validCommands["CAP"] = new Cap();
-	this->validCommands["JOIN"] = new Join();
-	this->validCommands["PASS"] = new Pass();
-	this->validCommands["NICK"] = new Nick();
-	this->validCommands["USER"] = new User();
-	this->validCommands["PING"] = new Ping();
-	this->validCommands["KICK"] = new Kick();
-	this->validCommands["TOPIC"] = new Topic();
 	this->validCommands["INVITE"] = new Invite();
+	this->validCommands["JOIN"] = new Join();
+	this->validCommands["KICK"] = new Kick();
 	this->validCommands["MODE"] = new Mode();
-	// this->validCommands["PART"] = new Part();
+	this->validCommands["NICK"] = new Nick();
+	this->validCommands["PART"] = new Part();
+	this->validCommands["PASS"] = new Pass();
+	this->validCommands["PING"] = new Ping();
+	this->validCommands["PRIVMSG"] = new Privmsg();
+	this->validCommands["TOPIC"] = new Topic();
+	this->validCommands["USER"] = new User();
+	this->validCommands["WHO"] = new Who();
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
@@ -129,29 +134,72 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
-Channel& Server::findChannel(const std::string& channelName)
+Channel* Server::getChannel(const std::string& channelName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
 		const std::string& currChannelName = it->getName();
 		if (currChannelName == channelName)
 		{
-			return *it;
+			return &(*it);
 		}
 	}
-	throw std::runtime_error("Channel not found.");
+	return NULL;
 }
 
-Client& Server::findClientByNickname(const std::string& nicknameToFind)
+std::string Server::getAvailableChannelModes() const
+{
+	return this->availableChannelModes;
+}
+
+std::string Server::getAvailableUserModes() const
+{
+	return this->availableUserModes;
+}
+
+Client* Server::findClientByNickname(const std::string& nicknameToFind)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
 		if (it->second.getNickname() == nicknameToFind)
 		{
-			return it->second;
+			return &it->second;
 		}
 	}
-	throw std::runtime_error("Client not found.");
+	return NULL;
+}
+
+std::vector<Client> Server::findClientsByNickUserHostServerName(const std::string& nickname,
+	const std::string& username, const std::string& hostOrServerName)
+{
+	std::vector<Client> foundClients;
+
+	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	{
+		bool hostOrServerMatches = (hostOrServerName == it->second.getHostname() || hostOrServerName == this->name);
+		bool nickMatches = (nickname == it->second.getNickname());
+		bool userMatches = (username == it->second.getUsername());
+
+		if ((hostOrServerMatches && (nickMatches || userMatches)) || nickMatches)
+		{
+			foundClients.push_back(it->second);
+		}
+	}
+
+	return foundClients;
+}
+
+bool Server::usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const
+{
+	for (std::vector<Channel>::const_iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	{
+		if (it->isUserOnChannel(nickname1) && it->isUserOnChannel(nickname2))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Server::signalHandler(const int signum)
@@ -243,7 +291,8 @@ void Server::run()
 	// Main loop, handling new client connections and already running clients.
     while (running)
     {
-    	if (poll(&this->pollFds[0], this->pollFds.size(), -1) < 0)
+    	const int pollResult = poll(&this->pollFds[0], this->pollFds.size(), 1000);
+    	if (pollResult < 0)
     	{
     		if (errno == EINTR)
     		{
@@ -252,6 +301,9 @@ void Server::run()
     		Log::msgServer(ERROR, "Poll error");
     		return;
     	}
+
+    	handleTimeouts();
+
     	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
         {
     		if (it->revents == 0)
@@ -261,7 +313,6 @@ void Server::run()
         	}
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
-            	this->disconnectClient(this->clients.at(it->fd));
             	it = this->pollFds.erase(it);
         		continue;
         	}
@@ -284,14 +335,15 @@ void Server::stop()
 	this->running = false;
 }
 
-void Server::handleNicknameCollision(const std::string& newClientNickname)
+void Server::handleNicknameCollision(const int newClientFd, const std::string& newClientNickname)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
-		if (newClientNickname == it->second.getNickname())
+		if (newClientNickname == it->second.getNickname() && it->second.getFd() != newClientFd)
 		{
-			Replier::reply(it->second.getFd(), Replier::errNickCollision, Utils::anyToVec(this->name));
-			this->disconnectClient(it->second);
+			Replier::reply(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
+				newClientNickname, it->second.getUsername(), it->second.getHostname()));
+			this->disconnectClient(it->second.getFd());
 			return;
 		}
 	}
@@ -300,6 +352,19 @@ void Server::handleNicknameCollision(const std::string& newClientNickname)
 void Server::addChannel(const Channel& channel)
 {
 	channels.push_back(channel);
+}
+
+void Server::deleteChannelIfEmpty(const Channel& channel)
+{
+	if (channel.getNumOfJoinedUsers() == 0)
+	{
+		const std::vector<Channel>::iterator it = std::find(this->channels.begin(), this->channels.end(),
+			channel);
+		if (it != this->channels.end())
+		{
+			this->channels.erase(it);
+		}
+	}
 }
 
 void Server::connectClient()
@@ -320,29 +385,61 @@ void Server::connectClient()
 	const pollfd pollFd = {clientFd, POLLIN, 0};
 	this->pollFds.push_back(pollFd);
 
-	// Create new client object and add it to the clients list.
-	const Client client(clientFd);
+	// Create new client object.
+	Client client(clientFd);
+
+	// Fetch client hostname.
+	client.setHostname(getClientHostname(addr, addrLen, clientFd));
+
+	// Add new client to the clients list.
 	this->clients.insert(std::make_pair(clientFd, client));
 
 	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_SUCCESS);
 }
 
-void Server::disconnectClient(Client& client)
+std::string Server::getClientHostname(sockaddr_in& addr, socklen_t addrLen, const int clientFd) const
 {
-	const int clientFd = client.getFd();
+	// A buffer to hold the client's IP address in human-readable form.
+	char client_ip[INET_ADDRSTRLEN];
+
+	// Fills the addr structure with the address information of the client connected to clientFd.
+	if (getpeername(clientFd, reinterpret_cast<sockaddr*>(&addr), &addrLen) == -1)
+	{
+		return "unknown";
+	}
+
+	// Converts the binary IP address in addr.sin_addr to a human-readable string and stores it in client_ip.
+	inet_ntop(AF_INET, &addr.sin_addr, client_ip, sizeof(client_ip));
+
+	// Resolves the IP address in addr.sin_addr to a hostname.
+	const hostent* host_entry = gethostbyaddr(&addr.sin_addr, sizeof(addr.sin_addr), AF_INET);
+
+	// Hostname resolution failed, and the function returns the IP address as a string.
+	if (host_entry == NULL)
+	{
+		return std::string(client_ip);
+	}
+
+	// Function returns the resolved hostname as a std::string.
+	return std::string(host_entry->h_name);
+}
+
+void Server::disconnectClient(const int clientFd)
+{
+	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	{
+		it->ejectUser(*this, this->clients.at(clientFd).getNickname());
+	}
 	this->clients.erase(clientFd);
 	close(clientFd);
 	Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
 }
 
-
-// TODO: implement certain amount of time client has to send authentication data. (not sure if it's necessary though)
 void Server::handleClientPrompt(Client& client)
 {
 	char buffer[INPUT_BUFFER_SIZE] = {};
-	const int clientFd = client.getFd();
-	const ssize_t bytesRead = recv(clientFd, buffer, sizeof(buffer) - 1, 0);
-	DEBUG_LOG(std::string("CLIENT: \"") + buffer + "\"");
+	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
+	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(client.getFd()) + "]: \"") + buffer + "\"");
 	if (bytesRead <= 0)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -350,7 +447,8 @@ void Server::handleClientPrompt(Client& client)
 			std::cout << "EAGAIN || EWOULDBLOCK" << std::endl;
 			return;
 		}
-		this->disconnectClient(client);
+		std::cout << "disconnecting bytes read <= 0" << std::endl;
+		this->disconnectClient(client.getFd());
 		return;
 	}
 	buffer[bytesRead] = '\0';
@@ -360,8 +458,9 @@ void Server::handleClientPrompt(Client& client)
 	}
 	catch (const std::exception& e)
 	{
-		Log::msgServer(INFO, "CLIENT", clientFd, e.what());
-		this->disconnectClient(client);
+		Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
+		this->disconnectClient(client.getFd());
+		std::cout << "disconnecting handleCommands exception" << std::endl;
 	}
 }
 
@@ -374,7 +473,8 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 	{
 		if (this->validCommands.find(it->first) == this->validCommands.end())
 		{
-			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(it->first));
+			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
+				client.getNickname(), it->first));
 			continue;
 		}
 		this->validCommands.at(it->first)->execute(*this, client, it->second);
@@ -385,14 +485,33 @@ void Server::handleCommands(Client& client, const std::string& buffer)
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
 		Replier::reply(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
-			client.getUsername()));
+			client.getUsername(), client.getHostname()));
 		Replier::reply(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
 			this->version));
 		Replier::reply(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
 			this->creationDate));
-		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, this->version,
-			this->availableUserModes, this->availableChannelModes));
+		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, client.getNickname(),
+			this->version, this->availableUserModes, this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
+	}
+}
+
+void Server::handleTimeouts()
+{
+	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
+	{
+		std::map<int, Client>::iterator clientIt = this->clients.find(it->fd);
+		if (clientIt != this->clients.end() &&
+			!clientIt->second.registered(this->password) &&
+			difftime(std::time(0), clientIt->second.getTimeConnected()) > TIME_FOR_CLIENT_TO_REGISTER)
+		{
+			Replier::reply(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
+				clientIt->second.getHostname()));
+			disconnectClient(it->fd);
+			it = this->pollFds.erase(it);
+			continue;
+		}
+		++it;
 	}
 }

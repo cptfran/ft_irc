@@ -68,3 +68,65 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 	}
 	return fetchedCommands;
 }
+
+std::vector<std::string> ClientTranslator::extractPrivmsgTargets(const std::string& targets)
+{
+    // Split targets by commas.
+    std::istringstream iss(targets);
+    std::string token;
+    std::vector<std::string> tokens;
+
+    while (std::getline(iss, token, ','))
+    {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+bool ClientTranslator::matchWildcard(const char* pattern, const char* str)
+{
+	// Base case: if we reach the end of both the pattern and the string, it's a match
+	if (*pattern == '\0' && *str == '\0')
+	{
+		return true;
+	}
+
+	// If the current character in the pattern is '*', it can match zero or more characters in the string
+	if (*pattern == '*')
+	{
+		// Try to match the rest of the pattern with the current string or the rest of the string
+		return matchWildcard(pattern + 1, str) || (*str != '\0' && matchWildcard(pattern, str + 1));
+	}
+
+	// If the current character in the pattern is '?', it can match any single character in the string
+	if (*pattern == '?' || *pattern == *str)
+	{
+		return matchWildcard(pattern + 1, str + 1);
+	}
+
+	// If the current characters in the pattern and the string do not match, it's not a match
+	return false;
+}
+
+
+std::string ClientTranslator::sanitizeColonMessage(const std::string& message)
+{
+	std::string sanitized;
+
+	if (!message.empty() && message[0] == ':')
+	{
+		sanitized = message.substr(1);
+	}
+
+	for (std::string::reverse_iterator it = sanitized.rbegin(); it != sanitized.rend(); ++it)
+	{
+		if (*it != '\r' && *it != '\n')
+		{
+			const std::string::size_type cutPos = sanitized.rend() - it;
+			return sanitized.substr(0, cutPos);
+		}
+	}
+
+	return sanitized;
+}

@@ -2,6 +2,7 @@
 
 #include "Command.h"
 
+// TODO: implement nick change.
 class Nick: public Command
 {
 public:

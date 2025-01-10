@@ -16,86 +16,77 @@ Invite::~Invite()
 
 void Invite::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-    const std::string& serverName = server.getName();
-    const int clientFd = client.getFd();
-
-    // Not enought parameters provided.
+    // Not enough parameters provided.
     if (args.size() < 2)
     {
-        const std::string command = "INVITE";
-        Replier::reply(clientFd, Replier::errNeedMoreParams, Utils::anyToVec(serverName, command));
+        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            client.getNickname(), std::string("INVITE")));
         return;
     }
 
-    const std::string& nickname = args[0];
-    Client* clientToInvite;
+    // Find the user which will be invited.
+    const std::string& nicknameToInvite = args[0];
+    const Client* clientToInvite = server.findClientByNickname(nicknameToInvite);
 
-    // Find the client which will be invited.
-    try
+    // Invited user not found.
+    if (clientToInvite == NULL)
     {
-        clientToInvite = &server.findClientByNickname(nickname);
-    }
-    catch (const std::exception&)
-    {
-        Replier::reply(clientFd, Replier::errNoSuchNick, Utils::anyToVec(serverName, nickname));
+        Replier::reply(client.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            client.getNickname(), nicknameToInvite));
         return;
     }
 
+    // Find the invitation channel.
     const std::string& channelToInviteName = args[1];
-    const std::string& clientToInviteNickname = clientToInvite->getNickname();
-    const int clientToInviteFd = clientToInvite->getFd();
-    const std::string& clientInvitingNickname = client.getNickname();
-    Channel* channelToInvite;
+    Channel* channelToInvite = server.getChannel(channelToInviteName);
 
-    // Find channel to invite. If there is no such channel, still send invitation.
-    try
+    // Invitation channel not found.
+    if (channelToInvite == NULL)
     {
-        channelToInvite = &server.findChannel(channelToInviteName);
-    }
-    catch (const std::exception&)
-    {
-        Replier::reply(clientFd, Replier::rplInviting,
-            Utils::anyToVec(serverName, clientToInviteNickname, channelToInviteName));
-        Replier::reply(clientToInviteFd, Replier::rplInvite,
-            Utils::anyToVec(clientInvitingNickname, clientToInviteNickname, channelToInviteName));
+        Replier::reply(client.getFd(), Replier::rplInviting, Utils::anyToVec(server.getName(), client.getNickname(),
+            clientToInvite->getNickname(), channelToInviteName));
+        Replier::reply(client.getFd(), Replier::rplInvite,
+            Utils::anyToVec(client.getNickname(), client.getNickname(), channelToInviteName));
         return;
     }
 
-    Channel::ClientData* invitingClientData;
-
-    // Try to fetch inviting client data from the channel.
-    try
-    {
-        invitingClientData = &channelToInvite->findClientData(client);
-    }
     // Inviting client is not a member of the channel.
-    catch (const std::exception&)
+    if (!channelToInvite->isUserOnChannel(client.getNickname()))
     {
-        Replier::reply(clientFd, Replier::errNotOnChannel, Utils::anyToVec(serverName, channelToInviteName));
+        Replier::reply(client.getFd(), Replier::errNotOnChannel,
+            Utils::anyToVec(server.getName(), client.getNickname(), channelToInviteName));
         return;
     }
 
     // User to invite is already on the channel.
-    if (channelToInvite->isClientOnChannel(clientToInviteNickname))
+    if (channelToInvite->isUserOnChannel(clientToInvite->getNickname()))
     {
-        Replier::reply(clientFd, Replier::errUserOnChannel,
-            Utils::anyToVec(serverName, clientToInviteNickname, channelToInviteName));
+        Replier::reply(client.getFd(), Replier::errUserOnChannel,
+          Utils::anyToVec(server.getName(), client.getNickname(), nicknameToInvite, channelToInviteName));
         return;
     }
 
     // Channel is invite-only and inviting client doesn't have operator privileges.
-    if (channelToInvite->isInviteOnly() && !invitingClientData->isOperator)
+    if (channelToInvite->isInviteOnly() && !channelToInvite->isUserOperator(client.getNickname()))
     {
-        Replier::reply(clientFd, Replier::errChanOPrivsNeeded,  Utils::anyToVec(serverName, channelToInviteName));
+        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+            client.getNickname(), channelToInviteName));
         return;
     }
 
+    // Add invited user nickname to the invited list of the channel and send invite replies.
+    inviteUser(*channelToInvite, client, *clientToInvite, server.getName());
+}
+
+void Invite::inviteUser(Channel& channelToInvite, const Client& invitingClient, const Client& invitedClient,
+    const std::string& serverName) const
+{
     // Add invited user nickname to the invited list of the channel.
-    channelToInvite->addToInviteList(clientToInviteNickname);
+    channelToInvite.addToInviteList(invitedClient.getNickname());
 
     // Send invite replies.
-    Replier::reply(clientFd, Replier::rplInviting,
-            Utils::anyToVec(serverName, clientToInviteNickname, channelToInviteName));
-    Replier::reply(clientToInviteFd, Replier::rplInvite,
-        Utils::anyToVec(clientInvitingNickname, clientToInviteNickname, channelToInviteName));
+    Replier::reply(invitingClient.getFd(), Replier::rplInviting, Utils::anyToVec(serverName,
+        invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
+    Replier::reply(invitedClient.getFd(), Replier::rplInvite,
+        Utils::anyToVec(invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
 }
