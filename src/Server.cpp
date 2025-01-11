@@ -169,26 +169,6 @@ Client* Server::findClientByNickname(const std::string& nicknameToFind)
 	return NULL;
 }
 
-std::vector<Client> Server::findClientsByNickUserHostServerName(const std::string& nickname,
-	const std::string& username, const std::string& hostOrServerName)
-{
-	std::vector<Client> foundClients;
-
-	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
-	{
-		bool hostOrServerMatches = (hostOrServerName == it->second.getHostname() || hostOrServerName == this->name);
-		bool nickMatches = (nickname == it->second.getNickname());
-		bool userMatches = (username == it->second.getUsername());
-
-		if ((hostOrServerMatches && (nickMatches || userMatches)) || nickMatches)
-		{
-			foundClients.push_back(it->second);
-		}
-	}
-
-	return foundClients;
-}
-
 bool Server::usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const
 {
 	for (std::vector<Channel>::const_iterator it = this->channels.begin(); it != this->channels.end(); ++it)

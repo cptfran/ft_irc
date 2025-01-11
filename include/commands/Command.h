@@ -16,5 +16,6 @@ public:
 	virtual void execute(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
 
 protected:
+	//virtual bool validateArgs(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
 	void sendTopic(const Channel& channel, const Client& requestor, const std::string& serverName) const;
 };

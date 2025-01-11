@@ -49,9 +49,6 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 	// Separate commands and assign them with associating arguments.
 	while (!tokens.empty())
 	{
-		// : semicolon means, that everything after it is one message/argument, even if there are spaces,
-		// for example, realname in USER command starts with ":" so everything after it should be saved to the realname.
-		// Need to implement it.
 		const std::string command = *tokens.begin();
 		std::vector<std::string> arguments;
 		std::vector<std::string>::iterator it = tokens.begin() + 1;
@@ -69,14 +66,14 @@ std::map<std::string, std::vector<std::string> > ClientTranslator::fetchCommands
 	return fetchedCommands;
 }
 
-std::vector<std::string> ClientTranslator::extractPrivmsgTargets(const std::string& targets)
+std::vector<std::string> ClientTranslator::splitToTokens(const std::string& str, const char splitter)
 {
     // Split targets by commas.
-    std::istringstream iss(targets);
+    std::istringstream iss(str);
     std::string token;
     std::vector<std::string> tokens;
 
-    while (std::getline(iss, token, ','))
+    while (std::getline(iss, token, splitter))
     {
         tokens.push_back(token);
     }

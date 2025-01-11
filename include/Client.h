@@ -26,6 +26,7 @@ public:
 	std::string getPassword() const;
 	std::string getNickname() const;
 	std::string getUsername() const;
+	// TODO: check what exactly is the hostname output (needed to properly work with privmsg hostname mask checker).
 	std::string getHostname() const;
 	std::string getRealname() const;
 	bool isInvisible() const;
