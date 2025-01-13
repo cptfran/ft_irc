@@ -19,143 +19,176 @@ Privmsg::~Privmsg()
 
 void Privmsg::execute(Server& server, Client& client, const std::vector<std::string>& args) const
 {
-    // Target not provided.
+    if (!validateArgs(server, client, args))
+    {
+        return;
+    }
+
+    const std::string& targetsCommaSeparated = args[0];
+    std::vector<Client> foundTargets = findMatchingTargets(client, server, targetsCommaSeparated);
+    const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
+    sendMessagesToTargets(client, foundTargets, message);
+}
+
+bool Privmsg::validateArgs(Server& server, Client& client, const std::vector<std::string>& args) const
+{
     if (args.empty() || (args.size() >= 1 && args[0][0] == ':'))
     {
-        Replier::reply(client.getFd(), Replier::errNoRecipient, Utils::anyToVec(server.getName(),
-            client.getNickname(), std::string("PRIVMSG")));
-        return;
+        Replier::reply(client.getFd(), Replier::errNoRecipient, Utils::anyToVec(server.getName(), client.getNickname(),
+            std::string("PRIVMSG")));
+        return false;
     }
 
-    // Message not provided.
     if (args.size() < 2 || args[1][0] != ':')
     {
-        Replier::reply(client.getFd(), Replier::errNoTextToSend, Utils::anyToVec(server.getName(),
-            client.getNickname()));
-        return;
+        Replier::reply(client.getFd(), Replier::errNoTextToSend, Utils::anyToVec(server.getName(), client.getNickname()));
+        return false;
     }
 
-    const std::string& targets = args[0];
-    std::vector<std::string> extrTargets = ClientTranslator::extractPrivmsgTargets(targets);
+    return true;
+}
 
-    std::vector<Client> matchedTargets;
-    for (std::vector<std::string>::iterator it = extrTargets.begin(); it != extrTargets.end(); ++it)
+std::vector<Client> Privmsg::findMatchingTargets(Client& client, Server& server, const std::string& targets) const
+{
+    std::vector<std::string> extrTargets = ClientTranslator::splitToTokens(targets, ',');
+
+    std::vector<Client> foundTargets;
+    for (std::vector<std::string>::const_iterator it = extrTargets.begin(); it != extrTargets.end(); ++it)
     {
-        std::vector<Client> foundTargets = findTargetsOnServer(client, server, *it);
-        matchedTargets.insert(matchedTargets.end(), foundTargets.begin(), foundTargets.end());
+        // TODO: check here if partOfFoundTargets empty? because then probably cannot execute and return error?
+        std::vector<Client> partOfFoundTargets = getTargetsFromServer(client, server, *it);
+        foundTargets.insert(foundTargets.end(), partOfFoundTargets.begin(), partOfFoundTargets.end());
     }
 
-    const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
+    return foundTargets;
+}
 
-    for (std::vector<Client>::iterator it = matchedTargets.begin(); it != matchedTargets.end(); ++it)
+void Privmsg::sendMessagesToTargets(const Client& client, const std::vector<Client>& foundTargets, 
+    const std::string& message) const
+{
+    for (std::vector<Client>::const_iterator it = foundTargets.begin(); it != foundTargets.end(); ++it)
     {
-        std::cout << "replying privmsg" << std::endl;
         Replier::reply(it->getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), client.getUsername(),
             client.getHostname(), it->getNickname(), message));
     }
 }
 
-std::vector<Client> Privmsg::findTargetsOnServer(Client& requester, Server& server,
+std::vector<Client> Privmsg::getTargetsFromServer(Client& requester, Server& server, const std::string& extrTarget) 
+    const
+{
+    if (extrTarget[0] == '#')
+    {
+        std::vector<Client> targets = getChannelTargets(server, extrTarget);
+        if (!targets.empty())
+        {
+            return targets;
+        }
+
+        return getHostnameTargetsByWildcard(requester, server, extrTarget.substr(1));
+    }
+    if (extrTarget[0] == '$')
+    {
+        return getServerTargetsByWildcard(requester, server, extrTarget.substr(1));
+    }
+
+    return getUserTargets(requester, server, extrTarget);
+}
+
+std::vector<Client> Privmsg::getChannelTargets(Server& server, const std::string& extrTarget) const
+{
+    const Channel* channel = server.getChannel(extrTarget);
+    if (channel != NULL)
+    {
+        return channel->getClientList();
+    }
+
+    return std::vector<Client>();
+}
+
+std::vector<Client> Privmsg::getHostnameTargetsByWildcard(Client& requester, Server& server,
     const std::string& extrTarget) const
 {
     std::vector<Client> targets;
     const std::map<int, Client>& clients = server.getClients();
 
-    if (extrTarget[0] == '#')
+    size_t dotPos = extrTarget.find('.');
+    if (dotPos != std::string::npos)
     {
-        const Channel* channel = server.getChannel(extrTarget);
-        if (channel != NULL)
+        const std::string afterDot = extrTarget.substr(dotPos);
+        if (afterDot.empty() || afterDot.find('*') != std::string::npos)
         {
-            return channel->getClientList();
-        }
-
-        size_t dotPos = extrTarget.find('.');
-        if (dotPos != std::string::npos)
-        {
-            const std::string afterDot = extrTarget.substr(dotPos);
-            if (afterDot.empty() || afterDot.find('*') != std::string::npos)
-            {
-                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-                    requester.getNickname(), extrTarget)); 
-                return std::vector<Client>();
-            }
-
-            for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
-            {
-                if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), it->second.getHostname().c_str()))
-                {
-                    targets.push_back(it->second);
-                }
-            }
-            
-            if (targets.empty())
-            {
-                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-                    requester.getNickname(), extrTarget));
-                return std::vector<Client>();
-            }
-
-            return targets;
-        }
-    }
-
-    if (extrTarget[0] == '$')
-    {
-        size_t dotPos = extrTarget.find('.');
-        if (dotPos != std::string::npos)
-        {
-            const std::string afterDot = extrTarget.substr(dotPos);
-            if (afterDot.empty() || afterDot.find('*') != std::string::npos)
-            {
-                Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-                    requester.getNickname(), extrTarget));
-                return std::vector<Client>();
-            }
-
-            if (ClientTranslator::matchWildcard(extrTarget.substr(1).c_str(), server.getName().c_str()))
-            {
-                for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
-                {
-                    targets.push_back(it->second);
-                }
-                return targets;
-            }
-
             Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
                 requester.getNickname(), extrTarget));
             return std::vector<Client>();
         }
+
+        for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+        {
+            if (ClientTranslator::matchWildcard(extrTarget.c_str(), it->second.getHostname().c_str()))
+            {
+                targets.push_back(it->second);
+            }
+            return targets;
+        }
     }
 
-    std::string nickname;
-    std::string username;
-    std::string hostOrServerName;
+    Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        requester.getNickname(), extrTarget));
+    return std::vector<Client>();
+}
 
-    size_t splitNicknamePos = extrTarget.find('!');
-    size_t splitUsernamePos = extrTarget.find('%');
-
-    if (splitNicknamePos != std::string::npos && splitUsernamePos != std::string::npos)
+std::vector<Client> Privmsg::getServerTargetsByWildcard(Client& requester, Server& server,
+    const std::string& extrTarget) const
+{
+    size_t dotPos = extrTarget.find('.');
+    if (dotPos != std::string::npos)
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-            requester.getNickname(), extrTarget));
-        return std::vector<Client>();
+        const std::string afterDot = extrTarget.substr(dotPos + 1);
+        if (afterDot.empty() || afterDot.find('*') != std::string::npos)
+        {
+            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+                requester.getNickname(), extrTarget));
+            return std::vector<Client>();
+        }
+
+        std::vector<Client> targets;
+        const std::map<int, Client>& clients = server.getClients();
+        if (ClientTranslator::matchWildcard(extrTarget.c_str(), server.getName().c_str()))
+        {
+            for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+            {
+                targets.push_back(it->second);
+            }
+            return targets;
+        }
     }
 
-    if (splitNicknamePos != std::string::npos)
+    Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        requester.getNickname(), extrTarget));
+    return std::vector<Client>();
+}
+
+std::vector<Client> Privmsg::getUserTargets(Client& requester, Server& server, const std::string& extrTarget) const
+{
+    std::string nickname, username, hostname, serverName;
+    parseUserTarget(extrTarget, nickname, username, hostname, serverName);
+
+    std::vector<Client> targets;
+    const std::map<int, Client>& clients = server.getClients();
+
+    for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
     {
-        nickname = extrTarget.substr(0, splitNicknamePos);
-        hostOrServerName = extrTarget.substr(splitNicknamePos);
-    }
+        bool allEmpty = (hostname.empty() && serverName.empty() && nickname.empty() && username.empty());
+        bool hostMatches = (hostname.empty() || hostname == it->second.getHostname());
+        bool serverMatches = (serverName.empty() || serverName == server.getName());
+        bool nickMatches = (nickname.empty() || nickname == it->second.getNickname());
+        bool userMatches = (username.empty() || username == it->second.getUsername());
 
-    if (splitUsernamePos != std::string::npos)
-    {
-        username = extrTarget.substr(0, splitUsernamePos);
-        hostOrServerName = extrTarget.substr(splitUsernamePos);
+        if (!allEmpty && hostMatches && serverMatches && nickMatches && userMatches)
+        {
+            targets.push_back(it->second);
+        }
     }
-
-    // TODO: delete this method as now Im fetching all client list from server. This can be done here without server
-    // method.
-    targets = server.findClientsByNickUserHostServerName(nickname, username, hostOrServerName);
 
     if (targets.size() > 1)
     {
@@ -166,4 +199,67 @@ std::vector<Client> Privmsg::findTargetsOnServer(Client& requester, Server& serv
     }
 
     return targets;
+}
+
+void Privmsg::parseUserTarget(const std::string& extrTarget, std::string& nickname, std::string& username, 
+    std::string& hostname, std::string& serverName) const
+{
+    size_t splitPos = extrTarget.find('!');
+    if (splitPos != std::string::npos)
+    {
+        nickname = extrTarget.substr(0, splitPos);
+        username = extrTarget.substr(splitPos + 1);
+
+        splitPos = username.find('%');
+        if (splitPos != std::string::npos)
+        {
+            hostname = username.substr(splitPos + 1);
+            username = username.substr(0, splitPos);
+
+            splitPos = username.find('@');
+            if (splitPos != std::string::npos)
+            {
+                serverName = hostname.substr(splitPos + 1);
+                hostname = hostname.substr(0, splitPos);
+            }
+        }
+        else
+        {
+            splitPos = username.find('@');
+            if (splitPos != std::string::npos)
+            {
+                hostname, serverName = username.substr(splitPos + 1);
+                username = username.substr(0, splitPos);
+            }
+        }
+    }
+    else
+    {
+        splitPos = extrTarget.find('%');
+        if (splitPos != std::string::npos)
+        {
+            username = extrTarget.substr(0, splitPos);
+            hostname = extrTarget.substr(splitPos + 1);
+
+            splitPos = hostname.find('@');
+            if (splitPos != std::string::npos)
+            {
+                serverName = hostname.substr(splitPos + 1);
+                hostname = hostname.substr(0, splitPos);
+            }
+        }
+        else
+        {
+            splitPos = extrTarget.find('@');
+            if (splitPos != std::string::npos)
+            {
+                username = extrTarget.substr(0, splitPos);
+                hostname, serverName = extrTarget.size(splitPos + 1);
+            }
+            else
+            {
+                nickname = extrTarget;
+            }
+        }
+    }
 }
