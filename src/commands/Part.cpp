@@ -1,9 +1,9 @@
 #include "commands/Part.h"
-#include "Log.h"
-#include "Replier.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Channel.h"
+#include "server/Log.h"
+#include "replier/Replier.h"
+#include "server/Server.h"
+#include "utils/Utils.h"
+#include "channel/Channel.h"
 
 Part::Part()
 {
@@ -15,12 +15,12 @@ Part::~Part()
 
 }
 
-void Part::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Part::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
-			client.getNickname(), std::string("PART")));
+		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			requester.getNickname(), std::string("PART")));
 		return;
 	}
 
@@ -34,21 +34,21 @@ void Part::execute(Server& server, Client& client, const std::vector<std::string
 
 		if (channelToLeave == NULL)
 		{
-			Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
-				client.getNickname(), channelToFindName));
+			Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+				requester.getNickname(), channelToFindName));
 			continue;
 		}
 
-		if (!channelToLeave->isUserOnChannel(client.getNickname()))
+		if (!channelToLeave->isUserOnChannel(requester.getNickname()))
 		{
-			Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
-				client.getNickname(), channelToFindName));
+			Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+				requester.getNickname(), channelToFindName));
 			continue;
 		}
 
-		if (!channelToLeave->ejectUser(server, client.getNickname()))
+		if (!channelToLeave->ejectUser(server, requester.getNickname()))
 		{
-			Log::msgServer(INFO, "CLIENT", client.getFd(), EJECT_CLIENT_FAIL);
+			Log::msgServer(INFO, "CLIENT", requester.getFd(), EJECT_CLIENT_FAIL);
 		}
 	}
 }

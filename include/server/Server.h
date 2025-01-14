@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "Client.h"
+#include "client/Client.h"
 #include "commands/Command.h"
 #include <vector>
 #include <netinet/in.h>
@@ -15,7 +15,8 @@
 #define INPUT_BUFFER_SIZE 512
 #define HOSTNAME_BUFFER_SIZE 1024
 
-#define TIME_FOR_CLIENT_TO_REGISTER 15
+// TODO: change it to 60
+#define TIME_FOR_CLIENT_TO_REGISTER 60000
 
 class Channel;
 

@@ -8,5 +8,5 @@ public:
 	User();
 	~User();
 
-	void execute(Server& server, Client& client, const std::vector<std::string>& args) const;
+	void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
 };

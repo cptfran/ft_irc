@@ -8,7 +8,7 @@ public:
 	Who();
 	~Who();
 
-	void execute(Server& server, Client& client, const std::vector<std::string>& args) const;
+	void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
 	
 private:
 	void handleChannel(Server& server, const std::string& mask, Client& requester, bool operatorOnly) const;

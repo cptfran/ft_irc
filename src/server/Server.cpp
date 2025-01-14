@@ -1,8 +1,8 @@
-#include "Server.h"
+#include "server/Server.h"
 #include <cerrno>
-#include <ClientTranslator.h>
+#include <client/ClientTranslator.h>
 #include <cstdio>
-#include "Log.h"
+#include "server/Log.h"
 #include <stdexcept>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <csignal>
 #include <poll.h>
 #include <sstream>
-#include "Utils.h"
+#include "utils/Utils.h"
 #include <ctime>
 #include <fcntl.h>
 #include <netdb.h>
@@ -32,7 +32,7 @@
 #include "commands/Part.h"
 #include "commands/Who.h"
 #include "commands/Privmsg.h"
-#include "Replier.h"
+#include "replier/Replier.h"
 
 Server* Server::instance = NULL;
 
@@ -71,7 +71,10 @@ availableChannelModes(std::string("itkol"))
 
 	const std::time_t now = std::time(NULL);
 	creationDate = std::ctime(&now);
-
+	if (creationDate[creationDate.size() - 1] == '\n')
+	{
+		creationDate.resize(creationDate.size() - 1);
+	}
 	this->initSocket(port);
 
 	instance = this;
@@ -417,9 +420,10 @@ void Server::disconnectClient(const int clientFd)
 
 void Server::handleClientPrompt(Client& client)
 {
-	char buffer[INPUT_BUFFER_SIZE] = {};
-	const ssize_t bytesRead = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
-	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(client.getFd()) + "]: \"") + buffer + "\"");
+	static char serverBuffer[INPUT_BUFFER_SIZE] = {};
+	char recvBuffer[INPUT_BUFFER_SIZE] = {};
+	const ssize_t bytesRead = recv(client.getFd(), recvBuffer, sizeof(recvBuffer) - 1, 0);
+	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(client.getFd()) + "]: \"") + recvBuffer + "\"");
 	if (bytesRead <= 0)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -427,14 +431,19 @@ void Server::handleClientPrompt(Client& client)
 			std::cout << "EAGAIN || EWOULDBLOCK" << std::endl;
 			return;
 		}
-		std::cout << "disconnecting bytes read <= 0" << std::endl;
 		this->disconnectClient(client.getFd());
 		return;
 	}
-	buffer[bytesRead] = '\0';
+	recvBuffer[bytesRead] = '\0';
+	strcat(serverBuffer, recvBuffer);
+	std::cout << "serverBuffer: " << serverBuffer << std::endl;
+	if (strstr(serverBuffer, "\r\n") == NULL)
+	{
+		return;
+	}
 	try
 	{
-		this->handleCommands(client, buffer);
+		this->handleCommands(client, serverBuffer);
 	}
 	catch (const std::exception& e)
 	{
@@ -442,13 +451,14 @@ void Server::handleClientPrompt(Client& client)
 		this->disconnectClient(client.getFd());
 		std::cout << "disconnecting handleCommands exception" << std::endl;
 	}
+	memset(serverBuffer, '\0', INPUT_BUFFER_SIZE);
 }
 
 void Server::handleCommands(Client& client, const std::string& buffer)
 {
-	std::map<std::string, std::vector<std::string> > fetchedCommands =
+	std::vector<std::pair<std::string, std::vector<std::string> > > fetchedCommands =
 		ClientTranslator::fetchCommands(buffer, this->validCommands);
-	for (std::map<std::string, std::vector<std::string> >::iterator it = fetchedCommands.begin();
+	for (std::vector<std::pair<std::string, std::vector<std::string> > >::iterator it = fetchedCommands.begin();
 		it != fetchedCommands.end(); ++it)
 	{
 		if (this->validCommands.find(it->first) == this->validCommands.end())

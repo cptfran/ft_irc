@@ -1,7 +1,7 @@
 #include "commands/Cap.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
+#include "server/Server.h"
+#include "utils/Utils.h"
+#include "replier/Replier.h"
 
 Cap::Cap()
 {
@@ -13,10 +13,10 @@ Cap::~Cap()
 
 }
 
-void Cap::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Cap::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
 	if (!args.empty() && args[0] == "LS")
 	{
-		Replier::reply(client.getFd(), Replier::rplCap, Utils::anyToVec(server.getName()));
+		Replier::reply(requester.getFd(), Replier::rplCap, Utils::anyToVec(server.getName()));
 	}
 }

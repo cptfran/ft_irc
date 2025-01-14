@@ -1,5 +1,5 @@
-#include "../include/Client.h"
-#include "Log.h"
+#include "client/Client.h"
+#include "server/Log.h"
 #include <ctime>
 
 Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)

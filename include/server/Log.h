@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "Colors.h"
+#include "utils/Colors.h"
 
 /**
  * @brief Enables or disables debug logging based on the DEBUGGING macro.
@@ -42,7 +42,6 @@
 #define ACCEPT_FAIL LIGHT_CYAN "Failed accepting incoming connection." RESET
 #define NEW_CLIENT_START LIGHT_CYAN "New client connecting..." RESET
 #define NEW_CLIENT_SUCCESS LIGHT_CYAN "New client connected." RESET
-// #define AUTHENTICATE_CLIENT_FAIL LIGHT_CYAN "Client authentication failed. Connection closed." RESET
 #define CLIENT_REGISTER_SUCCESS LIGHT_CYAN "Client registered succesfully." RESET
 #define SERVER_RUN LIGHT_CYAN "Server is running and waiting for connections..." RESET
 #define HANDLE_CLIENT_FAIL LIGHT_CYAN "Client disconnected or error occured." RESET
@@ -65,4 +64,4 @@ public:
 	static void msgServer(const std::string& logLevel, const std::string& message);
 };
 
-#include "../src/Log.tpp"
+#include "../../src/server/Log.tpp"

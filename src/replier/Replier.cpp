@@ -1,6 +1,6 @@
-#include "../include/Replier.h"
+#include "replier/Replier.h"
 #include <sys/socket.h>
-#include "Log.h"
+#include "server/Log.h"
 
 Replier::Replier()
 {
@@ -54,8 +54,8 @@ std::string Replier::rplYourHost(const std::vector<std::string>& args)
 	const std::string& nickname = args[1];
 	const std::string& version = args[2];
 
-	return ":" + serverName + " 002 " + nickname + " :Your host is " + serverName + ", running version " + version
-	+ "\r\n";
+	return ":" + serverName + " 002 " + nickname + " :Your host is " + serverName + ", running version " + version +
+		"\r\n";
 }
 
 std::string Replier::rplCreated(const std::vector<std::string>& args)
@@ -69,7 +69,7 @@ std::string Replier::rplCreated(const std::vector<std::string>& args)
 	const std::string& nickname = args[1];
 	const std::string& creationDate = args[2];
 
-	return ":" + serverName + " 003 " + nickname + ": This server was created " + creationDate + "\r\n";
+	return ":" + serverName + " 003 " + nickname + " :This server was created " + creationDate + "\r\n";
 }
 
 std::string Replier::rplMyInfo(const std::vector<std::string>& args)
@@ -85,8 +85,8 @@ std::string Replier::rplMyInfo(const std::vector<std::string>& args)
 	const std::string& availableUserModes = args[3];
 	const std::string& availableChannelModes = args[4];
 
-	return ":" + serverName + " 004 " + nickname + " " + nickname + " Version: " + version + " " + availableUserModes
-	+ " Available channel modes: " + availableChannelModes + "\r\n";
+	return ":" + serverName + " 004 " + nickname + " :" + nickname + " Version: " + version + 
+		" Available user modes: " + availableUserModes + " Available channel modes: " + availableChannelModes + "\r\n";
 }
 
 std::string Replier::rplPong(const std::vector<std::string>& args)
@@ -391,6 +391,20 @@ std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
 	return ":" + serverName + " 403 " + nickname + " " + channelName + " :No such channel\r\n";
 }
 
+std::string Replier::errCannotSendToChan(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errCannotSendToChan()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& channelName = args[2];
+
+	return ":" + serverName + " 404 " + nickname + " " + channelName + " :Cannot send to channel\r\n";
+}
+
 std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
@@ -407,7 +421,7 @@ std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 
 std::string Replier::errTooManyTargets(const std::vector<std::string>& args)
 {
-	if (args.size() != 3)
+	if (args.size() != 5)
 	{
 		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errTooManyTargets()"));
 	}
@@ -461,6 +475,47 @@ std::string Replier::errUnknownCommand(const std::vector<std::string>& args)
 	const std::string& command = args[2];
 
 	return ":" + serverName + " 421 " + nickname + " " + command + " :Unknown command\r\n";
+}
+
+std::string Replier::errNoNicknameGiven(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoNicknameGiven()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+	return ":" + serverName + " 431 " + nickname + " :No nickname given\r\n";
+}
+
+std::string Replier::errOneusNickname(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errOneusNickname()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& currNickname = args[1];
+	const std::string& newNickname = args[1];
+
+	return ":" + serverName + " 431 " + currNickname + " " + newNickname + " :Erroneous nickname\r\n";
+}
+
+std::string Replier::errNicknameInUse(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNicknameInUse()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& currNickname = args[1];
+	const std::string& newNickname = args[2];
+
+	return ":" + serverName + " 433 " + currNickname + " " + newNickname + " :Nickname is already in use\r\n";
 }
 
 std::string Replier::errNickCollision(const std::vector<std::string>& args)

@@ -1,12 +1,13 @@
-#include "Channel.h"
-#include "Log.h"
+#include "channel/Channel.h"
+#include "server/Log.h"
+#include "server/Server.h"
+#include "client/ClientTranslator.h"
 #include <algorithm>
-#include "Server.h"
 
 Channel::Channel(const std::string& name)
 : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
 {
-	this->name = sanitizeChannelName(name);
+	this->name = ClientTranslator::sanitizeChannelName(name);
 }
 
 Channel::Channel() : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
@@ -225,6 +226,11 @@ void Channel::joinUser(Client& newClient)
 
 bool Channel::ejectUser(Server& server, const std::string& userToKick)
 {
+	if (this->joinedClients.empty())
+	{
+		return false;
+	}
+
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
 		if (it->client.getNickname() == userToKick)
@@ -286,37 +292,4 @@ void Channel::setUserLimit(const int limit)
 void Channel::disableUserLimit()
 {
 	this->userLimitActive = false;
-}
-
-std::string Channel::sanitizeChannelName(const std::string& name) const
-{
-	std::string sanitized = name;
-
-	if (name[0] != '#')
-	{
-		sanitized = "#" + sanitized;
-	}
-
-	if (name.length() > CHANNEL_NAME_MAX_LENGTH)
-	{
-		sanitized = sanitized.substr(0, CHANNEL_NAME_MAX_LENGTH);
-	}
-
-	size_t pos = sanitized.find(' ');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-	pos = sanitized.find(',');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-	pos = sanitized.find('\a');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-
-	return sanitized;
 }

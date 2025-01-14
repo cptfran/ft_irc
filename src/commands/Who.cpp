@@ -1,10 +1,10 @@
 #include "commands/Who.h"
-#include "Channel.h"
-#include "Log.h"
-#include "Replier.h"
-#include "Server.h"
-#include "Utils.h"
-#include "ClientTranslator.h"
+#include "channel/Channel.h"
+#include "server/Log.h"
+#include "replier/Replier.h"
+#include "server/Server.h"
+#include "utils/Utils.h"
+#include "client/ClientTranslator.h"
 
 Who::Who()
 {
@@ -16,13 +16,13 @@ Who::~Who()
 
 }
 
-void Who::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Who::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
 	// Not enough parameters.
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),                   
-			client.getNickname(), std::string("WHO")));
+		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			requester.getNickname(), std::string("WHO")));
 		return;
 	}
 
@@ -32,12 +32,12 @@ void Who::execute(Server& server, Client& client, const std::vector<std::string>
 	if (mask[0] == '#')
 	{
 		const bool operatorOnly = (args.size() == 2 && args[1] == "o");
-		handleChannel(server, mask, client, operatorOnly);
+		handleChannel(server, mask, requester, operatorOnly);
 		return;
 	}
 
 	// User prompting for users info.
-	handleUsers(server, client, mask);
+	handleUsers(server, requester, mask);
 }
 
 void Who::handleChannel(Server& server, const std::string& mask, Client& requester, const bool operatorOnly) const

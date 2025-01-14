@@ -1,8 +1,8 @@
 #include "commands/Join.h"
-#include "Log.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
+#include "server/Log.h"
+#include "server/Server.h"
+#include "utils/Utils.h"
+#include "replier/Replier.h"
 
 Join::Join()
 {
@@ -14,21 +14,21 @@ Join::~Join()
 
 }
 
-void Join::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Join::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
 	// Not enough arguments provided.
 	if (args.empty())
 	{
-		Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
-			client.getNickname(), std::string("JOIN")));
+		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+			requester.getNickname(), std::string("JOIN")));
 		return;
 	}
 
 	// User is not registered.
-	if (!client.registered(server.getPassword()))
+	if (!requester.registered(server.getPassword()))
 	{
-		Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
-			client.getNickname()));
+		Replier::reply(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+			requester.getNickname()));
 		return;
 	}
 
@@ -36,10 +36,10 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 
 	// Check if the client joining didn't surpass maximum number of joined channels.
 	// If yes, don't join and send proper reply.
-	if (client.getNumChannelsJoined() == CHANNELS_MAX)
+	if (requester.getNumChannelsJoined() == CHANNELS_MAX)
 	{
-		Replier::reply(client.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(),
-			client.getNickname(), channelName));
+		Replier::reply(requester.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(),
+			requester.getNickname(), channelName));
 		return;
 	}
 
@@ -47,30 +47,30 @@ void Join::execute(Server& server, Client& client, const std::vector<std::string
 	Channel* channelToJoin = findOrCreateChannel(server, channelName);
 
 	// If channel is invite only and client is not invited, don't join the client to it and send proper reply.
-	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(client.getNickname()))
+	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(requester.getNickname()))
 	{
-		Replier::reply(client.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(),
-			client.getNickname(), channelName));
+		Replier::reply(requester.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(),
+			requester.getNickname(), channelName));
 		return;
 	}
 
 	// Check if channel requires key, if yes, check if it's provided and correct.
 	if (!channelToJoin->getKey().empty() && !isValidChannelKey(args, channelToJoin->getKey()))
 	{
-		Replier::reply(client.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(),
-			client.getNickname(), channelName));
+		Replier::reply(requester.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(),
+			requester.getNickname(), channelName));
 		return;
 	}
 
 	// Check if channel has user limit, if yes check if it's not full.
 	if (channelToJoin->isUserLimitActive() && channelToJoin->getUserLimit() == channelToJoin->getNumOfJoinedUsers())
 	{
-		Replier::reply(client.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(),
-			client.getNickname(), channelName));
+		Replier::reply(requester.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(),
+			requester.getNickname(), channelName));
 		return;
 	}
 
-	joinChannel(client, *channelToJoin, server.getName());
+	joinChannel(requester, *channelToJoin, server.getName());
 }
 
 Channel* Join::findOrCreateChannel(Server& server, const std::string& channelName) const

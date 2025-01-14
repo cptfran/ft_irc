@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
-#include "../include/Client.h"
-#include "../include/Log.h"
+#include "client/Client.h"
+#include "server/Log.h"
 #include <sys/socket.h>
 
 /**

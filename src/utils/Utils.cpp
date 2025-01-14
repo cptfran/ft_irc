@@ -1,4 +1,4 @@
-#include "../include/Utils.h"
+#include <utils/Utils.h>
 #include <sstream>
 
 /**
@@ -20,6 +20,7 @@ int Utils::cStringToPositiveInt(const char *str)
 	{
 		return 0;
 	}
+
 	return num;
 }
 
@@ -27,7 +28,19 @@ std::string Utils::intToString(const int value)
 {
 	std::ostringstream oss;
 	oss << value;
+
 	return oss.str();
+}
+
+std::string Utils::stringToUpper(const std::string& str) 
+{
+	std::string result = str;
+	for (std::string::iterator it = result.begin(); it != result.end(); ++it) 
+	{
+		*it = toupper(*it);
+	}
+
+	return result;
 }
 
 std::vector<std::string> Utils::splitStringByComma(const std::string& str)

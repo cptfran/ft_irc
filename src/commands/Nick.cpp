@@ -1,5 +1,9 @@
 #include "commands/Nick.h"
-#include "Server.h"
+#include "server/Server.h"
+#include "replier/Replier.h"
+#include "utils/Utils.h"
+#include "channel/Channel.h"
+#include "client/ClientTranslator.h"
 
 Nick::Nick()
 {
@@ -11,14 +15,35 @@ Nick::~Nick()
 
 }
 
-void Nick::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Nick::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
-	(void)server;
-
-	if (!args.empty())
+	if (args.empty())
 	{
-		const std::string& nickname = args[0];
-		server.handleNicknameCollision(client.getFd(), nickname);
-		client.setNickname(args[0]);
+		Replier::reply(requester.getFd(), Replier::errNoNicknameGiven, Utils::anyToVec(server.getName(),
+			requester.getNickname()));
+		return;
 	}
+
+	const std::string& nickname = args[0];
+
+	if (!ClientTranslator::nicknameValid(nickname))
+	{
+		Replier::reply(requester.getFd(), Replier::errOneusNickname, Utils::anyToVec(server.getName(),
+			requester.getNickname(), nickname));
+		return;
+	}
+	if (!requester.getNickname().empty())
+	{
+		if (server.findClientByNickname(nickname) != NULL)
+		{
+			Replier::reply(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(server.getName(),
+				requester.getNickname(), nickname));
+			return;
+		}
+	}
+	else
+	{
+		server.handleNicknameCollision(requester.getFd(), nickname);
+	}
+	requester.setNickname(args[0]);
 }

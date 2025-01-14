@@ -2,10 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "Client.h"
-#include "Server.h"
-
-#define CHANNEL_NAME_MAX_LENGTH 50
+#include "client/Client.h"
+#include "server/Server.h"
 
 class Channel
 {
@@ -49,9 +47,6 @@ public:
 	void setOperator(const std::string& targetNickname, bool operatorPrivilege);
 	void setUserLimit(int limit);
 	void disableUserLimit();
-
-	// TODO: maybe move it to ClientTranslator.
-	std::string sanitizeChannelName(const std::string& name) const;
 
 private:
 	std::string name;

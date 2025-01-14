@@ -1,10 +1,10 @@
 #include "commands/Topic.h"
 #include <sys/socket.h>
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
-#include "Channel.h"
-#include "ClientTranslator.h"
+#include "server/Server.h"
+#include "utils/Utils.h"
+#include "replier/Replier.h"
+#include "channel/Channel.h"
+#include "client/ClientTranslator.h"
 
 Topic::Topic()
 {
@@ -16,21 +16,21 @@ Topic::~Topic()
 
 }
 
-void Topic::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+void Topic::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
     // Not enough parameters provided.
     if (args.empty())
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
-            client.getNickname(), std::string("TOPIC")));
+        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+            requester.getNickname(), std::string("TOPIC")));
         return;
     }
 
     // Client is not registered.
-    if (!client.registered(server.getPassword()))
+    if (!requester.registered(server.getPassword()))
     {
-        Replier::reply(client.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
-            client.getNickname()));
+        Replier::reply(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+            requester.getNickname()));
         return;
     }
 
@@ -42,46 +42,52 @@ void Topic::execute(Server& server, Client& client, const std::vector<std::strin
     if (channel == NULL)
     {
 
-        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
     // Client not on the channel.
-    if (!channel->isUserOnChannel(client.getNickname()))
+    if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
     // Only channel name provided by client. Sending back the topic if the topic is set.
     if (args.size() == 1)
     {
-        sendTopic(*channel, client, server.getName());
+        sendTopic(*channel, requester, server.getName());
         return;
     }
 
     // Check if topic change is restricted and only operators can change it.
-    if (channel->isTopicRestricted() && !channel->isUserOperator(client.getNickname()))
+    if (channel->isTopicRestricted() && !channel->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::reply(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
-    setTopic(args, client.getNickname(), *channel, server.getName());
+    setTopic(args, requester, *channel, server.getName());
 }
 
-void Topic::setTopic(const std::vector<std::string>& args, const std::string& requestorNickname, Channel& channel,
+void Topic::setTopic(const std::vector<std::string>& args, const Client& requester, Channel& channel,
     const std::string& serverName) const
 {
     // Set the new topic.
     const std::string& topic = args[1];
+    if (topic[0] != ':')
+    {
+        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
+            requester.getNickname(), std::string("TOPIC")));
+        return;
+    }
     channel.setTopic(ClientTranslator::sanitizeColonMessage(topic));
 
     // Broadcast new topic to all channel members.
     const std::vector<int> clientsFdList = channel.getFdsList();
-    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requestorNickname,
+    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requester.getNickname(),
         channel.getName(), channel.getTopic()));
 }

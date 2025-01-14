@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Client.h"
+#include "client/Client.h"
 #include <string>
 #include <vector>
 
@@ -13,9 +13,8 @@ public:
 	Command();
 	virtual ~Command();
 
-	virtual void execute(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
+	virtual void execute(Server& server, Client& requester, const std::vector<std::string>& args) const = 0;
 
 protected:
-	//virtual bool validateArgs(Server& server, Client& client, const std::vector<std::string>& args) const = 0;
-	void sendTopic(const Channel& channel, const Client& requestor, const std::string& serverName) const;
+	void sendTopic(const Channel& channel, const Client& requester, const std::string& serverName) const;
 };
