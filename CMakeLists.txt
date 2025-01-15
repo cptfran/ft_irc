@@ -20,8 +20,8 @@ add_executable(ircserv
         include/commands/Topic.h
         include/commands/User.h
         include/commands/Who.h
-        include/log/Log.h
         include/replier/Replier.h
+        include/server/Log.h
         include/server/Server.h
         include/utils/Colors.h
         include/utils/Utils.h
@@ -42,10 +42,10 @@ add_executable(ircserv
         src/commands/User.cpp
         src/commands/Who.cpp
         src/channel/Channel.cpp
-        src/log/Log.cpp
-        src/log/Log.tpp
         src/main.cpp
         src/replier/Replier.cpp
+        src/server/Log.cpp
+        src/server/Log.tpp
         src/server/Server.cpp
         src/utils/Utils.cpp
         src/utils/Utils.tpp

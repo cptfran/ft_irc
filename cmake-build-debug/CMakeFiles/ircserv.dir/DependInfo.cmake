@@ -8,13 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/szymon/CLionProjects/ft_irc/src/Channel.cpp" "CMakeFiles/ircserv.dir/src/Channel.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Channel.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/Client.cpp" "CMakeFiles/ircserv.dir/src/Client.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Client.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/ClientTranslator.cpp" "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/ClientTranslator.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/Log.cpp" "CMakeFiles/ircserv.dir/src/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Log.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/Replier.cpp" "CMakeFiles/ircserv.dir/src/Replier.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Replier.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/Server.cpp" "CMakeFiles/ircserv.dir/src/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Server.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/Utils.cpp" "CMakeFiles/ircserv.dir/src/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/Utils.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/channel/Channel.cpp" "CMakeFiles/ircserv.dir/src/channel/Channel.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/channel/Channel.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/client/Client.cpp" "CMakeFiles/ircserv.dir/src/client/Client.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/client/Client.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/client/ClientTranslator.cpp" "CMakeFiles/ircserv.dir/src/client/ClientTranslator.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/client/ClientTranslator.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Cap.cpp" "CMakeFiles/ircserv.dir/src/commands/Cap.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Cap.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Command.cpp" "CMakeFiles/ircserv.dir/src/commands/Command.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Command.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Invite.cpp" "CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o.d"
@@ -25,10 +21,15 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Part.cpp" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Ping.cpp" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/commands/Privmsg.cpp" "CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Topic.cpp" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/User.cpp" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Who.cpp" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/replier/Replier.cpp" "CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp" "CMakeFiles/ircserv.dir/src/server/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/server/Log.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp" "CMakeFiles/ircserv.dir/src/server/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/server/Server.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
