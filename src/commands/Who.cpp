@@ -21,7 +21,7 @@ void Who::execute(Server& server, Client& requester, const std::vector<std::stri
 	// Not enough parameters.
 	if (args.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
 			requester.getNickname(), std::string("WHO")));
 		return;
 	}
@@ -45,7 +45,7 @@ void Who::handleChannel(Server& server, const std::string& mask, Client& request
 	const Channel* channel = server.getChannel(mask);
 	if (channel == NULL)
 	{
-		Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
 			requester.getNickname(), mask));
 		return;
 	}
@@ -53,10 +53,10 @@ void Who::handleChannel(Server& server, const std::string& mask, Client& request
 	const std::vector<std::string>& userList = channel->getUserListForWhoQuery(server.getName(), operatorOnly);
 	for (std::vector<std::string>::const_iterator it = userList.begin(); it != userList.end(); ++it)
 	{
-		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
 			requester.getNickname(), *it));
 	}
-	Replier::reply(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
+	Replier::addToQueue(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
 		requester.getNickname(), mask));
 }
 
@@ -77,10 +77,10 @@ void Who::handleUsers(Server& server, Client& requester, const std::string& mask
 		const std::string sanitizedUserInfo = "* " + it->second.getUsername() + " " + it->second.getHostname() + " " +
 			server.getName() + " " + it->second.getNickname() + " H :0 " + it->second.getRealname() + "\r\n";
 
-		Replier::reply(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::rplWhoReply, Utils::anyToVec(server.getName(),
 			requester.getNickname(), sanitizedUserInfo));
 	}
-	Replier::reply(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
+	Replier::addToQueue(requester.getFd(), Replier::rplEndOfWho, Utils::anyToVec(server.getName(),
 		requester.getNickname(), mask));
 }
 

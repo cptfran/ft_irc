@@ -137,6 +137,11 @@ std::map<int, Client> Server::getClients() const
 	return this->clients;
 }
 
+Channel* Server::getNewestChannel()
+{
+    return &this->channels.back();
+}
+
 Channel* Server::getChannel(const std::string& channelName)
 {
 	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
@@ -296,6 +301,7 @@ void Server::run()
         	}
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
+				disconnectClient(it->fd);
             	it = this->pollFds.erase(it);
         		continue;
         	}
@@ -304,10 +310,18 @@ void Server::run()
     			if (it->fd == this->fd)
                 {
                 	this->connectClient();
-    				break;
                 }
-            	this->handleClientPrompt(this->clients.at(it->fd));
+				else
+				{
+					this->handleClientPrompt(this->clients.at(it->fd));
+				}
+				++it;
+				continue;
             }
+			if ((it->revents & POLLOUT) == POLLOUT && Replier::clientInQueue(it->fd))
+			{
+
+			}
     		++it;
         }
     }
@@ -324,7 +338,7 @@ void Server::handleNicknameCollision(const int newClientFd, const std::string& n
 	{
 		if (newClientNickname == it->second.getNickname() && it->second.getFd() != newClientFd)
 		{
-			Replier::reply(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
+			Replier::addToQueue(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
 				newClientNickname, it->second.getUsername(), it->second.getHostname()));
 			this->disconnectClient(it->second.getFd());
 			return;
@@ -420,7 +434,6 @@ void Server::disconnectClient(const int clientFd)
 
 void Server::handleClientPrompt(Client& client)
 {
-	static char serverBuffer[INPUT_BUFFER_SIZE] = {};
 	char recvBuffer[INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(client.getFd(), recvBuffer, sizeof(recvBuffer) - 1, 0);
 	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(client.getFd()) + "]: \"") + recvBuffer + "\"");
@@ -435,52 +448,47 @@ void Server::handleClientPrompt(Client& client)
 		return;
 	}
 	recvBuffer[bytesRead] = '\0';
-	strcat(serverBuffer, recvBuffer);
-	std::cout << "serverBuffer: " << serverBuffer << std::endl;
-	if (strstr(serverBuffer, "\r\n") == NULL)
+	client.addToBuffer(recvBuffer);
+	std::string msg = client.departCompleteMsgFromBuffer();
+	if (msg.empty())
 	{
 		return;
 	}
 	try
 	{
-		this->handleCommands(client, serverBuffer);
+		this->executeCommand(client, msg);
 	}
 	catch (const std::exception& e)
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
 		this->disconnectClient(client.getFd());
-		std::cout << "disconnecting handleCommands exception" << std::endl;
 	}
-	memset(serverBuffer, '\0', INPUT_BUFFER_SIZE);
 }
 
-void Server::handleCommands(Client& client, const std::string& buffer)
+void Server::executeCommand(Client& client, const std::string& buffer)
 {
-	std::vector<std::pair<std::string, std::vector<std::string> > > fetchedCommands =
-		ClientTranslator::fetchCommands(buffer, this->validCommands);
-	for (std::vector<std::pair<std::string, std::vector<std::string> > >::iterator it = fetchedCommands.begin();
-		it != fetchedCommands.end(); ++it)
+	std::pair<std::string, std::vector<std::string> > cmdWithArgs = 
+		ClientTranslator::fetchCmdAndArgs(buffer, this->validCommands);
+	if (this->validCommands.find(cmdWithArgs.first) == this->validCommands.end())
 	{
-		if (this->validCommands.find(it->first) == this->validCommands.end())
-		{
-			Replier::reply(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
-				client.getNickname(), it->first));
-			continue;
-		}
-		this->validCommands.at(it->first)->execute(*this, client, it->second);
+		Replier::addToQueue(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
+			client.getNickname(), cmdWithArgs.first));
+		return;
 	}
+
+	this->validCommands.at(cmdWithArgs.first)->execute(*this, client, cmdWithArgs.second);
 
 	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
-		Replier::reply(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::addToQueue(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
 			client.getUsername(), client.getHostname()));
-		Replier::reply(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::addToQueue(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
 			this->version));
-		Replier::reply(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::addToQueue(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
 			this->creationDate));
-		Replier::reply(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::addToQueue(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, client.getNickname(),
 			this->version, this->availableUserModes, this->availableChannelModes));
 
 		client.setWelcomeRepliesSent(true);
@@ -496,7 +504,7 @@ void Server::handleTimeouts()
 			!clientIt->second.registered(this->password) &&
 			difftime(std::time(0), clientIt->second.getTimeConnected()) > TIME_FOR_CLIENT_TO_REGISTER)
 		{
-			Replier::reply(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
+			Replier::addToQueue(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
 				clientIt->second.getHostname()));
 			disconnectClient(it->fd);
 			it = this->pollFds.erase(it);

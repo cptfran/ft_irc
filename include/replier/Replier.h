@@ -2,16 +2,28 @@
 
 #include "client/Client.h"
 #include <vector>
+#include <map>
 
 class Replier
 {
 public:
 	~Replier();
 
+
 private:
-	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
+	typedef std::string(*ReplyFunction)(const std::vector<std::string>&);
+
+	static std::map<int, std::vector<std::string> > rplQueue;
 
 	Replier();
+
+
+
+	static void Replier::addToQueue(int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs);
+
+	static const bool Replier::clientInQueue(int fd);
+
+	static void Replier::sendFromQueue(int fd);
 
 	// Reply functions.
 	static void reply(int clientFd, ReplyFunction func, const std::vector<std::string>& args);

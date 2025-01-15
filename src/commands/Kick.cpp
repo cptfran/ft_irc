@@ -20,7 +20,7 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
             requester.getNickname(), std::string("KICK")));
         return;
     }
@@ -32,7 +32,7 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -40,7 +40,7 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Client not on the channel.
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -48,7 +48,7 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Client is not an operator.
     if (!channel->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -67,7 +67,7 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     // Kick user from the channel.
     if (!channel.ejectUser(server, userToKick))
     {
-        Replier::reply(requester.getFd(), Replier::errUserNotInChannel,
+        Replier::addToQueue(requester.getFd(), Replier::errUserNotInChannel,
             Utils::anyToVec(server.getName(), requester.getNickname(), userToKick, channel.getName()));
         return;
     }

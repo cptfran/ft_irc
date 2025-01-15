@@ -22,7 +22,7 @@ void Privmsg::execute(Server& server, Client& requester, const std::vector<std::
     // Target not provided.
     if (args.empty() || (args.size() >= 1 && args[0][0] == ':'))
     {
-        Replier::reply(requester.getFd(), Replier::errNoRecipient, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoRecipient, Utils::anyToVec(server.getName(),
             requester.getNickname(), std::string("PRIVMSG")));
         return;
     }
@@ -30,7 +30,7 @@ void Privmsg::execute(Server& server, Client& requester, const std::vector<std::
     // Message not provided.
     if (args.size() < 2 || args[1][0] != ':')
     {
-        Replier::reply(requester.getFd(), Replier::errNoTextToSend, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoTextToSend, Utils::anyToVec(server.getName(),
             requester.getNickname()));
         return;
     }
@@ -68,7 +68,7 @@ void Privmsg::sendMessagesToTargets(const Client& client, const std::vector<std:
 {
     for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end(); ++it)
     {
-        Replier::reply(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), 
+        Replier::addToQueue(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), 
             client.getUsername(), client.getHostname(), it->second, message));
     }
 }
@@ -106,7 +106,7 @@ std::vector<std::pair<Client, std::string> > Privmsg::getChannelTargets(const Cl
 
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errCannotSendToChan, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errCannotSendToChan, Utils::anyToVec(server.getName(),
             requester.getNickname(), channel->getName()));
         return std::vector<std::pair<Client, std::string> >();
     }
@@ -137,7 +137,7 @@ std::vector<std::pair<Client, std::string> > Privmsg::getHostnameTargetsByWildca
         const std::string afterDot = extrTarget.substr(dotPos);
         if (afterDot.empty() || afterDot.find('*') != std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
                 requester.getNickname(), extrTarget));
             return std::vector<std::pair<Client, std::string> >();
         }
@@ -153,7 +153,7 @@ std::vector<std::pair<Client, std::string> > Privmsg::getHostnameTargetsByWildca
 
     if (targets.empty())
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
             requester.getNickname(), extrTarget));
     }
     
@@ -171,7 +171,7 @@ std::vector<std::pair<Client, std::string> > Privmsg::getServerTargetsByWildcard
         const std::string afterDot = extrTarget.substr(dotPos + 1);
         if (afterDot.empty() || afterDot.find('*') != std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
                 requester.getNickname(), extrTarget));
             return std::vector<std::pair<Client, std::string> >();
         }
@@ -187,7 +187,7 @@ std::vector<std::pair<Client, std::string> > Privmsg::getServerTargetsByWildcard
     }
     if (targets.empty())
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
             requester.getNickname(), extrTarget));
     }
 
@@ -222,14 +222,14 @@ std::vector<std::pair<Client, std::string> > Privmsg::getUserTargets(const Clien
     if (targets.size() > 1)
     {
         std::string errorCode = "Ambiguous " + extrTarget + ".";
-        Replier::reply(requester.getFd(), Replier::errTooManyTargets, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errTooManyTargets, Utils::anyToVec(server.getName(),
             requester.getNickname(), extrTarget, errorCode, std::string("Message not sent.")));
         return std::vector<std::pair<Client, std::string> >();
     }
 
     if (targets.empty())
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
             requester.getNickname(), extrTarget));
     }
 

@@ -19,7 +19,7 @@ void Mode::execute(Server& server, Client& requester, const std::vector<std::str
     // Not enough parameters.
     if (args.empty())
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
             requester.getNickname(), std::string("MODE")));
         return;
     }
@@ -39,7 +39,7 @@ void Mode::execute(Server& server, Client& requester, const std::vector<std::str
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -47,7 +47,7 @@ void Mode::execute(Server& server, Client& requester, const std::vector<std::str
     // Client not a member of the channel.
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(), channelName));
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(), channelName));
         return;
     }
 
@@ -62,7 +62,7 @@ void Mode::execute(Server& server, Client& requester, const std::vector<std::str
     const std::string& modes = args[1];
     if (args.size() == 2 && modes == "b")
     {
-        Replier::reply(requester.getFd(), Replier::rplEndOfBanList, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::rplEndOfBanList, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -70,7 +70,7 @@ void Mode::execute(Server& server, Client& requester, const std::vector<std::str
     // No operator privileges.
     if (!channel->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -84,7 +84,7 @@ void Mode::handleUserModes(Client& requester, const std::string& nickname, const
 {
     if (nickname != requester.getNickname())
     {
-        Replier::reply(requester.getFd(), Replier::errUsersDontMatch, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errUsersDontMatch, Utils::anyToVec(server.getName(),
             requester.getNickname()));
         return;
     }
@@ -92,7 +92,7 @@ void Mode::handleUserModes(Client& requester, const std::string& nickname, const
     if (args.size() < 2)
     {
         const std::string modes = requester.isInvisible() ? std::string("+i") : std::string();
-        Replier::reply(requester.getFd(), Replier::rplUModeIs, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::rplUModeIs, Utils::anyToVec(server.getName(),
             requester.getNickname(), modes));
         return;
     }
@@ -110,7 +110,7 @@ void Mode::handleUserModes(Client& requester, const std::string& nickname, const
         // Action sign not found.
         else if (action.empty() || server.getAvailableUserModes().find(modes[i]) == std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errUModeUnknownFlag, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errUModeUnknownFlag, Utils::anyToVec(server.getName(),
                 requester.getNickname()));
         }
         // Switch on/off invisible mode.
@@ -150,7 +150,7 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
         replyParams.insert(replyParams.begin() + 3, modes);
     }
 
-    Replier::reply(requester.getFd(), Replier::rplChannelModeIs, replyParams);
+    Replier::addToQueue(requester.getFd(), Replier::rplChannelModeIs, replyParams);
 }
 
 void Mode::editChannelModes(const std::vector<std::string>& args, const Client& requester,
@@ -170,7 +170,7 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const Client& 
         // Action sign not found.
         else if (action.empty() || server.getAvailableChannelModes().find(modes[i]) == std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errUnknownMode, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errUnknownMode, Utils::anyToVec(server.getName(),
                 requester.getNickname(), std::string(1, modes[i])));
         }
         // Switch on/off invite-only mode.
@@ -214,7 +214,7 @@ void Mode::handleKeyMode(Channel& channel, const std::string& action, const std:
 
     if (argsI >= args.size())
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
             requester.getNickname(), std::string(1, mode)));
         return;
     }
@@ -223,7 +223,7 @@ void Mode::handleKeyMode(Channel& channel, const std::string& action, const std:
     if (!key.empty())
     {
         const std::string& channelName = channel.getName();
-        Replier::reply(requester.getFd(), Replier::errKeySet, Utils::anyToVec(serverName,
+        Replier::addToQueue(requester.getFd(), Replier::errKeySet, Utils::anyToVec(serverName,
             requester.getNickname(), channelName));
         return;
     }
@@ -237,7 +237,7 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
 {
     if (argsI >= args.size())
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
             requester.getNickname(), std::string(1, mode)));
         return;
     }
@@ -246,7 +246,7 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
     ++argsI;
     if (!channel.isUserOnChannel(targetNickname))
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
         return;
     }
 
@@ -265,7 +265,7 @@ void Mode::handleUserLimitMode(Channel& channel, const std::string& action, cons
 
     if (argsI >= args.size())
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
             requester.getNickname(), std::string(1, mode)));
         return;
     }

@@ -17,6 +17,6 @@ void Cap::execute(Server& server, Client& requester, const std::vector<std::stri
 {
 	if (!args.empty() && args[0] == "LS")
 	{
-		Replier::reply(requester.getFd(), Replier::rplCap, Utils::anyToVec(server.getName()));
+		Replier::addToQueue(requester.getFd(), Replier::rplCap, Utils::anyToVec(server.getName()));
 	}
 }

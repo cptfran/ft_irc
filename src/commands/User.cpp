@@ -6,8 +6,6 @@
 #include "channel/Channel.h"
 #include "client/ClientTranslator.h"
 
-#define MAX_USERNAME_LEN 9
-
 User::User()
 {
 
@@ -18,20 +16,21 @@ User::~User()
 
 }
 
-// TODO: segfault when joining 'chan', problems when providing 'user user adsg :asdgdg' ?
 void User::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
 {
 	if (args.size() < 4)
 	{
-		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
 			requester.getNickname(), std::string("USER")));
+		return;
 	}
 
 	const std::string& realname = args[3];
 	if (realname[0] != ':')
 	{
-		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
 			requester.getNickname(), std::string("USER")));
+		return;
 	}
 
 	std::string username = args[0];

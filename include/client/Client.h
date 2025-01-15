@@ -5,6 +5,8 @@
 // Maxium number of channels, client can join:
 #define CHANNELS_MAX 10
 
+#define INPUT_BUFFER_SIZE 512
+
 /**
  * A client is anything connecting to a server that is not another
  * server. Each client is distinguished from other clients by a unique
@@ -18,6 +20,7 @@
 class Client
 {
 public:
+	// TODO: implement copy constructors etc, even if they need to private.
 	explicit Client(int fd);
 	bool operator==(const Client& toCompare) const;
 	~Client();
@@ -29,6 +32,7 @@ public:
 	std::string getHostname() const;
 	std::string getRealname() const;
 	bool isInvisible() const;
+	std::string Client::departCompleteMsgFromBuffer();
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
@@ -38,7 +42,9 @@ public:
 	void setWelcomeRepliesSent(bool sent);
 	void setNumChannelsJoined(int num);
 	void setInvisible(bool invisible);
+	void addToBuffer(const std::string& str);
 
+	// TODO: change getters to const.
 	bool registered(const std::string& serverPassword) const;
 	time_t getTimeConnected() const;
 	bool getWelcomeRepliesSent() const;
@@ -55,6 +61,7 @@ private:
 	bool welcomeRepliesSent;
 	int channelsJoined;
 	bool invisible;
+	std::string recvBuffer;
 
 	Client();
 };

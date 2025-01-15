@@ -19,7 +19,7 @@ void Part::execute(Server& server, Client& requester, const std::vector<std::str
 {
 	if (args.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
 			requester.getNickname(), std::string("PART")));
 		return;
 	}
@@ -34,14 +34,14 @@ void Part::execute(Server& server, Client& requester, const std::vector<std::str
 
 		if (channelToLeave == NULL)
 		{
-			Replier::reply(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+			Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
 				requester.getNickname(), channelToFindName));
 			continue;
 		}
 
 		if (!channelToLeave->isUserOnChannel(requester.getNickname()))
 		{
-			Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+			Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
 				requester.getNickname(), channelToFindName));
 			continue;
 		}

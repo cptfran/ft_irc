@@ -17,15 +17,19 @@ ClientTranslator::~ClientTranslator()
 
 }
 
-std::vector<std::pair<std::string, std::vector<std::string> > > ClientTranslator::fetchCommands(
+std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndArgs(
 	const std::string& buffer, const std::map<std::string, Command*>& validServerCommands)
 {
-	// Split buffer to tokens.
+	// Split buffer into tokens.
 	std::istringstream iss(buffer);
 	std::string token;
-	std::vector<std::string> tokens;
+	std::vector<std::string> args;
 
-	std::cout << "buffer in fetcher: " << buffer << std::endl;
+	// Extract the command (first token).
+	std::string cmd;
+	iss >> cmd;
+
+	// Process remaining tokens (arguments).
 	while (iss >> token)
 	{
 		if (!token.empty() && token[0] == ':')
@@ -33,40 +37,16 @@ std::vector<std::pair<std::string, std::vector<std::string> > > ClientTranslator
 			std::string colonMessage;
 			std::getline(iss, colonMessage, '\r');
 			token += colonMessage;
-			if (token.length() > 2)
+			if (token.length() > 1)
 			{
-				tokens.push_back(token);
+				args.push_back(token);
 			}
-			continue;
+			break;
 		}
-		std::cout << "token: " << token << std::endl;
-		tokens.push_back(token);
+		args.push_back(token);
 	}
-	if (tokens.empty())
-	{
-		throw std::runtime_error(ERROR EMPTY_CLIENT_PROMPT);
-	}
-
-	std::vector<std::pair<std::string, std::vector<std::string> > > fetchedCommands;
-
-	// Separate commands and assign them with associating arguments.
-	while (!tokens.empty())
-	{
-		const std::string command = Utils::stringToUpper(*tokens.begin());
-		std::vector<std::string> arguments;
-		std::vector<std::string>::iterator it = tokens.begin() + 1;
-		for (; it != tokens.end(); ++it)
-		{
-			if (validServerCommands.find(Utils::stringToUpper(*it)) != validServerCommands.end())
-			{
-				break;
-			}
-			arguments.push_back(*it);
-		}
-		tokens.erase(tokens.begin(), it);
-		fetchedCommands.push_back(make_pair(command, arguments));
-	}
-	return fetchedCommands;
+	
+	return std::make_pair(cmd, args);
 }
 
 bool ClientTranslator::nicknameValid(const std::string& nickname)

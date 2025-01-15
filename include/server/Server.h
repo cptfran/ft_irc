@@ -41,6 +41,7 @@ public:
 	void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
 
 	// Channels:
+	Channel* getNewestChannel();
 	Channel* getChannel(const std::string& channelName);
 	std::string getAvailableChannelModes() const;
 	std::string getAvailableUserModes() const;
@@ -72,7 +73,7 @@ private:
 	void disconnectClient(int clientFd);
 
 	// Handling new requests of already connected client.
-	void handleCommands(Client& client, const std::string& buffer);
+	void executeCommand(Client& client, const std::string& buffer);
 	void handleClientPrompt(Client& client);
 
 	void handleTimeouts();

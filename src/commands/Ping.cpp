@@ -19,9 +19,9 @@ void Ping::execute(Server& server, Client& requester, const std::vector<std::str
 
 	if (args.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
+		Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
 		return;
 	}
 
-	Replier::reply(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), serverToReply));
+	Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), serverToReply));
 }

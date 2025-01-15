@@ -1,6 +1,9 @@
 #include "replier/Replier.h"
 #include <sys/socket.h>
 #include "server/Log.h"
+#include <map>
+
+std::map<int, std::vector<std::string> > Replier::rplQueue;
 
 Replier::Replier()
 {
@@ -12,10 +15,42 @@ Replier::~Replier()
 
 }
 
-void Replier::reply(const int clientFd, const ReplyFunction func, const std::vector<std::string>& args)
+void Replier::addToQueue(const int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs)
 {
-	const std::string reply = func(args);
-	send(clientFd, reply.c_str(), reply.size(), 0);
+	rplQueue[fd].push_back(func(funcArgs));
+}
+
+const bool Replier::clientInQueue(const int fd)
+{
+	if (Replier::rplQueue.find(fd) == Replier::rplQueue.end())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Replier::sendFromQueue(const int fd)
+{
+	// Find the vector associated with the given fd.
+	std::map<int, std::vector<std::string> >::iterator it = Replier::rplQueue.find(fd);
+	if (it == Replier::rplQueue.end())
+	{
+		return;
+	}
+
+	// Get the first reply from the vector
+	const std::string& reply = it->second.front();
+	send(fd, reply.c_str(), reply.size(), 0);
+
+	// Erase the first element from the vector
+	it->second.erase(it->second.begin());
+
+	// If the vector becomes empty, erase the element from the map
+	if (it->second.empty())
+	{
+		Replier::rplQueue.erase(it);
+	}
 }
 
 void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFunction func,
@@ -23,7 +58,7 @@ void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFuncti
 {
 	for (std::vector<int>::const_iterator it = clientsFdList.begin(); it != clientsFdList.end(); ++it)
 	{
-		Replier::reply(*it, func, args);
+		Replier::addToQueue(*it, func, args);
 	}
 }
 

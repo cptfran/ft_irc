@@ -1,6 +1,7 @@
 #include "client/Client.h"
 #include "server/Log.h"
 #include <ctime>
+#include <cstring>
 
 Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
 {
@@ -65,6 +66,11 @@ void Client::setInvisible(const bool invisible)
 	this->invisible = invisible;
 }
 
+void Client::addToBuffer(const std::string& str)
+{
+	this->recvBuffer += str;
+}
+
 int Client::getFd() const
 {
 	return this->fd;
@@ -122,4 +128,22 @@ time_t Client::getTimeConnected() const
 bool Client::getWelcomeRepliesSent() const
 {
 	return this->welcomeRepliesSent;
+}
+
+std::string Client::departCompleteMsgFromBuffer()
+{
+	// Find the position of "\r\n" in recvBuffer
+	size_t endOfMsgPos = this->recvBuffer.find("\r\n");
+	if (endOfMsgPos == std::string::npos)
+	{
+		return "";
+	}
+
+	// Extract the complete message
+	std::string completeMsg = this->recvBuffer.substr(0, endOfMsgPos + 2);
+
+	// Remove the extracted message from recvBuffer
+	this->recvBuffer.erase(0, endOfMsgPos + 2);
+
+	return completeMsg;
 }

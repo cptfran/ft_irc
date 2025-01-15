@@ -2,6 +2,8 @@
 
 #include "Command.h"
 
+#define MAX_USERNAME_LEN 9
+
 class User: public Command
 {
 public:

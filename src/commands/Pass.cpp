@@ -18,7 +18,7 @@ void Pass::execute(Server& server, Client& requester, const std::vector<std::str
 {
 	if (args.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
 			requester.getNickname()));
 		return;
 	}
@@ -26,7 +26,7 @@ void Pass::execute(Server& server, Client& requester, const std::vector<std::str
 	const std::string& enteredPassword = args[0];
 	if (enteredPassword != server.getPassword())
 	{
-		Replier::reply(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
 			requester.getNickname()));
 		return;
 	}

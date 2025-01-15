@@ -19,7 +19,7 @@ void Nick::execute(Server& server, Client& requester, const std::vector<std::str
 {
 	if (args.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::errNoNicknameGiven, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNoNicknameGiven, Utils::anyToVec(server.getName(),
 			requester.getNickname()));
 		return;
 	}
@@ -28,7 +28,7 @@ void Nick::execute(Server& server, Client& requester, const std::vector<std::str
 
 	if (!ClientTranslator::nicknameValid(nickname))
 	{
-		Replier::reply(requester.getFd(), Replier::errOneusNickname, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errOneusNickname, Utils::anyToVec(server.getName(),
 			requester.getNickname(), nickname));
 		return;
 	}
@@ -36,7 +36,7 @@ void Nick::execute(Server& server, Client& requester, const std::vector<std::str
 	{
 		if (server.findClientByNickname(nickname) != NULL)
 		{
-			Replier::reply(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(server.getName(),
+			Replier::addToQueue(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(server.getName(),
 				requester.getNickname(), nickname));
 			return;
 		}

@@ -19,7 +19,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
             requester.getNickname(), std::string("INVITE")));
         return;
     }
@@ -31,7 +31,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // Invited user not found.
     if (clientToInvite == NULL)
     {
-        Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
             requester.getNickname(), nicknameToInvite));
         return;
     }
@@ -43,9 +43,9 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // Invitation channel not found.
     if (channelToInvite == NULL)
     {
-        Replier::reply(requester.getFd(), Replier::rplInviting, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::rplInviting, Utils::anyToVec(server.getName(),
             requester.getNickname(), clientToInvite->getNickname(), channelToInviteName));
-        Replier::reply(requester.getFd(), Replier::rplInvite,
+        Replier::addToQueue(requester.getFd(), Replier::rplInvite,
             Utils::anyToVec(requester.getNickname(), requester.getNickname(), channelToInviteName));
         return;
     }
@@ -53,7 +53,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // Inviting client is not a member of the channel.
     if (!channelToInvite->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelToInviteName));
         return;
     }
@@ -61,7 +61,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // User to invite is already on the channel.
     if (channelToInvite->isUserOnChannel(clientToInvite->getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errUserOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errUserOnChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), nicknameToInvite, channelToInviteName));
         return;
     }
@@ -69,7 +69,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
     // Channel is invite-only and inviting client doesn't have operator privileges.
     if (channelToInvite->isInviteOnly() && !channelToInvite->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelToInviteName));
         return;
     }
@@ -85,8 +85,8 @@ void Invite::inviteUser(Channel& channelToInvite, const Client& invitingClient, 
     channelToInvite.addToInviteList(invitedClient.getNickname());
 
     // Send invite replies.
-    Replier::reply(invitingClient.getFd(), Replier::rplInviting, Utils::anyToVec(serverName,
+    Replier::addToQueue(invitingClient.getFd(), Replier::rplInviting, Utils::anyToVec(serverName,
         invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
-    Replier::reply(invitedClient.getFd(), Replier::rplInvite,
+    Replier::addToQueue(invitedClient.getFd(), Replier::rplInvite,
         Utils::anyToVec(invitingClient.getNickname(), invitedClient.getNickname(), channelToInvite.getName()));
 }

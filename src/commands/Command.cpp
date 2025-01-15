@@ -19,11 +19,11 @@ void Command::sendTopic(const Channel& channel, const Client& requester, const s
 
 	if (topic.empty())
 	{
-		Replier::reply(requester.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, requester.getNickname(),
+		Replier::addToQueue(requester.getFd(), Replier::rplNoTopic, Utils::anyToVec(serverName, requester.getNickname(),
 			channel.getName()));
 		return;
 	}
 
-	Replier::reply(requester.getFd(), Replier::rplTopic, Utils::anyToVec(serverName, requester.getNickname(),
+	Replier::addToQueue(requester.getFd(), Replier::rplTopic, Utils::anyToVec(serverName, requester.getNickname(),
 		channel.getName(), topic));
 }

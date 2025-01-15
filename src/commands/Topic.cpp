@@ -21,7 +21,7 @@ void Topic::execute(Server& server, Client& requester, const std::vector<std::st
     // Not enough parameters provided.
     if (args.empty())
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
             requester.getNickname(), std::string("TOPIC")));
         return;
     }
@@ -29,7 +29,7 @@ void Topic::execute(Server& server, Client& requester, const std::vector<std::st
     // Client is not registered.
     if (!requester.registered(server.getPassword()))
     {
-        Replier::reply(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
             requester.getNickname()));
         return;
     }
@@ -42,7 +42,7 @@ void Topic::execute(Server& server, Client& requester, const std::vector<std::st
     if (channel == NULL)
     {
 
-        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -50,7 +50,7 @@ void Topic::execute(Server& server, Client& requester, const std::vector<std::st
     // Client not on the channel.
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -65,7 +65,7 @@ void Topic::execute(Server& server, Client& requester, const std::vector<std::st
     // Check if topic change is restricted and only operators can change it.
     if (channel->isTopicRestricted() && !channel->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -80,7 +80,7 @@ void Topic::setTopic(const std::vector<std::string>& args, const Client& request
     const std::string& topic = args[1];
     if (topic[0] != ':')
     {
-        Replier::reply(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(serverName,
             requester.getNickname(), std::string("TOPIC")));
         return;
     }
