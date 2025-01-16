@@ -12,8 +12,7 @@ class ClientTranslator
 public:
 	~ClientTranslator();
 
-	static std::pair<std::string, std::vector<std::string> > fetchCmdAndArgs(const std::string& buffer,
-		const std::map<std::string, Command*>& validServerCommands);
+	static std::pair<std::string, std::vector<std::string> > fetchCmdAndArgs(const std::string& buffer);
 	static bool nicknameValid(const std::string& nickname);
 	static std::vector<std::string> splitToTokens(const std::string& str, const char splitter);
 	static bool matchWildcard(const char* pattern, const char* str);

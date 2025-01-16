@@ -116,7 +116,7 @@ void Mode::handleUserModes(Client& requester, const std::string& nickname, const
         // Switch on/off invisible mode.
         else
         {
-            const bool invisible (action == "+");
+            bool invisible (action == "+");
             requester.setInvisible(invisible);
         }
     }
@@ -176,13 +176,13 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const Client& 
         // Switch on/off invite-only mode.
         else if (modes[i] == 'i')
         {
-            const bool isInviteOnly (action == "+");
+            bool isInviteOnly (action == "+");
             channel.setChannelInviteOnly(isInviteOnly);
         }
         // Switch on/off topic change available only for channel operators.
         else if (modes[i] == 't')
         {
-            const bool isTopicRestricted = (action == "+");
+            bool isTopicRestricted = (action == "+");
             channel.setTopicRestricted(isTopicRestricted);
         }
         // Remove/add channel key(password).
@@ -250,7 +250,7 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
         return;
     }
 
-    const bool operatorPrivilege = (action == "+");
+    bool operatorPrivilege = (action == "+");
     channel.setOperator(targetNickname, operatorPrivilege);
 }
 

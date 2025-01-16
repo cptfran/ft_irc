@@ -17,10 +17,12 @@ Replier::~Replier()
 
 void Replier::addToQueue(const int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs)
 {
+	std::cout << "reply: " << func(funcArgs) << std::endl;
+
 	rplQueue[fd].push_back(func(funcArgs));
 }
 
-const bool Replier::clientInQueue(const int fd)
+bool Replier::clientInQueue(const int fd)
 {
 	if (Replier::rplQueue.find(fd) == Replier::rplQueue.end())
 	{

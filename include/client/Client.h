@@ -32,7 +32,7 @@ public:
 	std::string getHostname() const;
 	std::string getRealname() const;
 	bool isInvisible() const;
-	std::string Client::departCompleteMsgFromBuffer();
+	std::string departCompleteMsgFromBuffer();
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);

@@ -51,7 +51,7 @@ void Client::setRealname(const std::string& realname)
 	this->realname = realname;
 }
 
-void Client::setWelcomeRepliesSent(const bool sent)
+void Client::setWelcomeRepliesSent(bool sent)
 {
 	this->welcomeRepliesSent = sent;
 }
@@ -61,7 +61,7 @@ void Client::setNumChannelsJoined(const int num)
 	this->channelsJoined = num;
 }
 
-void Client::setInvisible(const bool invisible)
+void Client::setInvisible(bool invisible)
 {
 	this->invisible = invisible;
 }

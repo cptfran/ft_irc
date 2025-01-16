@@ -31,7 +31,7 @@ void Who::execute(Server& server, Client& requester, const std::vector<std::stri
 	// User prompting for channel info.
 	if (mask[0] == '#')
 	{
-		const bool operatorOnly = (args.size() == 2 && args[1] == "o");
+		bool operatorOnly = (args.size() == 2 && args[1] == "o");
 		handleChannel(server, mask, requester, operatorOnly);
 		return;
 	}
@@ -40,7 +40,7 @@ void Who::execute(Server& server, Client& requester, const std::vector<std::stri
 	handleUsers(server, requester, mask);
 }
 
-void Who::handleChannel(Server& server, const std::string& mask, Client& requester, const bool operatorOnly) const
+void Who::handleChannel(Server& server, const std::string& mask, Client& requester, bool operatorOnly) const
 {
 	const Channel* channel = server.getChannel(mask);
 	if (channel == NULL)

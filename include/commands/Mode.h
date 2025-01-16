@@ -13,7 +13,6 @@ public:
     void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
 
 private:
-    // TODO: Move it to separate usermode class?
     void handleUserModes(Client& requester, const std::string& nickname, const Server& server,
         const std::vector<std::string>& args) const;
     void sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const Client& requester) const;

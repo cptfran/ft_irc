@@ -171,7 +171,7 @@ std::string Channel::getTopic() const
 	return this->topic;
 }
 
-std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, const bool operatorOnly) const
+std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const
 {
 	std::vector<std::string> list;
 
@@ -246,7 +246,7 @@ bool Channel::ejectUser(Server& server, const std::string& userToKick)
 	return false;
 }
 
-void Channel::setChannelInviteOnly(const bool isInviteOnly)
+void Channel::setChannelInviteOnly(bool isInviteOnly)
 {
 	this->inviteOnly = isInviteOnly;
 }
@@ -256,7 +256,7 @@ void Channel::addToInviteList(const std::string& invitedNickname)
 	this->invitedUsers.push_back(invitedNickname);
 }
 
-void Channel::setTopicRestricted(const bool isTopicRestricted)
+void Channel::setTopicRestricted(bool isTopicRestricted)
 {
 	this->topicRestricted = isTopicRestricted;
 }
@@ -271,7 +271,7 @@ void Channel::setTopic(const std::string& newTopic)
 	this->topic = newTopic;
 }
 
-void Channel::setOperator(const std::string& targetNickname, const bool operatorPrivilege)
+void Channel::setOperator(const std::string& targetNickname, bool operatorPrivilege)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{

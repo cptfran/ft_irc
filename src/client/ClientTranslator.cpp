@@ -17,8 +17,7 @@ ClientTranslator::~ClientTranslator()
 
 }
 
-std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndArgs(
-	const std::string& buffer, const std::map<std::string, Command*>& validServerCommands)
+std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndArgs(const std::string& buffer)
 {
 	// Split buffer into tokens.
 	std::istringstream iss(buffer);

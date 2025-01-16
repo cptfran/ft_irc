@@ -17,7 +17,7 @@ private:
         const std::string& targets) const;
     std::vector<std::pair<Client, std::string> > getTargetsFromServer(const Client& requester, Server& server, 
         const std::string& extrTarget) const;
-    void sendMessagesToTargets(const Client& client, const std::vector<std::pair<Client, std::string> >& foundTargets,
+    void queueMessagesToTargets(const Client& client, const std::vector<std::pair<Client, std::string> >& foundTargets,
         const std::string& message) const;
     std::vector<std::pair<Client, std::string> > getChannelTargets(const Client& requester, Server& server, 
         const std::string& extrTarget) const;

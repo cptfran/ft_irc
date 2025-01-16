@@ -41,7 +41,7 @@ void Privmsg::execute(Server& server, Client& requester, const std::vector<std::
         targetsCommaSeparated);
 
     const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
-    sendMessagesToTargets(requester, targets, message);
+    queueMessagesToTargets(requester, targets, message);
 }
 
 std::vector<std::pair<Client, std::string> > Privmsg::findMatchingTargets(const Client& requester, Server& server, 
@@ -63,7 +63,9 @@ std::vector<std::pair<Client, std::string> > Privmsg::findMatchingTargets(const 
     return foundTargets;
 }
 
-void Privmsg::sendMessagesToTargets(const Client& client, const std::vector<std::pair<Client, std::string> >& targets, 
+
+// TODO: delete this method and move loop to the main method, also delete broadcast and replace with normal loop
+void Privmsg::queueMessagesToTargets(const Client& client, const std::vector<std::pair<Client, std::string> >& targets, 
     const std::string& message) const
 {
     for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end(); ++it)
@@ -205,12 +207,12 @@ std::vector<std::pair<Client, std::string> > Privmsg::getUserTargets(const Clien
 
     for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
     {
-        const bool allEmpty = (hostname.empty() && serverName.empty() && nickname.empty() && username.empty());
-        const bool nickMatches = (nickname.empty() || nickname == it->second.getNickname());
-        const bool userMatches = (username.empty() || username == it->second.getUsername());
-        const bool hostMatches = (hostname.empty() || hostname == it->second.getHostname());
-        const bool serverMatches = (serverName.empty() || serverName == server.getName());
-        const bool hostServerMatches = ((hostMatches && serverMatches) ||
+        bool allEmpty = (hostname.empty() && serverName.empty() && nickname.empty() && username.empty());
+        bool nickMatches = (nickname.empty() || nickname == it->second.getNickname());
+        bool userMatches = (username.empty() || username == it->second.getUsername());
+        bool hostMatches = (hostname.empty() || hostname == it->second.getHostname());
+        bool serverMatches = (serverName.empty() || serverName == server.getName());
+        bool hostServerMatches = ((hostMatches && serverMatches) ||
                                   ((hostMatches || serverMatches) && hostname == serverName));
 
         if (!allEmpty && nickMatches && userMatches && hostServerMatches)

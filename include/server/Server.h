@@ -60,6 +60,7 @@ private:
 	std::string availableChannelModes;
 	std::map<int, Client> clients;
 	std::vector<pollfd> pollFds;
+	std::vector<pollfd> pollFdsToAdd;
 	std::map<std::string, Command*> validCommands;
 	std::vector<Channel> channels;
 
@@ -69,12 +70,13 @@ private:
 
 	// Client connection.
 	void connectClient();
+	void addNewClientsToPoll();
 	std::string getClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
 	void disconnectClient(int clientFd);
+	void handleTimeouts();
 
 	// Handling new requests of already connected client.
 	void executeCommand(Client& client, const std::string& buffer);
-	void handleClientPrompt(Client& client);
-
-	void handleTimeouts();
+	void handleRecv(Client& client);
+	void setPollout();
 };

@@ -17,13 +17,11 @@ private:
 
 	Replier();
 
+	static void addToQueue(int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs);
 
+	static bool clientInQueue(int fd);
 
-	static void Replier::addToQueue(int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs);
-
-	static const bool Replier::clientInQueue(int fd);
-
-	static void Replier::sendFromQueue(int fd);
+	static void sendFromQueue(int fd);
 
 	// Reply functions.
 	static void reply(int clientFd, ReplyFunction func, const std::vector<std::string>& args);

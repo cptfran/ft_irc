@@ -265,7 +265,7 @@ void Server::initSocket(const int port)
  * For each new connection, it attempts to authenticate the client using the authenticateClient function.
  * If the authentication fails, it closes the connection and logs an error message.
  * If the authentication succeeds, it logs a success message, sends a welcome message to the client,
- * adds the client's socket to the list of client sockets, and calls the handleClientPrompt function to manage the client.
+ * adds the client's socket to the list of client sockets, and calls the handleRecv function to manage the client.
  * The function logs messages at various stages to provide information about the server's operation and any errors encountered.
  */
 void Server::run()
@@ -291,38 +291,33 @@ void Server::run()
     	}
 
     	handleTimeouts();
+		addNewClientsToPoll();
 
     	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
         {
-    		if (it->revents == 0)
-        	{
-    			++it;
-        		continue;
-        	}
             if ((it->revents & POLLHUP) == POLLHUP)
         	{
 				disconnectClient(it->fd);
             	it = this->pollFds.erase(it);
-        		continue;
+				continue;
         	}
-            if ((it->revents & POLLIN) == POLLIN)
+			else if ((it->revents & POLLOUT) == POLLOUT && Replier::clientInQueue(it->fd))
+			{
+				Replier::sendFromQueue(it->fd);
+			}
+            else if ((it->revents & POLLIN) == POLLIN)
             {
     			if (it->fd == this->fd)
                 {
+
                 	this->connectClient();
                 }
 				else
 				{
-					this->handleClientPrompt(this->clients.at(it->fd));
+					this->handleRecv(this->clients.at(it->fd));
 				}
-				++it;
-				continue;
             }
-			if ((it->revents & POLLOUT) == POLLOUT && Replier::clientInQueue(it->fd))
-			{
-
-			}
-    		++it;
+			++it;
         }
     }
 }
@@ -379,8 +374,8 @@ void Server::connectClient()
 	}
 
 	// Create pollfd for the new client and add it to the pollfd list.
-	const pollfd pollFd = {clientFd, POLLIN, 0};
-	this->pollFds.push_back(pollFd);
+	const pollfd pollFd = {clientFd, POLLIN | POLLOUT, 0};
+	this->pollFdsToAdd.push_back(pollFd);
 
 	// Create new client object.
 	Client client(clientFd);
@@ -432,7 +427,7 @@ void Server::disconnectClient(const int clientFd)
 	Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
 }
 
-void Server::handleClientPrompt(Client& client)
+void Server::handleRecv(Client& client)
 {
 	char recvBuffer[INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(client.getFd(), recvBuffer, sizeof(recvBuffer) - 1, 0);
@@ -449,31 +444,38 @@ void Server::handleClientPrompt(Client& client)
 	}
 	recvBuffer[bytesRead] = '\0';
 	client.addToBuffer(recvBuffer);
-	std::string msg = client.departCompleteMsgFromBuffer();
-	if (msg.empty())
+	
+	while (true)
 	{
-		return;
-	}
-	try
-	{
-		this->executeCommand(client, msg);
-	}
-	catch (const std::exception& e)
-	{
-		Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
-		this->disconnectClient(client.getFd());
+		std::string msg = client.departCompleteMsgFromBuffer();
+		if (msg.empty())
+		{
+			return;
+		}
+		try
+		{
+			this->executeCommand(client, msg);
+		}
+		catch (const std::exception& e)
+		{
+			Log::msgServer(INFO, "CLIENT", client.getFd(), e.what());
+			this->disconnectClient(client.getFd());
+		}
 	}
 }
 
 void Server::executeCommand(Client& client, const std::string& buffer)
 {
-	std::pair<std::string, std::vector<std::string> > cmdWithArgs = 
-		ClientTranslator::fetchCmdAndArgs(buffer, this->validCommands);
+	std::pair<std::string, std::vector<std::string> > cmdWithArgs = ClientTranslator::fetchCmdAndArgs(buffer);
 	if (this->validCommands.find(cmdWithArgs.first) == this->validCommands.end())
 	{
 		Replier::addToQueue(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
 			client.getNickname(), cmdWithArgs.first));
 		return;
+	}
+	if (cmdWithArgs.first == "PRIVMSG")
+	{
+		std::cout << "asgfasg" << std::endl;
 	}
 
 	this->validCommands.at(cmdWithArgs.first)->execute(*this, client, cmdWithArgs.second);
@@ -512,4 +514,14 @@ void Server::handleTimeouts()
 		}
 		++it;
 	}
+}
+
+void Server::addNewClientsToPoll()
+{
+	for (std::vector<pollfd>::iterator it = this->pollFdsToAdd.begin(); it != this->pollFdsToAdd.end(); ++it)
+	{
+		this->pollFds.push_back(*it);
+	}
+
+	this->pollFdsToAdd.clear();
 }
