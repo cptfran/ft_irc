@@ -62,6 +62,11 @@ public:
 	static void msgServer(const std::string& logLevel, const std::string& idType, Identifier id,
 		const std::string& message);
 	static void msgServer(const std::string& logLevel, const std::string& message);
+private:
+	Log();
+	~Log();
+	Log(const Log& toCopy);
+	Log& operator=(const Log& toAssign);
 };
 
-#include "../../src/server/Log.tpp"
+#include "../../src/manager/Log.tpp"

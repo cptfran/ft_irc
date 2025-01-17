@@ -1,11 +1,11 @@
 #include "commands/Part.h"
-#include "server/Log.h"
+#include "manager/Log.h"
 #include "replier/Replier.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 
-Part::Part()
+Part::Part() : Command()
 {
 
 }

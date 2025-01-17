@@ -17,4 +17,8 @@ public:
 
 protected:
 	void sendTopic(const Channel& channel, const Client& requester, const std::string& serverName) const;
+
+private:
+	Command(const Command& toCopy);
+	Command& operator=(const Command& toAssign);
 };

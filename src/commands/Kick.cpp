@@ -1,11 +1,11 @@
 #include "commands/Kick.h"
 
-#include "channel/Channel.h"
-#include "server/Server.h"
+#include "data/Channel.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
 
-Kick::Kick()
+Kick::Kick() : Command()
 {
 
 }
@@ -61,8 +61,8 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
 {
     const std::string& userToKick = args[1];
 
-    // Get fds list for broadcast message before client is kicked, so it will receive kick information.
-    const std::vector<int>& clientsFdList = channel.getFdsList();
+    // Get client list for broadcast message before client is kicked, so it will receive kick information.
+    const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
     if (!channel.ejectUser(server, userToKick))
@@ -80,5 +80,9 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
         const std::string& comment = args[2];
         rplKickArgs.push_back(comment);
     }
-    Replier::broadcast(clientsFdList, Replier::rplKick, rplKickArgs);
+
+    for (std::vector<Client>::const_iterator it = clientList.begin(); it != clientList.end(); ++it)
+    {
+        Replier::addToQueue(it->getFd(), Replier::rplKick, rplKickArgs);
+    }
 }

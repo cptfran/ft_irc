@@ -1,5 +1,5 @@
 #include "commands/Command.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 #include "replier/Replier.h"
 #include "utils/Utils.h"
 

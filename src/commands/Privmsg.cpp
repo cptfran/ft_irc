@@ -1,13 +1,13 @@
 #include "commands/Privmsg.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 #include "client/ClientTranslator.h"
 
 #define MAX_PRIVMSG_TARGETS 5
 
-Privmsg::Privmsg()
+Privmsg::Privmsg() : Command()
 {
 
 }
@@ -37,11 +37,16 @@ void Privmsg::execute(Server& server, Client& requester, const std::vector<std::
 
     // Find all the targets that match with connected clients.
     const std::string& targetsCommaSeparated = args[0];
-    std::vector<std::pair<Client, std::string> > targets = findMatchingTargets(requester, server,
+    const std::vector<std::pair<Client, std::string> > targets = findMatchingTargets(requester, server,
         targetsCommaSeparated);
 
     const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
-    queueMessagesToTargets(requester, targets, message);
+
+    for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end(); ++it)
+    {
+        Replier::addToQueue(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(requester.getNickname(),
+            requester.getUsername(), requester.getHostname(), it->second, message));
+    }
 }
 
 std::vector<std::pair<Client, std::string> > Privmsg::findMatchingTargets(const Client& requester, Server& server, 
@@ -63,18 +68,6 @@ std::vector<std::pair<Client, std::string> > Privmsg::findMatchingTargets(const 
     return foundTargets;
 }
 
-
-// TODO: delete this method and move loop to the main method, also delete broadcast and replace with normal loop
-void Privmsg::queueMessagesToTargets(const Client& client, const std::vector<std::pair<Client, std::string> >& targets, 
-    const std::string& message) const
-{
-    for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end(); ++it)
-    {
-        Replier::addToQueue(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), 
-            client.getUsername(), client.getHostname(), it->second, message));
-    }
-}
-
 std::vector<std::pair<Client, std::string> > Privmsg::getTargetsFromServer(const Client& requester, Server& server, 
     const std::string& extrTarget) const
 {
@@ -83,6 +76,10 @@ std::vector<std::pair<Client, std::string> > Privmsg::getTargetsFromServer(const
         std::vector<std::pair<Client, std::string> > targets = getChannelTargets(requester, server, extrTarget);
         if (!targets.empty())
         {
+            if (targets.size() == 1 && targets[0].second.empty())
+            {
+                return std::vector<std::pair<Client, std::string> >();
+            }
             return targets;
         }
 
@@ -106,15 +103,17 @@ std::vector<std::pair<Client, std::string> > Privmsg::getChannelTargets(const Cl
         return std::vector<std::pair<Client, std::string> >();
     }
 
+    std::vector<std::pair<Client, std::string> > channelTargets;
+
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
         Replier::addToQueue(requester.getFd(), Replier::errCannotSendToChan, Utils::anyToVec(server.getName(),
             requester.getNickname(), channel->getName()));
-        return std::vector<std::pair<Client, std::string> >();
+        channelTargets.push_back(std::make_pair(requester, std::string()));
+        return channelTargets       ;
     }
 
     const std::vector<Client>& clientList = channel->getClientList();
-    std::vector<std::pair<Client, std::string> > channelTargets;
     for (std::vector<Client>::const_iterator it = clientList.begin(); it != clientList.end(); ++it)
     {
         if (it->getNickname() == requester.getNickname())

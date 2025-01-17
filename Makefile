@@ -9,16 +9,16 @@ OBJ_DIR = obj
 INCLUDE_DIR = include
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp) \
-      $(wildcard $(SRC_DIR)/client/*.cpp) \
       $(wildcard $(SRC_DIR)/commands/*.cpp) \
-      $(wildcard $(SRC_DIR)/channel/*.cpp) \
-      $(wildcard $(SRC_DIR)/replier/*.cpp) \
-      $(wildcard $(SRC_DIR)/server/*.cpp) \
+      $(wildcard $(SRC_DIR)/communication/*.cpp) \
+      $(wildcard $(SRC_DIR)/manager/*.cpp) \
+      $(wildcard $(SRC_DIR)/data/*.cpp) \
+      $(wildcard $(SRC_DIR)/manager/*.cpp) \
       $(wildcard $(SRC_DIR)/utils/*.cpp)
 
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
-DIRS = $(OBJ_DIR) $(OBJ_DIR)/client $(OBJ_DIR)/commands $(OBJ_DIR)/channel $(OBJ_DIR)/replier $(OBJ_DIR)/server $(OBJ_DIR)/utils
+DIRS = $(OBJ_DIR) $(OBJ_DIR)/commands $(OBJ_DIR)/communication $(OBJ_DIR)/core $(OBJ_DIR)/data $(OBJ_DIR)/manager $(OBJ_DIR)/utils
 
 all: $(NAME)
 
@@ -35,23 +35,23 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-$(OBJ_DIR)/client/%.o: $(SRC_DIR)/client/%.cpp
-	@mkdir -p $(DIRS)
-	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
-
 $(OBJ_DIR)/commands/%.o: $(SRC_DIR)/commands/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-$(OBJ_DIR)/channel/%.o: $(SRC_DIR)/channel/%.cpp
+$(OBJ_DIR)/communication/%.o: $(SRC_DIR)/communication/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-$(OBJ_DIR)/replier/%.o: $(SRC_DIR)/replier/%.cpp
+$(OBJ_DIR)/manager/%.o: $(SRC_DIR)/manager/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-$(OBJ_DIR)/server/%.o: $(SRC_DIR)/server/%.cpp
+$(OBJ_DIR)/data/%.o: $(SRC_DIR)/data/%.cpp
+	@mkdir -p $(DIRS)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+$(OBJ_DIR)/manager/%.o: $(SRC_DIR)/manager/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 

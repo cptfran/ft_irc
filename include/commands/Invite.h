@@ -1,6 +1,6 @@
 #pragma once
 
-#include "channel/Channel.h"
+#include "data/Channel.h"
 #include "Command.h"
 
 class Invite: public Command

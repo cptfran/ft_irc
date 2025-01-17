@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "client/Client.h"
 
 #define CHANNEL_NAME_MAX_LENGTH 50
@@ -25,4 +25,6 @@ public:
 		std::string& serverName);
 private:
 	ClientTranslator();
+	ClientTranslator(const ClientTranslator& toCopy);
+	ClientTranslator& operator=(const ClientTranslator& toAssign);
 };

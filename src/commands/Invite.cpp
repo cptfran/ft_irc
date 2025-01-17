@@ -1,10 +1,10 @@
 #include "commands/Invite.h"
-#include "server/Log.h"
-#include "server/Server.h"
+#include "manager/Log.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
 
-Invite::Invite()
+Invite::Invite() : Command()
 {
 
 }

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <sys/socket.h>
-#include "server/Log.h"
+#include "manager/Log.h"
 #include "utils/Utils.h"
 
 ClientTranslator::ClientTranslator()

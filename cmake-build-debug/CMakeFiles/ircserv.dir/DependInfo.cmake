@@ -27,8 +27,8 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Who.cpp" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Who.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/main.cpp" "CMakeFiles/ircserv.dir/src/main.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/main.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/replier/Replier.cpp" "CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp" "CMakeFiles/ircserv.dir/src/server/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/server/Log.cpp.o.d"
-  "/Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp" "CMakeFiles/ircserv.dir/src/server/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/server/Server.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp" "CMakeFiles/ircserv.dir/src/manager/Log.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/manager/Log.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp" "CMakeFiles/ircserv.dir/src/manager/Server.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/manager/Server.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o.d"
   )
 

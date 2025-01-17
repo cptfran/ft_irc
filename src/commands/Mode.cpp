@@ -1,10 +1,10 @@
 #include "commands/Mode.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 
-Mode::Mode()
+Mode::Mode() : Command()
 {
 
 }

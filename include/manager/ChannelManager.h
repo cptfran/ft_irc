@@ -1,0 +1,23 @@
+#pragma once
+
+#include "data/Channel.h"
+
+class ChannelManager 
+{
+public:
+    ChannelManager();
+    ~ChannelManager();
+
+    Channel* getNewestChannel();
+    Channel* getChannel(const std::string& channelName);
+    bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
+
+    void addChannel(const Channel& channel);
+    void deleteChannelIfEmpty(const Channel& channel);
+
+private:
+    ChannelManager(const ChannelManager& toCopy);
+    ChannelManager& operator=(const ChannelManager& toAssign);
+
+    std::vector<Channel> channels;
+};

@@ -1,10 +1,10 @@
 #include "commands/Pass.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
-#include "server/Log.h"
+#include "manager/Log.h"
 #include "replier/Replier.h"
 
-Pass::Pass()
+Pass::Pass() : Command()
 {
 
 }

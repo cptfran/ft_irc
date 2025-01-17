@@ -335,33 +335,33 @@ CMakeFiles/ircserv.dir/src/replier/Replier.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/replier/Replier.cpp.s"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/szymon/CLionProjects/ft_irc/src/replier/Replier.cpp -o CMakeFiles/ircserv.dir/src/replier/Replier.cpp.s
 
-CMakeFiles/ircserv.dir/src/server/Log.cpp.o: CMakeFiles/ircserv.dir/flags.make
-CMakeFiles/ircserv.dir/src/server/Log.cpp.o: /Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp
-CMakeFiles/ircserv.dir/src/server/Log.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/ircserv.dir/src/server/Log.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/server/Log.cpp.o -MF CMakeFiles/ircserv.dir/src/server/Log.cpp.o.d -o CMakeFiles/ircserv.dir/src/server/Log.cpp.o -c /Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp
+CMakeFiles/ircserv.dir/src/manager/Log.cpp.o: CMakeFiles/ircserv.dir/flags.make
+CMakeFiles/ircserv.dir/src/manager/Log.cpp.o: /Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp
+CMakeFiles/ircserv.dir/src/manager/Log.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/ircserv.dir/src/manager/Log.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/Log.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/Log.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/Log.cpp.o -c /Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp
 
-CMakeFiles/ircserv.dir/src/server/Log.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ircserv.dir/src/server/Log.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp > CMakeFiles/ircserv.dir/src/server/Log.cpp.i
+CMakeFiles/ircserv.dir/src/manager/Log.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ircserv.dir/src/manager/Log.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp > CMakeFiles/ircserv.dir/src/manager/Log.cpp.i
 
-CMakeFiles/ircserv.dir/src/server/Log.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/server/Log.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp -o CMakeFiles/ircserv.dir/src/server/Log.cpp.s
+CMakeFiles/ircserv.dir/src/manager/Log.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/manager/Log.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp -o CMakeFiles/ircserv.dir/src/manager/Log.cpp.s
 
-CMakeFiles/ircserv.dir/src/server/Server.cpp.o: CMakeFiles/ircserv.dir/flags.make
-CMakeFiles/ircserv.dir/src/server/Server.cpp.o: /Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp
-CMakeFiles/ircserv.dir/src/server/Server.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/ircserv.dir/src/server/Server.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/server/Server.cpp.o -MF CMakeFiles/ircserv.dir/src/server/Server.cpp.o.d -o CMakeFiles/ircserv.dir/src/server/Server.cpp.o -c /Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp
+CMakeFiles/ircserv.dir/src/manager/Server.cpp.o: CMakeFiles/ircserv.dir/flags.make
+CMakeFiles/ircserv.dir/src/manager/Server.cpp.o: /Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp
+CMakeFiles/ircserv.dir/src/manager/Server.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/szymon/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/ircserv.dir/src/manager/Server.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/Server.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/Server.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/Server.cpp.o -c /Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp
 
-CMakeFiles/ircserv.dir/src/server/Server.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ircserv.dir/src/server/Server.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp > CMakeFiles/ircserv.dir/src/server/Server.cpp.i
+CMakeFiles/ircserv.dir/src/manager/Server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ircserv.dir/src/manager/Server.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp > CMakeFiles/ircserv.dir/src/manager/Server.cpp.i
 
-CMakeFiles/ircserv.dir/src/server/Server.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/server/Server.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp -o CMakeFiles/ircserv.dir/src/server/Server.cpp.s
+CMakeFiles/ircserv.dir/src/manager/Server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/manager/Server.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp -o CMakeFiles/ircserv.dir/src/manager/Server.cpp.s
 
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o: /Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp
@@ -398,8 +398,8 @@ ircserv_OBJECTS = \
 "CMakeFiles/ircserv.dir/src/channel/Channel.cpp.o" \
 "CMakeFiles/ircserv.dir/src/main.cpp.o" \
 "CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o" \
-"CMakeFiles/ircserv.dir/src/server/Log.cpp.o" \
-"CMakeFiles/ircserv.dir/src/server/Server.cpp.o" \
+"CMakeFiles/ircserv.dir/src/manager/Log.cpp.o" \
+"CMakeFiles/ircserv.dir/src/manager/Server.cpp.o" \
 "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o"
 
 # External object files for target ircserv
@@ -424,8 +424,8 @@ ircserv: CMakeFiles/ircserv.dir/src/commands/Who.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/channel/Channel.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/main.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o
-ircserv: CMakeFiles/ircserv.dir/src/server/Log.cpp.o
-ircserv: CMakeFiles/ircserv.dir/src/server/Server.cpp.o
+ircserv: CMakeFiles/ircserv.dir/src/manager/Log.cpp.o
+ircserv: CMakeFiles/ircserv.dir/src/manager/Server.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o
 ircserv: CMakeFiles/ircserv.dir/build.make
 ircserv: CMakeFiles/ircserv.dir/link.txt

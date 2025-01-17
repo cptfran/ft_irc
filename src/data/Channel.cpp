@@ -1,6 +1,6 @@
-#include "channel/Channel.h"
-#include "server/Log.h"
-#include "server/Server.h"
+#include "data/Channel.h"
+#include "manager/Log.h"
+#include "manager/Server.h"
 #include "client/ClientTranslator.h"
 #include <algorithm>
 
@@ -93,17 +93,6 @@ std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 	}
 
 	return nicknamesList;
-}
-
-std::vector<int> Channel::getFdsList() const
-{
-	std::vector<int> fdsList;
-	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
-		it != this->joinedClients.end(); ++it)
-	{
-		fdsList.push_back(it->client.getFd());
-	}
-	return fdsList;
 }
 
 bool Channel::isInviteOnly() const

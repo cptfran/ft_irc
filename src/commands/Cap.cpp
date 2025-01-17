@@ -1,9 +1,9 @@
 #include "commands/Cap.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
 
-Cap::Cap()
+Cap::Cap() : Command()
 {
 
 }

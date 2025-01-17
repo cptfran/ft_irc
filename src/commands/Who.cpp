@@ -1,12 +1,12 @@
 #include "commands/Who.h"
-#include "channel/Channel.h"
-#include "server/Log.h"
+#include "data/Channel.h"
+#include "manager/Log.h"
 #include "replier/Replier.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "client/ClientTranslator.h"
 
-Who::Who()
+Who::Who() : Command()
 {
 
 }

@@ -1,12 +1,12 @@
 #include "commands/Topic.h"
 #include <sys/socket.h>
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 #include "client/ClientTranslator.h"
 
-Topic::Topic()
+Topic::Topic() : Command()
 {
 
 }
@@ -87,7 +87,11 @@ void Topic::setTopic(const std::vector<std::string>& args, const Client& request
     channel.setTopic(ClientTranslator::sanitizeColonMessage(topic));
 
     // Broadcast new topic to all channel members.
-    const std::vector<int> clientsFdList = channel.getFdsList();
-    Replier::broadcast(clientsFdList, Replier::rplTopic, Utils::anyToVec(serverName, requester.getNickname(),
-        channel.getName(), channel.getTopic()));
+
+    const std::vector<Client> clientsList = channel.getClientList();
+    for (std::vector<Client>::const_iterator it = clientsList.begin(); it != clientsList.end(); ++it)
+    {
+        Replier::addToQueue(it->getFd(), Replier::rplTopic, Utils::anyToVec(serverName, it->getNickname(),
+            channel.getName(), channel.getTopic()));
+    }
 }

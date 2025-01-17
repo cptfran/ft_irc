@@ -123,10 +123,10 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/replier/Replier.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/server/Log.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/Log.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/server/Server.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/Server.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/utils/Colors.h">
@@ -192,13 +192,13 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/replier/Replier.cpp">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/server/Log.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/Log.cpp">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/server/Log.tpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/Log.tpp">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/server/Server.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/Server.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp">

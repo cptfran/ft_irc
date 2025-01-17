@@ -1,9 +1,9 @@
 #include "commands/Ping.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "utils/Utils.h"
 #include "replier/Replier.h"
 
-Ping::Ping()
+Ping::Ping() : Command()
 {
 
 }

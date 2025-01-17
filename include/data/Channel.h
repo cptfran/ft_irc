@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "client/Client.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 
 class Channel
 {
@@ -24,7 +24,6 @@ public:
 	std::string getName() const;
 	std::string getKey() const;
 	std::vector<std::string> getNicknamesListWithOperatorInfo() const;
-	std::vector<int> getFdsList() const;
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;

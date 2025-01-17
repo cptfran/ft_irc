@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
-#include "server/Server.h"
-#include "server/Log.h"
+#include "manager/Server.h"
+#include "manager/Log.h"
 #include "utils/Utils.h"
 
 // TODO: maybe use namespaces instead of defines? Need to check it.

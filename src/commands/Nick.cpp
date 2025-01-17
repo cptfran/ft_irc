@@ -1,11 +1,11 @@
 #include "commands/Nick.h"
-#include "server/Server.h"
+#include "manager/Server.h"
 #include "replier/Replier.h"
 #include "utils/Utils.h"
-#include "channel/Channel.h"
+#include "data/Channel.h"
 #include "client/ClientTranslator.h"
 
-Nick::Nick()
+Nick::Nick() : Command()
 {
 
 }

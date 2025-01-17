@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 98)
 include_directories(include)
 
 add_executable(ircserv
-        include/client/ClientTranslator.h
-        include/client/Client.h
         include/commands/Cap.h
         include/commands/Command.h
         include/commands/Invite.h
@@ -20,35 +18,44 @@ add_executable(ircserv
         include/commands/Topic.h
         include/commands/User.h
         include/commands/Who.h
-        include/replier/Replier.h
-        include/server/Log.h
-        include/server/Server.h
+        include/communication/ClientTranslator.h
+        include/communication/Replier.h
+        include/manager/Config.h
+        include/manager/Log.h
+        include/manager/Server.h
+        include/data/Channel.h
+        include/data/Client.h
+        include/manager/ChannelManager.h
+        include/manager/ClientManager.h
+        include/manager/CommandManager.h
+        include/manager/ConnectionManager.h
         include/utils/Colors.h
         include/utils/Utils.h
-        src/client/Client.cpp
-        src/client/ClientTranslator.cpp
-        src/commands/Command.cpp
         src/commands/Cap.cpp
+        src/commands/Command.cpp
         src/commands/Invite.cpp
         src/commands/Join.cpp
         src/commands/Kick.cpp
-        src/commands/Mode.cpp
         src/commands/Nick.cpp
-        src/commands/Part.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp
         src/commands/Privmsg.cpp
         src/commands/Topic.cpp
         src/commands/User.cpp
         src/commands/Who.cpp
-        src/channel/Channel.cpp
-        src/main.cpp
-        src/replier/Replier.cpp
-        src/server/Log.cpp
-        src/server/Log.tpp
-        src/server/Server.cpp
+        src/communication/ClientTranslator.cpp
+        src/communication/Replier.cpp
+        src/manager/Config.cpp
+        src/manager/Log.cpp
+        src/manager/Server.cpp
+        src/data/Channel.cpp
+        src/data/Client.cpp
+        src/Main.cpp
+        src/manager/ChannelManager.cpp
+        src/manager/ClientManager.cpp
+        src/manager/CommandManager.cpp
+        src/manager/ConnectionManager.cpp
         src/utils/Utils.cpp
-        src/utils/Utils.tpp
- "src/server/Log.cpp" "include/server/Log.h")
+)
 
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")

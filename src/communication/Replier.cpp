@@ -1,6 +1,6 @@
 #include "replier/Replier.h"
 #include <sys/socket.h>
-#include "server/Log.h"
+#include "manager/Log.h"
 #include <map>
 
 std::map<int, std::vector<std::string> > Replier::rplQueue;
@@ -17,8 +17,6 @@ Replier::~Replier()
 
 void Replier::addToQueue(const int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs)
 {
-	std::cout << "reply: " << func(funcArgs) << std::endl;
-
 	rplQueue[fd].push_back(func(funcArgs));
 }
 
@@ -52,15 +50,6 @@ void Replier::sendFromQueue(const int fd)
 	if (it->second.empty())
 	{
 		Replier::rplQueue.erase(it);
-	}
-}
-
-void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFunction func,
-	const std::vector<std::string>& args)
-{
-	for (std::vector<int>::const_iterator it = clientsFdList.begin(); it != clientsFdList.end(); ++it)
-	{
-		Replier::addToQueue(*it, func, args);
 	}
 }
 

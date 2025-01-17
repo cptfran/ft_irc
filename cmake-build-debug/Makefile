@@ -585,53 +585,53 @@ src/replier/Replier.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/replier/Replier.cpp.s
 .PHONY : src/replier/Replier.cpp.s
 
-src/server/Log.o: src/server/Log.cpp.o
-.PHONY : src/server/Log.o
+src/manager/Log.o: src/manager/Log.cpp.o
+.PHONY : src/manager/Log.o
 
 # target to build an object file
-src/server/Log.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Log.cpp.o
-.PHONY : src/server/Log.cpp.o
+src/manager/Log.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.o
+.PHONY : src/manager/Log.cpp.o
 
-src/server/Log.i: src/server/Log.cpp.i
-.PHONY : src/server/Log.i
+src/manager/Log.i: src/manager/Log.cpp.i
+.PHONY : src/manager/Log.i
 
 # target to preprocess a source file
-src/server/Log.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Log.cpp.i
-.PHONY : src/server/Log.cpp.i
+src/manager/Log.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.i
+.PHONY : src/manager/Log.cpp.i
 
-src/server/Log.s: src/server/Log.cpp.s
-.PHONY : src/server/Log.s
+src/manager/Log.s: src/manager/Log.cpp.s
+.PHONY : src/manager/Log.s
 
 # target to generate assembly for a file
-src/server/Log.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Log.cpp.s
-.PHONY : src/server/Log.cpp.s
+src/manager/Log.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.s
+.PHONY : src/manager/Log.cpp.s
 
-src/server/Server.o: src/server/Server.cpp.o
-.PHONY : src/server/Server.o
+src/manager/Server.o: src/manager/Server.cpp.o
+.PHONY : src/manager/Server.o
 
 # target to build an object file
-src/server/Server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Server.cpp.o
-.PHONY : src/server/Server.cpp.o
+src/manager/Server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.o
+.PHONY : src/manager/Server.cpp.o
 
-src/server/Server.i: src/server/Server.cpp.i
-.PHONY : src/server/Server.i
+src/manager/Server.i: src/manager/Server.cpp.i
+.PHONY : src/manager/Server.i
 
 # target to preprocess a source file
-src/server/Server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Server.cpp.i
-.PHONY : src/server/Server.cpp.i
+src/manager/Server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.i
+.PHONY : src/manager/Server.cpp.i
 
-src/server/Server.s: src/server/Server.cpp.s
-.PHONY : src/server/Server.s
+src/manager/Server.s: src/manager/Server.cpp.s
+.PHONY : src/manager/Server.s
 
 # target to generate assembly for a file
-src/server/Server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/server/Server.cpp.s
-.PHONY : src/server/Server.cpp.s
+src/manager/Server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.s
+.PHONY : src/manager/Server.cpp.s
 
 src/utils/Utils.o: src/utils/Utils.cpp.o
 .PHONY : src/utils/Utils.o
@@ -723,12 +723,12 @@ help:
 	@echo "... src/replier/Replier.o"
 	@echo "... src/replier/Replier.i"
 	@echo "... src/replier/Replier.s"
-	@echo "... src/server/Log.o"
-	@echo "... src/server/Log.i"
-	@echo "... src/server/Log.s"
-	@echo "... src/server/Server.o"
-	@echo "... src/server/Server.i"
-	@echo "... src/server/Server.s"
+	@echo "... src/manager/Log.o"
+	@echo "... src/manager/Log.i"
+	@echo "... src/manager/Log.s"
+	@echo "... src/manager/Server.o"
+	@echo "... src/manager/Server.i"
+	@echo "... src/manager/Server.s"
 	@echo "... src/utils/Utils.o"
 	@echo "... src/utils/Utils.i"
 	@echo "... src/utils/Utils.s"
