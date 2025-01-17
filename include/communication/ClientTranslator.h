@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "manager/Server.h"
-#include "client/Client.h"
+#include "core/Server.h"
+#include "data/Client.h"
 
 #define CHANNEL_NAME_MAX_LENGTH 50
 
@@ -12,6 +12,7 @@ class ClientTranslator
 public:
 	~ClientTranslator();
 
+	static std::string parseClientBufferFromRecv(int fd);
 	static std::pair<std::string, std::vector<std::string> > fetchCmdAndArgs(const std::string& buffer);
 	static bool nicknameValid(const std::string& nickname);
 	static std::vector<std::string> splitToTokens(const std::string& str, const char splitter);

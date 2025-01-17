@@ -22,6 +22,12 @@ public:
 	static std::vector<T> anyToVec(const T& arg1, const T& arg2, const T& arg3, const T& arg4);
 	template <typename T>
 	static std::vector<T> anyToVec(const T& arg1, const T& arg2, const T& arg3, const T& arg4, const T& arg5);
+
+private:
+	Utils();
+	~Utils();
+	Utils(const Utils& toCopy);
+	Utils& operator=(const Utils& toAssign);
 };
 
 #include "../../src/utils/Utils.tpp"

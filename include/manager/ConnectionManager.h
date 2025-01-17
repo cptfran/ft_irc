@@ -10,19 +10,21 @@ public:
     ConnectionManager();
     ~ConnectionManager();
 
-    void initSocket(int port);
-    void runServer();
-    void stopServer();
-    void connectClient();
+    std::vector<pollfd> getPollFds() const;
+
+    const int initSocket(int port);
+    void addServerToPoll(int fd);
+    void acceptNewClientConnection(int fd);
     void addNewClientsToPoll();
-    void disconnectClient(int clientFd);
-    void handleTimeouts();
+    void queueClientToDeleteFromPoll(pollfd pollFd);
+    void deleteQueuedClientsFromPoll();
+    //void disconnectClient(int clientFd);
     void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
 
 private:
-    bool serverRunning;
     std::vector<pollfd> pollFds;
     std::vector<pollfd> pollFdsToAdd;
+    std::vector<pollfd> pollFdsToDelete;
 
     ConnectionManager(const ConnectionManager& toCopy);
     ConnectionManager& operator=(const ConnectionManager& toAssign);

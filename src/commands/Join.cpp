@@ -1,8 +1,8 @@
 #include "commands/Join.h"
-#include "manager/Log.h"
-#include "manager/Server.h"
+#include "core/Log.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 
 Join::Join() : Command()
 {

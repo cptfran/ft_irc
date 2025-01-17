@@ -1,6 +1,6 @@
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 #include <sys/socket.h>
-#include "manager/Log.h"
+#include "core/Log.h"
 #include <map>
 
 std::map<int, std::vector<std::string> > Replier::rplQueue;

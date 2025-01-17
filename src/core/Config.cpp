@@ -1,4 +1,6 @@
-#include "manager/Config.h"
+#include "core/Config.h"
+#include <ctime>
+#include <unistd.h>
 
 Config::Config(const std::string& name, const std::string& version, const std::string& password) : 
 	fd(-1), name(name), version(version), password(password), availableUserModes(std::string("i")),
@@ -15,12 +17,25 @@ Config::Config(const std::string& name, const std::string& version, const std::s
 
 Config::~Config()
 {
+	if (this->fd != -1)
+	{
+		close(this->fd);
+	}
+}
 
+void Config::setFd(const int fd)
+{
+	this->fd = fd;
 }
 
 void Config::setVersion(const std::string& version)
 {
 	this->version = version;
+}
+
+const int Config::getFd() const
+{
+	return this->fd;
 }
 
 std::string Config::getAvailableUserModes() const

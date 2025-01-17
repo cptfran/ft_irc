@@ -1,11 +1,15 @@
 #include <map>
 #include <cctype>
-#include "client/ClientTranslator.h"
+#include "communication/ClientTranslator.h"
 #include <sstream>
 #include <algorithm>
 #include <sys/socket.h>
-#include "manager/Log.h"
+#include "core/Log.h"
 #include "utils/Utils.h"
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+#include <stdexcept>
 
 ClientTranslator::ClientTranslator()
 {
@@ -15,6 +19,24 @@ ClientTranslator::ClientTranslator()
 ClientTranslator::~ClientTranslator()
 {
 
+}
+
+std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
+{
+	char recvBuffer[INPUT_BUFFER_SIZE] = {};
+	const ssize_t bytesRead = recv(fd, recvBuffer, sizeof(recvBuffer) - 1, 0);
+	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(fd) + "]: \"") + recvBuffer + "\"");
+	if (bytesRead <= 0)
+	{
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+		{
+			return std::string();
+		}
+		throw std::runtime_error(ERROR + errno);
+	}
+	recvBuffer[bytesRead] = '\0';
+
+	return recvBuffer;
 }
 
 std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndArgs(const std::string& buffer)

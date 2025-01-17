@@ -13,7 +13,8 @@ public:
     bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
 
     void addChannel(const Channel& channel);
-    void deleteChannelIfEmpty(const Channel& channel);
+    void deleteChannel(const Channel& channel);
+    void deleteClientFromChannels(const Client& client);
 
 private:
     ChannelManager(const ChannelManager& toCopy);

@@ -1,4 +1,7 @@
-#include "manager/CommandManager.h
+#include "manager/CommandManager.h"
+#include "communication/Replier.h"
+#include "communication/ClientTranslator.h"
+#include "utils/Utils.h"
 #include "commands/Cap.h"
 #include "commands/Join.h"
 #include "commands/Nick.h"
@@ -12,6 +15,7 @@
 #include "commands/Part.h"
 #include "commands/Who.h"
 #include "commands/Privmsg.h"
+#include <core/Log.h>
 
 CommandManager::CommandManager()
 {
@@ -39,7 +43,20 @@ CommandManager::~CommandManager()
 	}
 }
 
-void CommandManager::executeCommand(Client& client, const std::string& buffer)
+void CommandManager::executeCommands(Client& client, const std::string& serverPassword)
+{
+	while (true)
+	{
+		std::string msg = client.departCompleteMsgFromBuffer();
+		if (msg.empty())
+		{
+			return;
+		}
+		this->executeCommand(client, msg);
+	}
+}
+
+void CommandManager::executeCommand(Client& client, const std::string& buffer, const std::string& serverPassword)
 {
 	std::pair<std::string, std::vector<std::string> > cmdWithArgs = ClientTranslator::fetchCmdAndArgs(buffer);
 	if (this->validCommands.find(cmdWithArgs.first) == this->validCommands.end())
@@ -51,7 +68,7 @@ void CommandManager::executeCommand(Client& client, const std::string& buffer)
 
 	this->validCommands.at(cmdWithArgs.first)->execute(*this, client, cmdWithArgs.second);
 
-	if (client.registered(this->password) && !client.getWelcomeRepliesSent())
+	if (client.registered(serverPassword) && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 

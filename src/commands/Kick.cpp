@@ -1,9 +1,9 @@
 #include "commands/Kick.h"
 
 #include "data/Channel.h"
-#include "manager/Server.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 
 Kick::Kick() : Command()
 {
@@ -65,7 +65,7 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
-    if (!channel.ejectUser(server, userToKick))
+    if (!channel.deleteUser(server, userToKick))
     {
         Replier::addToQueue(requester.getFd(), Replier::errUserNotInChannel,
             Utils::anyToVec(server.getName(), requester.getNickname(), userToKick, channel.getName()));

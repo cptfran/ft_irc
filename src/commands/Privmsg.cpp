@@ -1,9 +1,9 @@
 #include "commands/Privmsg.h"
-#include "manager/Server.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 #include "data/Channel.h"
-#include "client/ClientTranslator.h"
+#include "communication/ClientTranslator.h"
 
 #define MAX_PRIVMSG_TARGETS 5
 

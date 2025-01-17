@@ -20,9 +20,9 @@ add_executable(ircserv
         include/commands/Who.h
         include/communication/ClientTranslator.h
         include/communication/Replier.h
-        include/manager/Config.h
-        include/manager/Log.h
-        include/manager/Server.h
+        include/core/Config.h
+        include/core/Log.h
+        include/core/Server.h
         include/data/Channel.h
         include/data/Client.h
         include/manager/ChannelManager.h
@@ -45,9 +45,9 @@ add_executable(ircserv
         src/commands/Who.cpp
         src/communication/ClientTranslator.cpp
         src/communication/Replier.cpp
-        src/manager/Config.cpp
-        src/manager/Log.cpp
-        src/manager/Server.cpp
+        src/core/Config.cpp
+        src/core/Log.cpp
+        src/core/Server.cpp
         src/data/Channel.cpp
         src/data/Client.cpp
         src/Main.cpp

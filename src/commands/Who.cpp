@@ -1,10 +1,10 @@
 #include "commands/Who.h"
 #include "data/Channel.h"
-#include "manager/Log.h"
-#include "replier/Replier.h"
-#include "manager/Server.h"
+#include "core/Log.h"
+#include "communication/Replier.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "client/ClientTranslator.h"
+#include "communication/ClientTranslator.h"
 
 Who::Who() : Command()
 {

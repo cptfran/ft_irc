@@ -1,6 +1,6 @@
 #include "commands/Command.h"
 #include "data/Channel.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 #include "utils/Utils.h"
 
 Command::Command()

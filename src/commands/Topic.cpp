@@ -1,10 +1,10 @@
 #include "commands/Topic.h"
 #include <sys/socket.h>
-#include "manager/Server.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 #include "data/Channel.h"
-#include "client/ClientTranslator.h"
+#include "communication/ClientTranslator.h"
 
 Topic::Topic() : Command()
 {

@@ -8,8 +8,10 @@ public:
 	Config(const std::string& name, const std::string& version, const std::string& password);
 	~Config();
 
+	void setFd(int fd);
 	void setVersion(const std::string& version);
 
+	const int getFd() const;
 	std::string getAvailableUserModes() const;
 	std::string getName() const;
 	std::string getPassword() const;

@@ -1,9 +1,9 @@
 #include "commands/Nick.h"
-#include "manager/Server.h"
-#include "replier/Replier.h"
+#include "core/Server.h"
+#include "communication/Replier.h"
 #include "utils/Utils.h"
 #include "data/Channel.h"
-#include "client/ClientTranslator.h"
+#include "communication/ClientTranslator.h"
 
 Nick::Nick() : Command()
 {
@@ -34,7 +34,7 @@ void Nick::execute(Server& server, Client& requester, const std::vector<std::str
 	}
 	if (!requester.getNickname().empty())
 	{
-		if (server.findClientByNickname(nickname) != NULL)
+		if (server.getClientByNickname(nickname) != NULL)
 		{
 			Replier::addToQueue(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(server.getName(),
 				requester.getNickname(), nickname));

@@ -1,7 +1,7 @@
 #include "commands/Cap.h"
-#include "manager/Server.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 
 Cap::Cap() : Command()
 {

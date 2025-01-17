@@ -1,6 +1,7 @@
-#include "client/Client.h"
-#include "manager/Log.h"
+#include "data/Client.h"
+#include "core/Log.h"
 #include <ctime>
+#include <unistd.h>
 #include <cstring>
 
 Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
@@ -22,7 +23,10 @@ bool Client::operator==(const Client& toCompare) const
 
 Client::~Client()
 {
-
+	if (this->fd != -1)
+	{
+		close(this->fd);
+	}
 }
 
 void Client::setPassword(const std::string& password)

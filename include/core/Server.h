@@ -1,11 +1,10 @@
 #pragma once
 
-#include <map>
-#include "client/Client.h"
-#include "commands/Command.h"
-#include <vector>
-#include <netinet/in.h>
-#include <sys/poll.h>
+#include "manager/ChannelManager.h"
+#include "manager/ClientManager.h"
+#include "manager/CommandManager.h"
+#include "manager/ConnectionManager.h"
+#include "Config.h"
 
 // Ports range:
 #define REGISTERED_PORT_MIN 1024
@@ -27,75 +26,39 @@ public:
 	Server(const std::string& name, const std::string& version, const std::string& password, int port);
 	~Server();
 
-	//void setVersion(const std::string& version);
-
-	//std::string getName() const;
-	//std::string getPassword() const;
-	//std::map<int, Client> getClients() const;
-	//Client* findClientByNickname(const std::string& nicknameToFind);
-	//bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;
-
-	//void run();
-	//void stop();
-
-	//void handleNicknameCollision(int newClientFd, const std::string& newClientNickname);
-
-	// Channels:
-	//Channel* getNewestChannel();
-	//Channel* getChannel(const std::string& channelName);
-	//std::string getAvailableChannelModes() const;
-	//std::string getAvailableUserModes() const;
-	//void addChannel(const Channel& channel);
-	//void deleteChannelIfEmpty(const Channel& channel);
-
 private:
 	static Server* instance;
-	//bool running;
-	/*int fd;
-	std::string name;
-	std::string version;
-	std::string password;
-	std::string creationDate;
-	std::string availableUserModes;*/
-	//std::string availableChannelModes;
-	//std::map<int, Client> clients;
-	//std::vector<pollfd> pollFds;
-	//std::vector<pollfd> pollFdsToAdd;
-	//std::map<std::string, Command*> validCommands;
-	//std::vector<Channel> channels;
+	bool running;
+	Config config;
+	ChannelManager channelManager;
+	ClientManager clientManager;
+	CommandManager commandManager;
+	ConnectionManager connectionManager;
 
-	static void signalHandler(int signum);
-
-	//void initSocket(int port);
-
-	// Client connection.
-	//void connectClient();
-	//void addNewClientsToPoll();
-	//std::string getClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
-	//void disconnectClient(int clientFd);
-	//void handleTimeouts();
-
-	// Handling new requests of already connected client.
-	//void executeCommand(Client& client, const std::string& buffer);
-	void handleRecv(Client& client);
-};
-
-class Server 
-{
-public:
 	void run();
 	void stop();
 
-private:
-	std::string name;
-	std::string version;
-	std::string password;
-	std::string creationDate;
+	static void signalHandler(int signum);
 
-	ConnectionManager connectionManager;
-	ClientManager clientManager;
-	ChannelManager channelManager;
-	CommandManager commandManager;
-
-	void initSignalHandlers();
+	void Server::handleTimeouts();
 };
+
+//class Server 
+//{
+//public:
+//	void run();
+//	void stop();
+//
+//private:
+//	std::string name;
+//	std::string version;
+//	std::string password;
+//	std::string creationDate;
+//
+//	ConnectionManager connectionManager;
+//	ClientManager clientManager;
+//	ChannelManager channelManager;
+//	CommandManager commandManager;
+//
+//	void initSignalHandlers();
+//};

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <client/Client.h>
+#include <data/Client.h>
 #include <commands/Command.h>
 #include <map>
 
@@ -10,7 +10,8 @@ public:
     CommandManager();
     ~CommandManager();
 
-    void executeCommand(Client& client, const std::string& buffer);
+    void executeCommands(Client& client, const std::string& serverPassword);
+    void executeCommand(Client& client, const std::string& buffer, const std::string& serverPassword);
 
 private:
     std::map<std::string, Command*> validCommands;

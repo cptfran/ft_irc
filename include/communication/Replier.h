@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/Client.h"
+#include "data/Client.h"
 #include <vector>
 #include <map>
 
@@ -74,6 +74,7 @@ private:
 	static std::string errUsersDontMatch(const std::vector<std::string>& args); // 502
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
+	friend class CommandManager;
 	friend class Command;
 	friend class Cap;
 	friend class Invite;

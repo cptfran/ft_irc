@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: make it a class?
 #define RED "\033[31m"
 #define LIGHT_GREEN "\033[92m"
 #define BLUE "\033[94m"

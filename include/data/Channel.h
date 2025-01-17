@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "client/Client.h"
-#include "manager/Server.h"
+#include "data/Client.h"
+#include "core/Server.h"
 
 class Channel
 {
@@ -37,7 +37,7 @@ public:
 	std::vector<Client> getClientList() const;
 
 	void joinUser(Client& newClient);
-	bool ejectUser(Server& server, const std::string& userToKick);
+	bool deleteUser(const std::string& userToKick);
 	void setChannelInviteOnly(bool isInviteOnly);
 	void addToInviteList(const std::string& invitedNickname);
 	void setTopicRestricted(bool isTopicRestricted);

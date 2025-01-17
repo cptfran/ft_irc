@@ -1,4 +1,5 @@
 #include "manager/ChannelManager.h"
+#include <algorithm>
 
 ChannelManager::ChannelManager() 
 {
@@ -33,16 +34,36 @@ void ChannelManager::addChannel(const Channel& channel)
 	channels.push_back(channel);
 }
 
-void ChannelManager::deleteChannelIfEmpty(const Channel& channel)
+void ChannelManager::deleteClientFromChannels(const Client& client)
 {
-	if (channel.getNumOfJoinedUsers() == 0)
+	std::vector<Channel> emptyChannels;
+
+	for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
-		const std::vector<Channel>::iterator it = std::find(this->channels.begin(), this->channels.end(),
-			channel);
-		if (it != this->channels.end())
+		if (it->isUserOnChannel(client.getNickname()))
 		{
-			this->channels.erase(it);
+			it->deleteUser(client.getNickname());
+
+			if (it->getNumOfJoinedUsers() == 0)
+			{
+				emptyChannels.push_back(*it);
+			}
 		}
+	}
+
+	for (std::vector<Channel>::iterator it = emptyChannels.begin(); it != emptyChannels.end(); ++it)
+	{
+		this->deleteChannel(*it);
+	}
+}
+
+void ChannelManager::deleteChannel(const Channel& channel)
+{
+	const std::vector<Channel>::iterator it = std::find(this->channels.begin(), this->channels.end(),
+		channel);
+	if (it != this->channels.end())
+	{
+		this->channels.erase(it);
 	}
 }
 

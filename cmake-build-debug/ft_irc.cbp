@@ -78,10 +78,10 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/client/Client.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/data/Client.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/client/ClientTranslator.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/communication/ClientTranslator.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Cap.h">
@@ -120,13 +120,13 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Who.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/replier/Replier.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/communication/Replier.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/Log.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/core/Log.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/Server.h">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/core/Server.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/utils/Colors.h">

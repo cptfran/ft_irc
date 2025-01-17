@@ -1,5 +1,7 @@
 #include "manager/ClientManager.h"
 #include <vector>
+#include <csignal>
+#include <arpa/inet.h>
 
 ClientManager::ClientManager()
 {
@@ -8,20 +10,37 @@ ClientManager::ClientManager()
 
 ClientManager::~ClientManager()
 {
-
+	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
+	{
+		const int clientFd = it->second.getFd();
+		if (clientFd != -1)
+		{
+			close(clientFd);
+		}
+	}
 }
 
-void ClientManager::addClient(const int clientFd, const Client& client)
+void ClientManager::addClient(const int clientFd)
 {
-	// TODO: need to check what exactly should be here.
+	sockaddr_in addr = {};
+	socklen_t addrLen = sizeof(addr);
+
+	// Create new client object.
+	Client client(clientFd);
+
+	// Fetch and set client hostname.
+	client.setHostname(this->findClientHostname(addr, addrLen, clientFd));
+
+	// Add client to the list.
+	this->clients.insert(std::make_pair(clientFd, client));
 }
 
-void ClientManager::removeClient(const int clientFd)
+void ClientManager::deleteClient(const int clientFd)
 {
-	// TODO: need to check what exactly should be here.
+	this->clients.erase(clientFd);
 }
 
-Client* ClientManager::findClientByNickname(const std::string& nicknameToFind)
+Client* ClientManager::getClientByNickname(const std::string& nicknameToFind)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
@@ -38,7 +57,7 @@ std::map<int, Client> ClientManager::getClients() const
 	return this->clients;
 }
 
-std::string ClientManager::getClientHostname(sockaddr_in& addr, socklen_t addrLen, const int clientFd) const
+std::string ClientManager::findClientHostname(sockaddr_in& addr, socklen_t addrLen, const int clientFd) const
 {
 	// A buffer to hold the client's IP address in human-readable form.
 	char client_ip[INET_ADDRSTRLEN];

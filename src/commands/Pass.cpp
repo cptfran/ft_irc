@@ -1,8 +1,8 @@
 #include "commands/Pass.h"
-#include "manager/Server.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "manager/Log.h"
-#include "replier/Replier.h"
+#include "core/Log.h"
+#include "communication/Replier.h"
 
 Pass::Pass() : Command()
 {

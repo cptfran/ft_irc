@@ -1,8 +1,8 @@
 #include "commands/Invite.h"
-#include "manager/Log.h"
-#include "manager/Server.h"
+#include "core/Log.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
-#include "replier/Replier.h"
+#include "communication/Replier.h"
 
 Invite::Invite() : Command()
 {
@@ -26,7 +26,7 @@ void Invite::execute(Server& server, Client& requester, const std::vector<std::s
 
     // Find the user which will be invited.
     const std::string& nicknameToInvite = args[0];
-    const Client* clientToInvite = server.findClientByNickname(nicknameToInvite);
+    const Client* clientToInvite = server.getClientByNickname(nicknameToInvite);
 
     // Invited user not found.
     if (clientToInvite == NULL)

@@ -1,18 +1,13 @@
 #include "data/Channel.h"
-#include "manager/Log.h"
-#include "manager/Server.h"
-#include "client/ClientTranslator.h"
+#include "core/Log.h"
+#include "core/Server.h"
+#include "communication/ClientTranslator.h"
 #include <algorithm>
 
 Channel::Channel(const std::string& name)
 : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
 {
 	this->name = ClientTranslator::sanitizeChannelName(name);
-}
-
-Channel::Channel() : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
-{
-
 }
 
 Channel::~Channel()
@@ -213,21 +208,14 @@ void Channel::joinUser(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::ejectUser(Server& server, const std::string& userToKick)
+bool Channel::deleteUser(const std::string& userToKick)
 {
-	if (this->joinedClients.empty())
-	{
-		return false;
-	}
-
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
 		if (it->client.getNickname() == userToKick)
 		{
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
-
-			server.deleteChannelIfEmpty(*this);
 
 			return true;
 		}

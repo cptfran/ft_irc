@@ -1,7 +1,7 @@
 #include "commands/Part.h"
-#include "manager/Log.h"
-#include "replier/Replier.h"
-#include "manager/Server.h"
+#include "core/Log.h"
+#include "communication/Replier.h"
+#include "core/Server.h"
 #include "utils/Utils.h"
 #include "data/Channel.h"
 
@@ -46,7 +46,7 @@ void Part::execute(Server& server, Client& requester, const std::vector<std::str
 			continue;
 		}
 
-		if (!channelToLeave->ejectUser(server, requester.getNickname()))
+		if (!channelToLeave->deleteUser(server, requester.getNickname()))
 		{
 			Log::msgServer(INFO, "CLIENT", requester.getFd(), EJECT_CLIENT_FAIL);
 		}
