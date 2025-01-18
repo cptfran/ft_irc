@@ -11,7 +11,7 @@ INCLUDE_DIR = include
 SRC = $(wildcard $(SRC_DIR)/*.cpp) \
       $(wildcard $(SRC_DIR)/commands/*.cpp) \
       $(wildcard $(SRC_DIR)/communication/*.cpp) \
-      $(wildcard $(SRC_DIR)/manager/*.cpp) \
+      $(wildcard $(SRC_DIR)/core/*.cpp) \
       $(wildcard $(SRC_DIR)/data/*.cpp) \
       $(wildcard $(SRC_DIR)/manager/*.cpp) \
       $(wildcard $(SRC_DIR)/utils/*.cpp)
@@ -43,7 +43,7 @@ $(OBJ_DIR)/communication/%.o: $(SRC_DIR)/communication/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-$(OBJ_DIR)/manager/%.o: $(SRC_DIR)/manager/%.cpp
+$(OBJ_DIR)/core/%.o: $(SRC_DIR)/core/%.cpp
 	@mkdir -p $(DIRS)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 

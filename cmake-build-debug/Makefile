@@ -129,77 +129,29 @@ ircserv/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/build
 .PHONY : ircserv/fast
 
-src/channel/Channel.o: src/channel/Channel.cpp.o
-.PHONY : src/channel/Channel.o
+src/Main.o: src/Main.cpp.o
+.PHONY : src/Main.o
 
 # target to build an object file
-src/channel/Channel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/channel/Channel.cpp.o
-.PHONY : src/channel/Channel.cpp.o
+src/Main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Main.cpp.o
+.PHONY : src/Main.cpp.o
 
-src/channel/Channel.i: src/channel/Channel.cpp.i
-.PHONY : src/channel/Channel.i
-
-# target to preprocess a source file
-src/channel/Channel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/channel/Channel.cpp.i
-.PHONY : src/channel/Channel.cpp.i
-
-src/channel/Channel.s: src/channel/Channel.cpp.s
-.PHONY : src/channel/Channel.s
-
-# target to generate assembly for a file
-src/channel/Channel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/channel/Channel.cpp.s
-.PHONY : src/channel/Channel.cpp.s
-
-src/client/Client.o: src/client/Client.cpp.o
-.PHONY : src/client/Client.o
-
-# target to build an object file
-src/client/Client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/Client.cpp.o
-.PHONY : src/client/Client.cpp.o
-
-src/client/Client.i: src/client/Client.cpp.i
-.PHONY : src/client/Client.i
+src/Main.i: src/Main.cpp.i
+.PHONY : src/Main.i
 
 # target to preprocess a source file
-src/client/Client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/Client.cpp.i
-.PHONY : src/client/Client.cpp.i
+src/Main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Main.cpp.i
+.PHONY : src/Main.cpp.i
 
-src/client/Client.s: src/client/Client.cpp.s
-.PHONY : src/client/Client.s
-
-# target to generate assembly for a file
-src/client/Client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/Client.cpp.s
-.PHONY : src/client/Client.cpp.s
-
-src/client/ClientTranslator.o: src/client/ClientTranslator.cpp.o
-.PHONY : src/client/ClientTranslator.o
-
-# target to build an object file
-src/client/ClientTranslator.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/ClientTranslator.cpp.o
-.PHONY : src/client/ClientTranslator.cpp.o
-
-src/client/ClientTranslator.i: src/client/ClientTranslator.cpp.i
-.PHONY : src/client/ClientTranslator.i
-
-# target to preprocess a source file
-src/client/ClientTranslator.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/ClientTranslator.cpp.i
-.PHONY : src/client/ClientTranslator.cpp.i
-
-src/client/ClientTranslator.s: src/client/ClientTranslator.cpp.s
-.PHONY : src/client/ClientTranslator.s
+src/Main.s: src/Main.cpp.s
+.PHONY : src/Main.s
 
 # target to generate assembly for a file
-src/client/ClientTranslator.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/client/ClientTranslator.cpp.s
-.PHONY : src/client/ClientTranslator.cpp.s
+src/Main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/Main.cpp.s
+.PHONY : src/Main.cpp.s
 
 src/commands/Cap.o: src/commands/Cap.cpp.o
 .PHONY : src/commands/Cap.o
@@ -321,30 +273,6 @@ src/commands/Kick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s
 .PHONY : src/commands/Kick.cpp.s
 
-src/commands/Mode.o: src/commands/Mode.cpp.o
-.PHONY : src/commands/Mode.o
-
-# target to build an object file
-src/commands/Mode.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o
-.PHONY : src/commands/Mode.cpp.o
-
-src/commands/Mode.i: src/commands/Mode.cpp.i
-.PHONY : src/commands/Mode.i
-
-# target to preprocess a source file
-src/commands/Mode.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.i
-.PHONY : src/commands/Mode.cpp.i
-
-src/commands/Mode.s: src/commands/Mode.cpp.s
-.PHONY : src/commands/Mode.s
-
-# target to generate assembly for a file
-src/commands/Mode.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Mode.cpp.s
-.PHONY : src/commands/Mode.cpp.s
-
 src/commands/Nick.o: src/commands/Nick.cpp.o
 .PHONY : src/commands/Nick.o
 
@@ -368,30 +296,6 @@ src/commands/Nick.s: src/commands/Nick.cpp.s
 src/commands/Nick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Nick.cpp.s
 .PHONY : src/commands/Nick.cpp.s
-
-src/commands/Part.o: src/commands/Part.cpp.o
-.PHONY : src/commands/Part.o
-
-# target to build an object file
-src/commands/Part.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.o
-.PHONY : src/commands/Part.cpp.o
-
-src/commands/Part.i: src/commands/Part.cpp.i
-.PHONY : src/commands/Part.i
-
-# target to preprocess a source file
-src/commands/Part.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.i
-.PHONY : src/commands/Part.cpp.i
-
-src/commands/Part.s: src/commands/Part.cpp.s
-.PHONY : src/commands/Part.s
-
-# target to generate assembly for a file
-src/commands/Part.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Part.cpp.s
-.PHONY : src/commands/Part.cpp.s
 
 src/commands/Pass.o: src/commands/Pass.cpp.o
 .PHONY : src/commands/Pass.o
@@ -537,101 +441,293 @@ src/commands/Who.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/commands/Who.cpp.s
 .PHONY : src/commands/Who.cpp.s
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
+src/communication/ClientTranslator.o: src/communication/ClientTranslator.cpp.o
+.PHONY : src/communication/ClientTranslator.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+src/communication/ClientTranslator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o
+.PHONY : src/communication/ClientTranslator.cpp.o
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+src/communication/ClientTranslator.i: src/communication/ClientTranslator.cpp.i
+.PHONY : src/communication/ClientTranslator.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+src/communication/ClientTranslator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.i
+.PHONY : src/communication/ClientTranslator.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+src/communication/ClientTranslator.s: src/communication/ClientTranslator.cpp.s
+.PHONY : src/communication/ClientTranslator.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+src/communication/ClientTranslator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.s
+.PHONY : src/communication/ClientTranslator.cpp.s
 
-src/replier/Replier.o: src/replier/Replier.cpp.o
-.PHONY : src/replier/Replier.o
+src/communication/Replier.o: src/communication/Replier.cpp.o
+.PHONY : src/communication/Replier.o
 
 # target to build an object file
-src/replier/Replier.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/replier/Replier.cpp.o
-.PHONY : src/replier/Replier.cpp.o
+src/communication/Replier.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o
+.PHONY : src/communication/Replier.cpp.o
 
-src/replier/Replier.i: src/replier/Replier.cpp.i
-.PHONY : src/replier/Replier.i
+src/communication/Replier.i: src/communication/Replier.cpp.i
+.PHONY : src/communication/Replier.i
 
 # target to preprocess a source file
-src/replier/Replier.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/replier/Replier.cpp.i
-.PHONY : src/replier/Replier.cpp.i
+src/communication/Replier.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/Replier.cpp.i
+.PHONY : src/communication/Replier.cpp.i
 
-src/replier/Replier.s: src/replier/Replier.cpp.s
-.PHONY : src/replier/Replier.s
+src/communication/Replier.s: src/communication/Replier.cpp.s
+.PHONY : src/communication/Replier.s
 
 # target to generate assembly for a file
-src/replier/Replier.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/replier/Replier.cpp.s
-.PHONY : src/replier/Replier.cpp.s
+src/communication/Replier.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/communication/Replier.cpp.s
+.PHONY : src/communication/Replier.cpp.s
 
-src/manager/Log.o: src/manager/Log.cpp.o
-.PHONY : src/manager/Log.o
+src/core/Log.o: src/core/Log.cpp.o
+.PHONY : src/core/Log.o
 
 # target to build an object file
-src/manager/Log.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.o
-.PHONY : src/manager/Log.cpp.o
+src/core/Log.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Log.cpp.o
+.PHONY : src/core/Log.cpp.o
 
-src/manager/Log.i: src/manager/Log.cpp.i
-.PHONY : src/manager/Log.i
+src/core/Log.i: src/core/Log.cpp.i
+.PHONY : src/core/Log.i
 
 # target to preprocess a source file
-src/manager/Log.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.i
-.PHONY : src/manager/Log.cpp.i
+src/core/Log.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Log.cpp.i
+.PHONY : src/core/Log.cpp.i
 
-src/manager/Log.s: src/manager/Log.cpp.s
-.PHONY : src/manager/Log.s
+src/core/Log.s: src/core/Log.cpp.s
+.PHONY : src/core/Log.s
 
 # target to generate assembly for a file
-src/manager/Log.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Log.cpp.s
-.PHONY : src/manager/Log.cpp.s
+src/core/Log.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Log.cpp.s
+.PHONY : src/core/Log.cpp.s
 
-src/manager/Server.o: src/manager/Server.cpp.o
-.PHONY : src/manager/Server.o
+src/core/Server.o: src/core/Server.cpp.o
+.PHONY : src/core/Server.o
 
 # target to build an object file
-src/manager/Server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.o
-.PHONY : src/manager/Server.cpp.o
+src/core/Server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Server.cpp.o
+.PHONY : src/core/Server.cpp.o
 
-src/manager/Server.i: src/manager/Server.cpp.i
-.PHONY : src/manager/Server.i
+src/core/Server.i: src/core/Server.cpp.i
+.PHONY : src/core/Server.i
 
 # target to preprocess a source file
-src/manager/Server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.i
-.PHONY : src/manager/Server.cpp.i
+src/core/Server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Server.cpp.i
+.PHONY : src/core/Server.cpp.i
 
-src/manager/Server.s: src/manager/Server.cpp.s
-.PHONY : src/manager/Server.s
+src/core/Server.s: src/core/Server.cpp.s
+.PHONY : src/core/Server.s
 
 # target to generate assembly for a file
-src/manager/Server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Server.cpp.s
-.PHONY : src/manager/Server.cpp.s
+src/core/Server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/core/Server.cpp.s
+.PHONY : src/core/Server.cpp.s
+
+src/data/Channel.o: src/data/Channel.cpp.o
+.PHONY : src/data/Channel.o
+
+# target to build an object file
+src/data/Channel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Channel.cpp.o
+.PHONY : src/data/Channel.cpp.o
+
+src/data/Channel.i: src/data/Channel.cpp.i
+.PHONY : src/data/Channel.i
+
+# target to preprocess a source file
+src/data/Channel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Channel.cpp.i
+.PHONY : src/data/Channel.cpp.i
+
+src/data/Channel.s: src/data/Channel.cpp.s
+.PHONY : src/data/Channel.s
+
+# target to generate assembly for a file
+src/data/Channel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Channel.cpp.s
+.PHONY : src/data/Channel.cpp.s
+
+src/data/Client.o: src/data/Client.cpp.o
+.PHONY : src/data/Client.o
+
+# target to build an object file
+src/data/Client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Client.cpp.o
+.PHONY : src/data/Client.cpp.o
+
+src/data/Client.i: src/data/Client.cpp.i
+.PHONY : src/data/Client.i
+
+# target to preprocess a source file
+src/data/Client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Client.cpp.i
+.PHONY : src/data/Client.cpp.i
+
+src/data/Client.s: src/data/Client.cpp.s
+.PHONY : src/data/Client.s
+
+# target to generate assembly for a file
+src/data/Client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/data/Client.cpp.s
+.PHONY : src/data/Client.cpp.s
+
+src/manager/ChannelManager.o: src/manager/ChannelManager.cpp.o
+.PHONY : src/manager/ChannelManager.o
+
+# target to build an object file
+src/manager/ChannelManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o
+.PHONY : src/manager/ChannelManager.cpp.o
+
+src/manager/ChannelManager.i: src/manager/ChannelManager.cpp.i
+.PHONY : src/manager/ChannelManager.i
+
+# target to preprocess a source file
+src/manager/ChannelManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.i
+.PHONY : src/manager/ChannelManager.cpp.i
+
+src/manager/ChannelManager.s: src/manager/ChannelManager.cpp.s
+.PHONY : src/manager/ChannelManager.s
+
+# target to generate assembly for a file
+src/manager/ChannelManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.s
+.PHONY : src/manager/ChannelManager.cpp.s
+
+src/manager/ClientManager.o: src/manager/ClientManager.cpp.o
+.PHONY : src/manager/ClientManager.o
+
+# target to build an object file
+src/manager/ClientManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o
+.PHONY : src/manager/ClientManager.cpp.o
+
+src/manager/ClientManager.i: src/manager/ClientManager.cpp.i
+.PHONY : src/manager/ClientManager.i
+
+# target to preprocess a source file
+src/manager/ClientManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.i
+.PHONY : src/manager/ClientManager.cpp.i
+
+src/manager/ClientManager.s: src/manager/ClientManager.cpp.s
+.PHONY : src/manager/ClientManager.s
+
+# target to generate assembly for a file
+src/manager/ClientManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.s
+.PHONY : src/manager/ClientManager.cpp.s
+
+src/manager/CommandManager.o: src/manager/CommandManager.cpp.o
+.PHONY : src/manager/CommandManager.o
+
+# target to build an object file
+src/manager/CommandManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o
+.PHONY : src/manager/CommandManager.cpp.o
+
+src/manager/CommandManager.i: src/manager/CommandManager.cpp.i
+.PHONY : src/manager/CommandManager.i
+
+# target to preprocess a source file
+src/manager/CommandManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.i
+.PHONY : src/manager/CommandManager.cpp.i
+
+src/manager/CommandManager.s: src/manager/CommandManager.cpp.s
+.PHONY : src/manager/CommandManager.s
+
+# target to generate assembly for a file
+src/manager/CommandManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.s
+.PHONY : src/manager/CommandManager.cpp.s
+
+src/manager/ConfigManager.o: src/manager/ConfigManager.cpp.o
+.PHONY : src/manager/ConfigManager.o
+
+# target to build an object file
+src/manager/ConfigManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o
+.PHONY : src/manager/ConfigManager.cpp.o
+
+src/manager/ConfigManager.i: src/manager/ConfigManager.cpp.i
+.PHONY : src/manager/ConfigManager.i
+
+# target to preprocess a source file
+src/manager/ConfigManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.i
+.PHONY : src/manager/ConfigManager.cpp.i
+
+src/manager/ConfigManager.s: src/manager/ConfigManager.cpp.s
+.PHONY : src/manager/ConfigManager.s
+
+# target to generate assembly for a file
+src/manager/ConfigManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.s
+.PHONY : src/manager/ConfigManager.cpp.s
+
+src/manager/ConnectionManager.o: src/manager/ConnectionManager.cpp.o
+.PHONY : src/manager/ConnectionManager.o
+
+# target to build an object file
+src/manager/ConnectionManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o
+.PHONY : src/manager/ConnectionManager.cpp.o
+
+src/manager/ConnectionManager.i: src/manager/ConnectionManager.cpp.i
+.PHONY : src/manager/ConnectionManager.i
+
+# target to preprocess a source file
+src/manager/ConnectionManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.i
+.PHONY : src/manager/ConnectionManager.cpp.i
+
+src/manager/ConnectionManager.s: src/manager/ConnectionManager.cpp.s
+.PHONY : src/manager/ConnectionManager.s
+
+# target to generate assembly for a file
+src/manager/ConnectionManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.s
+.PHONY : src/manager/ConnectionManager.cpp.s
+
+src/manager/Manager.o: src/manager/Manager.cpp.o
+.PHONY : src/manager/Manager.o
+
+# target to build an object file
+src/manager/Manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o
+.PHONY : src/manager/Manager.cpp.o
+
+src/manager/Manager.i: src/manager/Manager.cpp.i
+.PHONY : src/manager/Manager.i
+
+# target to preprocess a source file
+src/manager/Manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Manager.cpp.i
+.PHONY : src/manager/Manager.cpp.i
+
+src/manager/Manager.s: src/manager/Manager.cpp.s
+.PHONY : src/manager/Manager.s
+
+# target to generate assembly for a file
+src/manager/Manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Manager.cpp.s
+.PHONY : src/manager/Manager.cpp.s
 
 src/utils/Utils.o: src/utils/Utils.cpp.o
 .PHONY : src/utils/Utils.o
@@ -666,15 +762,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ircserv"
-	@echo "... src/channel/Channel.o"
-	@echo "... src/channel/Channel.i"
-	@echo "... src/channel/Channel.s"
-	@echo "... src/client/Client.o"
-	@echo "... src/client/Client.i"
-	@echo "... src/client/Client.s"
-	@echo "... src/client/ClientTranslator.o"
-	@echo "... src/client/ClientTranslator.i"
-	@echo "... src/client/ClientTranslator.s"
+	@echo "... src/Main.o"
+	@echo "... src/Main.i"
+	@echo "... src/Main.s"
 	@echo "... src/commands/Cap.o"
 	@echo "... src/commands/Cap.i"
 	@echo "... src/commands/Cap.s"
@@ -690,15 +780,9 @@ help:
 	@echo "... src/commands/Kick.o"
 	@echo "... src/commands/Kick.i"
 	@echo "... src/commands/Kick.s"
-	@echo "... src/commands/Mode.o"
-	@echo "... src/commands/Mode.i"
-	@echo "... src/commands/Mode.s"
 	@echo "... src/commands/Nick.o"
 	@echo "... src/commands/Nick.i"
 	@echo "... src/commands/Nick.s"
-	@echo "... src/commands/Part.o"
-	@echo "... src/commands/Part.i"
-	@echo "... src/commands/Part.s"
 	@echo "... src/commands/Pass.o"
 	@echo "... src/commands/Pass.i"
 	@echo "... src/commands/Pass.s"
@@ -717,18 +801,42 @@ help:
 	@echo "... src/commands/Who.o"
 	@echo "... src/commands/Who.i"
 	@echo "... src/commands/Who.s"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
-	@echo "... src/replier/Replier.o"
-	@echo "... src/replier/Replier.i"
-	@echo "... src/replier/Replier.s"
-	@echo "... src/manager/Log.o"
-	@echo "... src/manager/Log.i"
-	@echo "... src/manager/Log.s"
-	@echo "... src/manager/Server.o"
-	@echo "... src/manager/Server.i"
-	@echo "... src/manager/Server.s"
+	@echo "... src/communication/ClientTranslator.o"
+	@echo "... src/communication/ClientTranslator.i"
+	@echo "... src/communication/ClientTranslator.s"
+	@echo "... src/communication/Replier.o"
+	@echo "... src/communication/Replier.i"
+	@echo "... src/communication/Replier.s"
+	@echo "... src/core/Log.o"
+	@echo "... src/core/Log.i"
+	@echo "... src/core/Log.s"
+	@echo "... src/core/Server.o"
+	@echo "... src/core/Server.i"
+	@echo "... src/core/Server.s"
+	@echo "... src/data/Channel.o"
+	@echo "... src/data/Channel.i"
+	@echo "... src/data/Channel.s"
+	@echo "... src/data/Client.o"
+	@echo "... src/data/Client.i"
+	@echo "... src/data/Client.s"
+	@echo "... src/manager/ChannelManager.o"
+	@echo "... src/manager/ChannelManager.i"
+	@echo "... src/manager/ChannelManager.s"
+	@echo "... src/manager/ClientManager.o"
+	@echo "... src/manager/ClientManager.i"
+	@echo "... src/manager/ClientManager.s"
+	@echo "... src/manager/CommandManager.o"
+	@echo "... src/manager/CommandManager.i"
+	@echo "... src/manager/CommandManager.s"
+	@echo "... src/manager/ConfigManager.o"
+	@echo "... src/manager/ConfigManager.i"
+	@echo "... src/manager/ConfigManager.s"
+	@echo "... src/manager/ConnectionManager.o"
+	@echo "... src/manager/ConnectionManager.i"
+	@echo "... src/manager/ConnectionManager.s"
+	@echo "... src/manager/Manager.o"
+	@echo "... src/manager/Manager.i"
+	@echo "... src/manager/Manager.s"
 	@echo "... src/utils/Utils.o"
 	@echo "... src/utils/Utils.i"
 	@echo "... src/utils/Utils.s"

@@ -1,9 +1,12 @@
 #include "manager/ClientManager.h"
 #include <vector>
 #include <csignal>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <communication/Replier.h>
 #include <utils/Utils.h>
+
+#include "core/Log.h"
 
 ClientManager::ClientManager()
 {
@@ -25,7 +28,7 @@ ClientManager::~ClientManager()
 void ClientManager::addClient(const int clientFd)
 {
 	sockaddr_in addr = {};
-	socklen_t addrLen = sizeof(addr);
+	const socklen_t addrLen = sizeof(addr);
 
 	// Create new client object.
 	Client client(clientFd);
@@ -42,6 +45,12 @@ void ClientManager::deleteClient(const int clientFd)
 	this->clients.erase(clientFd);
 }
 
+Client& ClientManager::getClientByFd(const int fd)
+{
+	return this->clients.at(fd);
+	// throw std::invalid_argument(ERROR "Didn't find client compatible with pollfd.\n");
+}
+
 Client* ClientManager::getClientByNickname(const std::string& nicknameToFind)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
@@ -54,7 +63,7 @@ Client* ClientManager::getClientByNickname(const std::string& nicknameToFind)
 	return NULL;
 }
 
-std::map<int, Client> ClientManager::getClients() const
+const std::map<int, Client>& ClientManager::getClients() const
 {
 	return this->clients;
 }

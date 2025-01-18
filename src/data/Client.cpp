@@ -2,14 +2,14 @@
 #include "core/Log.h"
 #include <ctime>
 #include <unistd.h>
-#include <cstring>
 
-Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0),
+invisible(false)
 {
 
 }
 
-Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0), invisible(false)
 {
 
 }

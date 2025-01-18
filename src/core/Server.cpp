@@ -16,8 +16,6 @@
 #include <sstream>
 #include "utils/Utils.h"
 #include <ctime>
-#include <fcntl.h>
-#include <netdb.h>
 #include <arpa/inet.h>
 #include "communication/Replier.h"
 #include "manager/Manager.h"
@@ -25,9 +23,10 @@
 Server* Server::instance = NULL;
 
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-	: channelManager(), clientManager(), commandManager(), ConfigManager(name, version, password), connectionManager()
+	: running(true), channelManager(), clientManager(), commandManager(), configManager(name, version, password),
+	connectionManager()
 {
-	this->ConfigManager.setFd(this->connectionManager.initSocket(port));
+	this->configManager.setFd(this->connectionManager.initSocket(port));
 	instance = this;
 	signal(SIGINT, signalHandler);
 }
@@ -42,7 +41,7 @@ void Server::run()
 	Log::msgServer(INFO, SERVER_RUN);
 
 	// Add the server to the poll.
-	this->connectionManager.addServerToPoll();
+	this->connectionManager.addServerToPoll(this->configManager.getFd());
 
 	// Main loop, handling new client connections and already running clients.
 	while (running)
@@ -62,14 +61,12 @@ void Server::run()
 		this->connectionManager.addNewClientsToPoll();
 		this->connectionManager.deleteQueuedClientsFromPoll();
 
-		for (std::vector<pollfd>::iterator it = this->connectionManager.getPollFds().begin(); 
-			it != this->connectionManager.getPollFds().end(); ++it)
+		const std::vector<pollfd>& pollFds = this->connectionManager.getPollFds();
+		for (std::vector<pollfd>::const_iterator it = pollFds.begin(); it != pollFds.end(); ++it)
 		{
-			Client& currClient = this->clientManager.getClients().at(it->fd);
-
 			if ((it->revents & POLLHUP) == POLLHUP)
 			{
-				this->channelManager.deleteClientFromChannels(currClient);
+				this->channelManager.deleteClientFromChannels(this->clientManager.getClientByFd(it->fd));
 				this->clientManager.deleteClient(it->fd);
 				this->connectionManager.queueClientToDeleteFromPoll(*it);
 			}
@@ -79,7 +76,7 @@ void Server::run()
 			}
 			else if ((it->revents & POLLIN) == POLLIN)
 			{
-				if (it->fd == this->ConfigManager.getFd())
+				if (it->fd == this->configManager.getFd())
 				{
 					this->connectionManager.acceptNewClientConnection(it->fd);
 					this->clientManager.addClient(it->fd);
@@ -88,20 +85,19 @@ void Server::run()
 				{
 					try
 					{
-						currClient.addToBuffer(ClientTranslator::parseClientBufferFromRecv(it->fd));
+						this->clientManager.getClientByFd(it->fd).addToBuffer(ClientTranslator::parseClientBufferFromRecv(it->fd));
 						Manager manager(this->channelManager, this->clientManager,
-							this->commandManager, this->ConfigManager, this->connectionManager);
-						commandManager.executeCommands(manager, currClient);
+							this->commandManager, this->configManager, this->connectionManager);
+						commandManager.executeCommands(manager, this->clientManager.getClientByFd(it->fd));
 					}
 					catch (std::exception&)
 					{
-						this->channelManager.deleteClientFromChannels(currClient);
+						this->channelManager.deleteClientFromChannels(this->clientManager.getClientByFd(it->fd));
 						this->clientManager.deleteClient(it->fd);
 						this->connectionManager.queueClientToDeleteFromPoll(*it);
 					}
 				}
 			}
-			++it;
 		}
 	}
 }
@@ -128,7 +124,7 @@ void Server::handleTimeouts()
 	{
 		std::map<int, Client>::const_iterator clientIt = clients.find(it->fd);
 		if (clientIt != clients.end() &&
-			!clientIt->second.registered(this->ConfigManager.getPassword()) &&
+			!clientIt->second.registered(this->configManager.getPassword()) &&
 			difftime(std::time(0), clientIt->second.getTimeConnected()) > TIME_FOR_CLIENT_TO_REGISTER)
 		{
 			Replier::addToQueue(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),

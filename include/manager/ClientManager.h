@@ -13,8 +13,9 @@ public:
     void addClient(int clientFd);
     void deleteClient(int clientFd);
 
+    Client& getClientByFd(int fd);
     Client* getClientByNickname(const std::string& nickname);
-    std::map<int, Client> getClients() const;
+    const std::map<int, Client>& getClients() const;
     std::string findClientHostname(sockaddr_in& addr, socklen_t addrLen, int clientFd) const;
 
 private:

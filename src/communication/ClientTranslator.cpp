@@ -32,7 +32,7 @@ std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 		{
 			return std::string();
 		}
-		throw std::runtime_error(ERROR + errno);
+		throw std::runtime_error(ERROR + std::string("recv"));
 	}
 	recvBuffer[bytesRead] = '\0';
 

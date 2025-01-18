@@ -21,7 +21,7 @@ public:
 	static std::string sanitizeChannelName(const std::string& name);
 	static void parseUserTarget(const std::string& extrTarget, std::string& nickname, std::string& username,
 		std::string& hostname, std::string& serverName);
-	static void assignUserInfo(const std::string extrTarget, std::vector<char>::iterator splitter,
+	static void assignUserInfo(std::string extrTarget, std::vector<char>::iterator splitter,
 		std::vector<char>::iterator splittersEnd, std::string& nickname, std::string& username, std::string& hostname,
 		std::string& serverName);
 private:

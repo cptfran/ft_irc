@@ -1,8 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "data/Client.h"
 #include "core/Log.h"
-#include <sys/socket.h>
 
 /**
  * @brief Logs a message to the server console.
