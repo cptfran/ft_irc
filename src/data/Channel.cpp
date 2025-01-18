@@ -60,17 +60,17 @@ bool Channel::ClientData::operator==(const ClientData& toCompare) const
 }
 
 
-std::string Channel::getName() const
+const std::string& Channel::getName() const
 {
 	return this->name;
 }
 
-std::string Channel::getKey() const
+const std::string& Channel::getKey() const
 {
 	return this->key;
 }
 
-std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
+const std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 {
 	std::vector<std::string> nicknamesList;
 
@@ -150,12 +150,12 @@ unsigned int Channel::getNumOfJoinedUsers() const
 	return this->joinedClients.size();
 }
 
-std::string Channel::getTopic() const
+const std::string& Channel::getTopic() const
 {
 	return this->topic;
 }
 
-std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const
+const std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const
 {
 	std::vector<std::string> list;
 
@@ -183,7 +183,7 @@ std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serv
 	return list;
 }
 
-std::vector<Client> Channel::getClientList() const
+const std::vector<Client> Channel::getClientList() const
 {
 	std::vector<Client> clientList;
 

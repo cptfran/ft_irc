@@ -21,9 +21,9 @@ public:
 	bool operator==(const Channel& toCompare) const;
 	~Channel();
 
-	std::string getName() const;
-	std::string getKey() const;
-	std::vector<std::string> getNicknamesListWithOperatorInfo() const;
+	const std::string& getName() const;
+	const std::string& getKey() const;
+	const std::vector<std::string> getNicknamesListWithOperatorInfo() const;
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;
@@ -32,9 +32,9 @@ public:
 	bool isUserLimitActive() const;
 	unsigned int getUserLimit() const;
 	unsigned int getNumOfJoinedUsers() const;
-	std::string getTopic() const;
-	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
-	std::vector<Client> getClientList() const;
+	const std::string& getTopic() const;
+	const std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
+	const std::vector<Client> getClientList() const;
 
 	void joinUser(Client& newClient);
 	bool deleteUser(const std::string& userToKick);

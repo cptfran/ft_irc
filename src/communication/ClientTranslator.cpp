@@ -10,6 +10,7 @@
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
+#include "manager/ConfigManager.h"
 
 ClientTranslator::ClientTranslator()
 {
@@ -21,9 +22,18 @@ ClientTranslator::~ClientTranslator()
 
 }
 
+/**
+ * @brief Parses the client buffer received from the given file descriptor.
+ *
+ * This method reads data from the specified file descriptor into a buffer and returns it as a string.
+ * If no data is read, it checks for specific error conditions and throws an exception if necessary.
+ *
+ * @param fd The file descriptor from which to receive the buffer.
+ * @return The received buffer as a string.
+ */
 std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 {
-	char recvBuffer[INPUT_BUFFER_SIZE] = {};
+	char recvBuffer[ConfigManager::INPUT_BUFFER_SIZE] = {};
 	const ssize_t bytesRead = recv(fd, recvBuffer, sizeof(recvBuffer) - 1, 0);
 	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(fd) + "]: \"") + recvBuffer + "\"");
 	if (bytesRead <= 0)
@@ -39,6 +49,15 @@ std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 	return recvBuffer;
 }
 
+/**
+ * @brief Fetches the command and arguments from the given buffer.
+ *
+ * This method splits the buffer into tokens, extracts the command (first token), and processes the remaining tokens
+ * as arguments.
+ *
+ * @param buffer The buffer containing the command and arguments.
+ * @return A pair containing the command and a vector of arguments.
+ */
 std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndArgs(const std::string& buffer)
 {
 	// Split buffer into tokens.
@@ -49,6 +68,7 @@ std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndA
 	// Extract the command (first token).
 	std::string cmd;
 	iss >> cmd;
+	cmd = Utils::stringToUpper(cmd);
 
 	// Process remaining tokens (arguments).
 	while (iss >> token)
@@ -66,10 +86,18 @@ std::pair<std::string, std::vector<std::string> > ClientTranslator::fetchCmdAndA
 		}
 		args.push_back(token);
 	}
-	
+
 	return std::make_pair(cmd, args);
 }
 
+/**
+ * @brief Validates the given nickname according to specific rules.
+ *
+ * This method checks if the nickname meets the length, first character, and character set requirements.
+ *
+ * @param nickname The nickname to validate.
+ * @return True if the nickname is valid, false otherwise.
+ */
 bool ClientTranslator::nicknameValid(const std::string& nickname)
 {
 	const std::string specialChars = "[]{}\\|^\'_";
@@ -89,47 +117,72 @@ bool ClientTranslator::nicknameValid(const std::string& nickname)
 	return lengthValid && firstCharValid && restOfCharsValid;
 }
 
+/**
+ * @brief Splits the given string into tokens using the specified splitter character.
+ *
+ * This method splits the input string into tokens based on the provided delimiter and returns them as a vector.
+ *
+ * @param str The string to split.
+ * @param splitter The character to use as the delimiter.
+ * @return A vector of tokens.
+ */
 std::vector<std::string> ClientTranslator::splitToTokens(const std::string& str, const char splitter)
 {
-    // Split targets by commas.
-    std::istringstream iss(str);
-    std::string token;
-    std::vector<std::string> tokens;
+	// Split targets by commas.
+	std::istringstream iss(str);
+	std::string token;
+	std::vector<std::string> tokens;
 
-    while (std::getline(iss, token, splitter))
-    {
-        tokens.push_back(token);
-    }
+	while (std::getline(iss, token, splitter))
+	{
+		tokens.push_back(token);
+	}
 
-    return tokens;
+	return tokens;
 }
 
+/**
+ * @brief Matches the given string against the specified wildcard pattern.
+ *
+ * This method checks if the input string matches the wildcard pattern, where '*' matches zero or more characters and '?' matches any single character.
+ *
+ * @param pattern The wildcard pattern to match against.
+ * @param str The string to match.
+ * @return True if the string matches the pattern, false otherwise.
+ */
 bool ClientTranslator::matchWildcard(const char* pattern, const char* str)
 {
-	// Base case: if we reach the end of both the pattern and the string, it's a match
+	// Base case: if we reach the end of both the pattern and the string, it's a match.
 	if (*pattern == '\0' && *str == '\0')
 	{
 		return true;
 	}
 
-	// If the current character in the pattern is '*', it can match zero or more characters in the string
+	// If the current character in the pattern is '*', it can match zero or more characters in the string.
 	if (*pattern == '*')
 	{
 		// Try to match the rest of the pattern with the current string or the rest of the string
 		return matchWildcard(pattern + 1, str) || (*str != '\0' && matchWildcard(pattern, str + 1));
 	}
 
-	// If the current character in the pattern is '?', it can match any single character in the string
+	// If the current character in the pattern is '?', it can match any single character in the string.
 	if (*pattern == '?' || *pattern == *str)
 	{
 		return matchWildcard(pattern + 1, str + 1);
 	}
 
-	// If the current characters in the pattern and the string do not match, it's not a match
+	// If the current characters in the pattern and the string do not match, it's not a match.
 	return false;
 }
 
-
+/**
+ * @brief Sanitizes the given message by removing the leading colon and trailing CRLF characters.
+ *
+ * This method removes the leading colon from the message and trims any trailing carriage return and line feed characters.
+ *
+ * @param message The message to sanitize.
+ * @return The sanitized message.
+ */
 std::string ClientTranslator::sanitizeColonMessage(const std::string& message)
 {
 	std::string sanitized;
@@ -151,6 +204,14 @@ std::string ClientTranslator::sanitizeColonMessage(const std::string& message)
 	return sanitized;
 }
 
+/**
+ * @brief Sanitizes the given channel name by ensuring it starts with '#' and removing invalid characters.
+ *
+ * This method ensures the channel name starts with a '#' character and removes any invalid characters or truncates it to the maximum length.
+ *
+ * @param name The channel name to sanitize.
+ * @return The sanitized channel name.
+ */
 std::string ClientTranslator::sanitizeChannelName(const std::string& name)
 {
 	std::string sanitized = name;
@@ -184,6 +245,17 @@ std::string ClientTranslator::sanitizeChannelName(const std::string& name)
 	return sanitized;
 }
 
+/**
+ * @brief Parses the user target string into nickname, username, hostname, and serverName.
+ *
+ * This method splits the target string into its components using specific delimiters and assigns the values to the provided references.
+ *
+ * @param extrTarget The target string to parse.
+ * @param nickname The extracted nickname.
+ * @param username The extracted username.
+ * @param hostname The extracted hostname.
+ * @param serverName The extracted server name.
+ */
 void ClientTranslator::parseUserTarget(const std::string& extrTarget, std::string& nickname, std::string& username,
 	std::string& hostname, std::string& serverName)
 {
@@ -196,6 +268,20 @@ void ClientTranslator::parseUserTarget(const std::string& extrTarget, std::strin
 	}
 }
 
+/**
+ * @brief Assigns user information by splitting the target string using the specified splitters.
+ *
+ * This method recursively splits the target string using the provided delimiters and assigns the values to the 
+ * provided references.
+ *
+ * @param extrTarget The target string to split.
+ * @param splitter The current splitter character.
+ * @param splittersEnd The end iterator for the splitters.
+ * @param nickname The extracted nickname.
+ * @param username The extracted username.
+ * @param hostname The extracted hostname.
+ * @param serverName The extracted server name.
+ */
 void ClientTranslator::assignUserInfo(const std::string extrTarget, std::vector<char>::iterator splitter,
 	std::vector<char>::iterator splittersEnd, std::string& nickname, std::string& username, std::string& hostname,
 	std::string& serverName)

@@ -23,10 +23,7 @@ bool Client::operator==(const Client& toCompare) const
 
 Client::~Client()
 {
-	if (this->fd != -1)
-	{
-		close(this->fd);
-	}
+
 }
 
 void Client::setPassword(const std::string& password)
@@ -80,27 +77,27 @@ int Client::getFd() const
 	return this->fd;
 }
 
-std::string Client::getPassword() const
+const std::string& Client::getPassword() const
 {
 	return this->password;
 }
 
-std::string Client::getNickname() const
+const std::string& Client::getNickname() const
 {
 	return this->nickname;
 }
 
-std::string Client::getUsername() const
+const std::string& Client::getUsername() const
 {
 	return this->username;
 }
 
-std::string Client::getHostname() const
+const std::string& Client::getHostname() const
 {
 	return this->hostname;
 }
 
-std::string Client::getRealname() const
+const std::string& Client::getRealname() const
 {
 	return this->realname;
 }
@@ -134,7 +131,17 @@ bool Client::getWelcomeRepliesSent() const
 	return this->welcomeRepliesSent;
 }
 
-std::string Client::departCompleteMsgFromBuffer()
+/**
+ * @brief Extracts a complete message from the received buffer.
+ * 
+ * This method searches for the first occurrence of the delimiter "\r\n" in the
+ * receive buffer. If found, it extracts the complete message up to and including
+ * the delimiter, removes it from the buffer, and returns the message. If the
+ * delimiter is not found, it returns an empty string.
+ * 
+ * @return A complete message from the receive buffer, or an empty string if no complete message is found.
+ */
+const std::string Client::departCompleteMsgFromBuffer()
 {
 	// Find the position of "\r\n" in recvBuffer
 	size_t endOfMsgPos = this->recvBuffer.find("\r\n");

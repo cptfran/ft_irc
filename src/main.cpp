@@ -4,8 +4,6 @@
 #include "utils/Utils.h"
 
 // TODO: maybe use namespaces instead of defines? Need to check it.
-// TODO: server lags sometimes. FE if connecting multiple times with nickname collision, need to check that on mac.
-// More specificaly I think it hangs after leaving channel (checked with /part).
 // TODO: send message to clients when disconnecting with ctrl + C?
 int main(const int argc, char *argv[])
 {

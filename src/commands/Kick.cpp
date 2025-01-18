@@ -15,6 +15,13 @@ Kick::~Kick()
 
 }
 
+/**
+ * @brief Executes the KICK command to remove a user from a channel.
+ * 
+ * @param serverManager Reference to the server manager.
+ * @param requester Reference to the client requesting the kick.
+ * @param args Vector of arguments where args[0] is the channel name and args[1] is the user to kick.
+ */
 void Kick::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
     ConfigManager& configManager = serverManager.getConfigManager();
@@ -58,6 +65,14 @@ void Kick::execute(Manager& serverManager, Client& requester, const std::vector<
     kickUser(args, *channel, requester, configManager.getName());
 }
 
+/**
+ * @brief Kicks a user from the specified channel and notifies all clients in the channel.
+ * 
+ * @param args Vector of arguments where args[1] is the user to kick and optionally args[2] is a comment.
+ * @param channel Reference to the channel from which the user will be kicked.
+ * @param requester Reference to the client requesting the kick.
+ * @param serverName Name of the server.
+ */
 void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester,
     const std::string& serverName) const
 {

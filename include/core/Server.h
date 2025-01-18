@@ -1,17 +1,11 @@
 #pragma once
 
-// Client message buffer size:
-#define INPUT_BUFFER_SIZE 512
-#define HOSTNAME_BUFFER_SIZE 1024
-
-// TODO: change it to 60
-#define TIME_FOR_CLIENT_TO_REGISTER 60000
-
 #include "manager/ChannelManager.h"
 #include "manager/ClientManager.h"
 #include "manager/CommandManager.h"
 #include "manager/ConfigManager.h"
 #include "manager/ConnectionManager.h"
+#include <poll.h>
 
 // TODO: add more logs of the server, so it logs whenever something imporant happens, like channel created etc.
 class Server
@@ -30,12 +24,19 @@ private:
 	CommandManager commandManager;
 	ConfigManager configManager;
 	ConnectionManager connectionManager;
+	std::vector<pollfd> pollFds;
+	std::vector<pollfd> pollFdsToAdd;
+	std::vector<pollfd> pollFdsToDelete;
 
 	void stop();
 
 	static void signalHandler(int signum);
 
-	void handleTimeouts();
+	void eventHandler();
+	void timeoutHandler();
+	void clientJoinHandler();
+	void clientRequestHandler(const int fd);
+	void clientRemovalHandler(int fd);
 
 	friend class Command;
 };

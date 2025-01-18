@@ -5,6 +5,14 @@
 class ConfigManager
 {
 public:
+	// Constants:
+	static const int INPUT_BUFFER_SIZE = 512;
+	static const int TIME_FOR_CLIENT_TO_REGISTER = 60;
+	static const int REGISTERED_PORT_MIN = 1024;
+	static const int REGISTERED_PORT_MAX = 49151;
+	static const int MAX_PRIVMSG_TARGETS = 5;
+	static const int MAX_CHANNELS_CLIENT_CAN_JOIN = 10;
+
 	ConfigManager(const std::string& name, const std::string& version, const std::string& password);
 	~ConfigManager();
 
@@ -12,12 +20,12 @@ public:
 	void setVersion(const std::string& version);
 
 	int getFd() const;
-	std::string getName() const;
-	std::string getVersion() const;
-	std::string getPassword() const;
-	std::string getCreationDate() const;
-	std::string getAvailableUserModes() const;
-	std::string getAvailableChannelModes() const;
+	const std::string& getName() const;
+	const std::string& getVersion() const;
+	const std::string& getPassword() const;
+	const std::string& getCreationDate() const;
+	const std::string& getAvailableUserModes() const;
+	const std::string& getAvailableChannelModes() const;
 
 private:
 	int fd;

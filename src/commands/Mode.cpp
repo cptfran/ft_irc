@@ -14,6 +14,13 @@ Mode::~Mode()
 
 }
 
+/**
+    * @brief Executes the MODE command.
+    * 
+    * @param serverManager Reference to the server manager.
+    * @param requester Reference to the client requesting the command.
+    * @param args List of arguments passed with the command.
+    */
 void Mode::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
     ConfigManager& configManager = serverManager.getConfigManager();
@@ -82,6 +89,14 @@ void Mode::execute(Manager& serverManager, Client& requester, const std::vector<
     editChannelModes(args, requester, configManager, *channel);
 }
 
+/**
+    * @brief Handles user mode changes.
+    * 
+    * @param requester Reference to the client requesting the command.
+    * @param nickname Nickname of the user whose modes are being changed.
+    * @param configManager Reference to the configuration manager.
+    * @param args List of arguments passed with the command.
+    */
 void Mode::handleUserModes(Client& requester, const std::string& nickname, ConfigManager& configManager,
     const std::vector<std::string>& args) const
 {
@@ -125,6 +140,13 @@ void Mode::handleUserModes(Client& requester, const std::string& nickname, Confi
     }
 }
 
+/**
+    * @brief Sends the current channel modes to the requester.
+    * 
+    * @param serverName Name of the server.
+    * @param channel Reference to the channel.
+    * @param requester Reference to the client requesting the command.
+    */
 void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel& channel, const Client& requester)
     const
 {
@@ -157,6 +179,14 @@ void Mode::sendCurrentChannelModes(const std::string& serverName, const Channel&
     Replier::addToQueue(requester.getFd(), Replier::rplChannelModeIs, replyParams);
 }
 
+/**
+    * @brief Edits the channel modes based on the request.
+    * 
+    * @param args List of arguments passed with the command.
+    * @param requester Reference to the client requesting the command.
+    * @param configManager Reference to the configuration manager.
+    * @param channel Reference to the channel.
+    */
 void Mode::editChannelModes(const std::vector<std::string>& args, const Client& requester,
     ConfigManager& configManager, Channel& channel) const
 {
@@ -207,6 +237,17 @@ void Mode::editChannelModes(const std::vector<std::string>& args, const Client& 
     }
 }
 
+/**
+    * @brief Handles the key mode change for a channel.
+    * 
+    * @param channel Reference to the channel.
+    * @param action Action to be performed (+ or -).
+    * @param args List of arguments passed with the command.
+    * @param argsI Index of the current argument.
+    * @param requester Reference to the client requesting the command.
+    * @param serverName Name of the server.
+    * @param mode Mode character.
+    */
 void Mode::handleKeyMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
     size_t& argsI, const Client& requester, const std::string& serverName, const char mode) const
 {
@@ -236,6 +277,17 @@ void Mode::handleKeyMode(Channel& channel, const std::string& action, const std:
     channel.setKey(newKey);
 }
 
+/**
+    * @brief Handles the operator mode change for a channel.
+    * 
+    * @param channel Reference to the channel.
+    * @param action Action to be performed (+ or -).
+    * @param args List of arguments passed with the command.
+    * @param argsI Index of the current argument.
+    * @param requester Reference to the client requesting the command.
+    * @param serverName Name of the server.
+    * @param mode Mode character.
+    */
 void Mode::handleOperatorMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
     size_t& argsI, const Client& requester, const std::string& serverName, const char mode) const
 {
@@ -258,6 +310,17 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
     channel.setOperator(targetNickname, operatorPrivilege);
 }
 
+/**
+    * @brief Handles the user limit mode change for a channel.
+    * 
+    * @param channel Reference to the channel.
+    * @param action Action to be performed (+ or -).
+    * @param args List of arguments passed with the command.
+    * @param argsI Index of the current argument.
+    * @param requester Reference to the client requesting the command.
+    * @param serverName Name of the server.
+    * @param mode Mode character.
+    */
 void Mode::handleUserLimitMode(Channel& channel, const std::string& action, const std::vector<std::string>& args,
     size_t& argsI, const Client& requester, const std::string& serverName, const char mode) const
 {

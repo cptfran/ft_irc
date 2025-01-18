@@ -18,9 +18,7 @@ private:
 	Replier();
 
 	static void addToQueue(int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs);
-
 	static bool clientInQueue(int fd);
-
 	static void sendFromQueue(int fd);
 
 	// Reply functions.

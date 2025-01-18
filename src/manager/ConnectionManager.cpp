@@ -1,4 +1,5 @@
 #include "manager/ConnectionManager.h"
+#include "manager/ConfigManager.h"
 #include "data/Channel.h"
 #include <algorithm>
 #include <core/Log.h>
@@ -16,14 +17,19 @@ ConnectionManager::~ConnectionManager()
 
 }
 
-std::vector<pollfd> ConnectionManager::getPollFds() const
-{
-	return this->pollFds;
-}
-
+/**
+ * @brief Initializes a server socket.
+ * 
+ * This method creates a server socket, sets it to be reusable and non-blocking,
+ * binds it to the specified port, and starts listening for incoming connections.
+ *
+ * @param port The port number to bind the server socket to.
+ * @return The file descriptor of the created server socket.
+ * @throws std::runtime_error if the port is out of range, or if socket operations fail.
+ */
 int ConnectionManager::initSocket(const int port)
 {
-	if (port < REGISTERED_PORT_MIN || port > REGISTERED_PORT_MAX)
+	if (port < ConfigManager::REGISTERED_PORT_MIN || port > ConfigManager::REGISTERED_PORT_MAX)
 	{
 		throw std::runtime_error(ERROR WRONG_PORT_RANGE);
 	}
@@ -68,13 +74,18 @@ int ConnectionManager::initSocket(const int port)
 	return serverSocket;
 }
 
-void ConnectionManager::addServerToPoll(const int fd)
-{
-	const pollfd listenFd = { fd, POLLIN, 0 };
-	this->pollFds.push_back(listenFd);
-}
-
-void ConnectionManager::acceptNewClientConnection(const int fd)
+/**
+ * @brief Accepts a new client connection.
+ * 
+ * This method waits for a new client to connect to the server socket specified by serverFd.
+ * Once a client connects, it creates a new file descriptor for the client connection and
+ * returns a pollfd structure for monitoring the client's socket.
+ * 
+ * @param serverFd The file descriptor of the server socket.
+ * @return A pollfd structure for the new client connection.
+ * @throws std::runtime_error if accepting the client connection fails.
+ */
+pollfd ConnectionManager::acceptNewClientConnection(const int serverFd)
 {
 	Log::msgServer(INFO, NEW_CLIENT_START);
 
@@ -82,70 +93,59 @@ void ConnectionManager::acceptNewClientConnection(const int fd)
 	socklen_t addrLen = sizeof(addr);
 
 	// Create fd for the new client and accept it.
-	const int clientFd = accept(fd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
+	const int clientFd = accept(serverFd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
 	if (clientFd < 0)
 	{
 		throw std::runtime_error(ERROR ACCEPT_FAIL);
 	}
 
-	// Create pollfd for the new client and add it to the pollfd list.
-	const pollfd pollFd = { clientFd, POLLIN | POLLOUT, 0 };
-	this->pollFdsToAdd.push_back(pollFd);
-
 	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_SUCCESS);
+
+	// Create pollfd for the new client and add it to the pollfd list.
+	pollfd pollFd = { clientFd, POLLIN | POLLOUT, 0 };
+	return pollFd;
 }
 
-void ConnectionManager::addNewClientsToPoll()
+void ConnectionManager::queueNewClientToAddToPoll(const pollfd pollFd)
+{
+	this->pollFdsToAdd.push_back(pollFd);
+}
+
+void ConnectionManager::addNewClientsToPoll(std::vector<pollfd>& pollFds)
 {
 	for (std::vector<pollfd>::iterator it = this->pollFdsToAdd.begin(); it != this->pollFdsToAdd.end(); ++it)
 	{
-		this->pollFds.push_back(*it);
+		pollFds.push_back(*it);
 	}
 
 	this->pollFdsToAdd.clear();
 }
 
-void ConnectionManager::queueClientToDeleteFromPoll(const pollfd pollFd)
+void ConnectionManager::queueClientToDeleteFromPoll(const int fd)
 {
-	this->pollFdsToDelete.push_back(pollFd);
+	this->fdsToDelete.push_back(fd);
 }
 
-void ConnectionManager::deleteQueuedClientsFromPoll()
+void ConnectionManager::deleteQueuedClientsFromPoll(std::vector<pollfd>& pollFds)
 {
-	// Iterate over pollFds and remove entries present in pollFdsToDelete.
-	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
+	// Iterate over fdsToDelete and remove matching pollfd entries from pollFds.
+	for (std::vector<int>::iterator delIt = this->fdsToDelete.begin(); delIt != this->fdsToDelete.end(); ++delIt)
 	{
-		bool shouldRemove = false;
-
-		// Check if the current pollfd matches any in pollFdsToDelete.
-		for (std::vector<pollfd>::iterator delIt = this->pollFdsToDelete.begin(); delIt != this->pollFdsToDelete.end();
-			++delIt)
+		for (std::vector<pollfd>::iterator it = pollFds.begin(); it != pollFds.end();)
 		{
-			if (it->fd == delIt->fd && it->events == delIt->events && it->revents == delIt->revents)
+			if (it->fd == *delIt)
 			{
-				shouldRemove = true;
-				break;
+				Log::msgServer(INFO, "CLIENT", it->fd, CLIENT_DISCONNECTED);
+				it = pollFds.erase(it);
+				close(it->fd);
 			}
-		}
-
-		if (shouldRemove)
-		{
-			it = this->pollFds.erase(it);
-			Log::msgServer(INFO, "CLIENT", it->fd, CLIENT_DISCONNECTED);
-		}
-		else
-		{
-			++it;
+			else
+			{
+				++it;
+			}
 		}
 	}
 
-	// Clear the list of pollFdsToDelete after processing.
-	this->pollFdsToDelete.clear();
+	// Clear the list of fdsToDelete after processing.
+	this->fdsToDelete.clear();
 }
-
-//void ConnectionManager::disconnectClient(const int clientFd)
-//{
-	//this->clients.erase(clientFd);
-	//close(clientFd);
-	//Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
-//}

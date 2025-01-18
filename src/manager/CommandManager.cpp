@@ -43,6 +43,15 @@ CommandManager::~CommandManager()
 	}
 }
 
+/**
+ * @brief Executes commands for a given client.
+ * 
+ * This method continuously fetches complete messages from the client's buffer
+ * and executes the corresponding commands until no more messages are available.
+ * 
+ * @param manager Reference to the Manager instance.
+ * @param client Reference to the Client instance.
+ */
 void CommandManager::executeCommands(Manager& manager, Client& client)
 {
 	while (true)
@@ -56,6 +65,18 @@ void CommandManager::executeCommands(Manager& manager, Client& client)
 	}
 }
 
+/**
+ * @brief Executes a single command for a given client.
+ * 
+ * This method parses the command and its arguments from the provided buffer,
+ * checks if the command is valid, and then executes it. If the client is 
+ * successfully registered and has not received welcome messages, it sends 
+ * the welcome messages.
+ * 
+ * @param manager Reference to the Manager instance.
+ * @param client Reference to the Client instance.
+ * @param buffer The buffer containing the command and its arguments.
+ */
 void CommandManager::executeCommand(Manager& manager, Client& client, const std::string& buffer)
 {
 	const ConfigManager& cfg = manager.getConfigManager();
@@ -70,7 +91,7 @@ void CommandManager::executeCommand(Manager& manager, Client& client, const std:
 
 	this->validCommands.at(cmdWithArgs.first)->execute(manager, client, cmdWithArgs.second);
 
-	if (client.registered(cfg.getName()) && !client.getWelcomeRepliesSent())
+	if (client.registered(cfg.getPassword()) && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 

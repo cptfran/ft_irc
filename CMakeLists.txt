@@ -58,6 +58,6 @@ add_executable(ircserv
         src/manager/ConnectionManager.cpp
         src/manager/Manager.cpp
         src/utils/Utils.cpp
- )
+  )
 
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")

@@ -48,7 +48,6 @@ void ClientManager::deleteClient(const int clientFd)
 Client& ClientManager::getClientByFd(const int fd)
 {
 	return this->clients.at(fd);
-	// throw std::invalid_argument(ERROR "Didn't find client compatible with pollfd.\n");
 }
 
 Client* ClientManager::getClientByNickname(const std::string& nicknameToFind)

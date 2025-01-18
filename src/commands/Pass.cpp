@@ -14,24 +14,34 @@ Pass::~Pass()
 
 }
 
+/**
+ * @brief Executes the PASS command to authenticate a client with a password.
+ * 
+ * @param serverManager Reference to the server's Manager object.
+ * @param requester Reference to the Client object making the request.
+ * @param args Vector of arguments passed with the command.
+ */
 void Pass::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-	ConfigManager& configManager = serverManager.getConfigManager();
+    ConfigManager& configManager = serverManager.getConfigManager();
 
-	if (args.empty())
-	{
-		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
-			requester.getNickname()));
-		return;
-	}
+    // Check if no password was provided.
+    if (args.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
+            requester.getNickname()));
+        return;
+    }
 
-	const std::string& enteredPassword = args[0];
-	if (enteredPassword != configManager.getPassword())
-	{
-		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
-			requester.getNickname()));
-		return;
-	}
+    const std::string& enteredPassword = args[0];
+    // Check if the provided password does not match the server's password.
+    if (enteredPassword != configManager.getPassword())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
+            requester.getNickname()));
+        return;
+    }
 
-	requester.setPassword(args[0]);
+    // Set the client's password.
+    requester.setPassword(args[0]);
 }

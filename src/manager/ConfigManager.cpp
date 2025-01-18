@@ -38,32 +38,32 @@ int ConfigManager::getFd() const
 	return this->fd;
 }
 
-std::string ConfigManager::getName() const
+const std::string& ConfigManager::getName() const
 {
 	return this->name;
 }
 
-std::string ConfigManager::getVersion() const
+const std::string& ConfigManager::getVersion() const
 {
 	return this->version;
 }
 
-std::string ConfigManager::getPassword() const
+const std::string& ConfigManager::getPassword() const
 {
 	return this->password;
 }
 
-std::string ConfigManager::getCreationDate() const
+const std::string& ConfigManager::getCreationDate() const
 {
 	return this->creationDate;
 }
 
-std::string ConfigManager::getAvailableUserModes() const
+const std::string& ConfigManager::getAvailableUserModes() const
 {
 	return this->availableUserModes;
 }
 
-std::string ConfigManager::getAvailableChannelModes() const
+const std::string& ConfigManager::getAvailableChannelModes() const
 {
 	return this->availableChannelModes;
 }

@@ -6,7 +6,7 @@
 #include "data/Channel.h"
 #include "communication/ClientTranslator.h"
 
-Topic::Topic() : Command()
+Topic::Topic() 
 {
 
 }
@@ -16,6 +16,13 @@ Topic::~Topic()
 
 }
 
+/**
+ * @brief Executes the TOPIC command.
+ * 
+ * @param serverManager Reference to the server manager.
+ * @param requester Reference to the client requesting the command.
+ * @param args Vector of arguments passed with the command.
+ */
 void Topic::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
     ConfigManager& configManager = serverManager.getConfigManager();
@@ -43,7 +50,6 @@ void Topic::execute(Manager& serverManager, Client& requester, const std::vector
     // Channel not found.
     if (channel == NULL)
     {
-
         Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), channelName));
         return;
@@ -75,6 +81,14 @@ void Topic::execute(Manager& serverManager, Client& requester, const std::vector
     setTopic(args, requester, *channel, configManager.getName());
 }
 
+/**
+ * @brief Sets the topic for a channel.
+ * 
+ * @param args Vector of arguments passed with the command.
+ * @param requester Reference to the client requesting the command.
+ * @param channel Reference to the channel for which the topic is being set.
+ * @param serverName Name of the server.
+ */
 void Topic::setTopic(const std::vector<std::string>& args, const Client& requester, Channel& channel,
     const std::string& serverName) const
 {
@@ -89,7 +103,6 @@ void Topic::setTopic(const std::vector<std::string>& args, const Client& request
     channel.setTopic(ClientTranslator::sanitizeColonMessage(topic));
 
     // Broadcast new topic to all channel members.
-
     const std::vector<Client> clientsList = channel.getClientList();
     for (std::vector<Client>::const_iterator it = clientsList.begin(); it != clientsList.end(); ++it)
     {

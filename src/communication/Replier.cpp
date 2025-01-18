@@ -15,42 +15,71 @@ Replier::~Replier()
 
 }
 
+/**
+* @brief Adds a reply to the queue for the given file descriptor.
+*
+* This function takes a file descriptor, a reply function, and its arguments,
+* then adds the result of the reply function to the queue associated with the file descriptor.
+*
+* @param fd The file descriptor of the client.
+* @param func The reply function to generate the reply.
+* @param funcArgs The arguments to pass to the reply function.
+*/
 void Replier::addToQueue(const int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs)
 {
-	rplQueue[fd].push_back(func(funcArgs));
+    
+    rplQueue[fd].push_back(func(funcArgs));
 }
 
+/**
+* @brief Checks if a client is in the queue.
+*
+* This function checks if there is an entry in the queue for the given file descriptor.
+*
+* @param fd The file descriptor of the client.
+* @return true if the client is in the queue, false otherwise.
+*/
 bool Replier::clientInQueue(const int fd)
 {
-	if (Replier::rplQueue.find(fd) == Replier::rplQueue.end())
-	{
-		return false;
-	}
+    if (Replier::rplQueue.find(fd) == Replier::rplQueue.end())
+    {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
+/**
+* @brief Sends the first reply from the queue for the given file descriptor.
+*
+* This function finds the queue associated with the given file descriptor,
+* sends the first reply in the queue, and then removes it from the queue.
+* If the queue becomes empty, the entry is removed from the map.
+*
+* @param fd The file descriptor of the client.
+*/
 void Replier::sendFromQueue(const int fd)
 {
-	// Find the vector associated with the given fd.
-	std::map<int, std::vector<std::string> >::iterator it = Replier::rplQueue.find(fd);
-	if (it == Replier::rplQueue.end())
-	{
-		return;
-	}
+    
+    // Find the vector associated with the given file descriptor.
+    std::map<int, std::vector<std::string> >::iterator it = Replier::rplQueue.find(fd);
+    if (it == Replier::rplQueue.end())
+    {
+        return;
+    }
 
-	// Get the first reply from the vector
-	const std::string& reply = it->second.front();
-	send(fd, reply.c_str(), reply.size(), 0);
+    // Get the first reply from the vector.
+    const std::string& reply = it->second.front();
+    send(fd, reply.c_str(), reply.size(), 0);
 
-	// Erase the first element from the vector
-	it->second.erase(it->second.begin());
+    // Erase the first element from the vector.
+    it->second.erase(it->second.begin());
 
-	// If the vector becomes empty, erase the element from the map
-	if (it->second.empty())
-	{
-		Replier::rplQueue.erase(it);
-	}
+    // If the vector becomes empty, erase the element from the map.
+    if (it->second.empty())
+    {
+        Replier::rplQueue.erase(it);
+    }
 }
 
 std::string Replier::rplWelcome(const std::vector<std::string>& args)
