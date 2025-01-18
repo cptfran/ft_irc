@@ -1,7 +1,8 @@
 #include "commands/Command.h"
-#include "data/Channel.h"
 #include "communication/Replier.h"
+#include "data/Channel.h"
 #include "utils/Utils.h"
+#include "manager/Manager.h"
 
 Command::Command()
 {

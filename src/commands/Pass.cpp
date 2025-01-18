@@ -14,19 +14,21 @@ Pass::~Pass()
 
 }
 
-void Pass::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Pass::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+	ConfigManager& configManager = serverManager.getConfigManager();
+
 	if (args.empty())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
 			requester.getNickname()));
 		return;
 	}
 
 	const std::string& enteredPassword = args[0];
-	if (enteredPassword != server.getPassword())
+	if (enteredPassword != configManager.getPassword())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
 			requester.getNickname()));
 		return;
 	}

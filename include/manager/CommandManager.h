@@ -1,8 +1,10 @@
 #pragma once
 
 #include <data/Client.h>
-#include <commands/Command.h>
 #include <map>
+
+class Command;
+class Manager;
 
 class CommandManager 
 {
@@ -10,8 +12,8 @@ public:
     CommandManager();
     ~CommandManager();
 
-    void executeCommands(Client& client, const std::string& serverPassword);
-    void executeCommand(Client& client, const std::string& buffer, const std::string& serverPassword);
+    void executeCommands(Manager& manager, Client& client);
+    void executeCommand(Manager& manager, Client& client, const std::string& buffer);
 
 private:
     std::map<std::string, Command*> validCommands;

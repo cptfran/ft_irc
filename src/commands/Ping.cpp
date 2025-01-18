@@ -13,15 +13,17 @@ Ping::~Ping()
 
 }
 
-void Ping::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Ping::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+	ConfigManager& configManager = serverManager.getConfigManager();
+
 	const std::string& serverToReply = args[0];
 
 	if (args.empty())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
+		Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(configManager.getName()));
 		return;
 	}
 
-	Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), serverToReply));
+	Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(configManager.getName(), serverToReply));
 }

@@ -6,15 +6,15 @@ if(NOT DEFINED CMAKE_INSTALL_PREFIX)
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
-# Set the install configuration name.
-if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
+# Set the install ConfigManageruration name.
+if(NOT DEFINED CMAKE_INSTALL_ConfigManager_NAME)
   if(BUILD_TYPE)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
-           CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
+           CMAKE_INSTALL_ConfigManager_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
+    set(CMAKE_INSTALL_ConfigManager_NAME "Debug")
   endif()
-  message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
+  message(STATUS "Install ConfigManageruration: \"${CMAKE_INSTALL_ConfigManager_NAME}\"")
 endif()
 
 # Set the component getting installed.

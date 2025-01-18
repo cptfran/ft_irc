@@ -24,7 +24,6 @@ private:
 	static void sendFromQueue(int fd);
 
 	// Reply functions.
-	static void reply(int clientFd, ReplyFunction func, const std::vector<std::string>& args);
 	static std::string rplWelcome(const std::vector<std::string>& args); // 001
 	static std::string rplYourHost(const std::vector<std::string>& args); // 002
 	static std::string rplCreated(const std::vector<std::string>& args); // 003
@@ -74,12 +73,13 @@ private:
 	static std::string errUsersDontMatch(const std::vector<std::string>& args); // 502
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
-	friend class CommandManager;
 	friend class Command;
+	friend class CommandManager;
 	friend class Cap;
 	friend class Invite;
 	friend class Join;
 	friend class Kick;
+	friend class Manager;
 	friend class Mode;
 	friend class Nick;
 	friend class Part;

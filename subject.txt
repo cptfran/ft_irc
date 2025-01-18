@@ -1,7 +1,7 @@
 Program name ircserv
 
 Turn in files Makefile, *.{h, hpp}, *.cpp, *.tpp, *.ipp,
-an optional configuration file
+an optional ConfigManageruration file
 
 Makefile NAME, all, clean, fclean, re
 

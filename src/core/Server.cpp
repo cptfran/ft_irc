@@ -20,13 +20,14 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include "communication/Replier.h"
+#include "manager/Manager.h"
 
 Server* Server::instance = NULL;
 
 Server::Server(const std::string& name, const std::string& version, const std::string& password, const int port)
-	: config(name, version, password), channelManager(), clientManager(), commandManager(), connectionManager()
+	: channelManager(), clientManager(), commandManager(), ConfigManager(name, version, password), connectionManager()
 {
-	this->config.setFd(this->connectionManager.initSocket(port));
+	this->ConfigManager.setFd(this->connectionManager.initSocket(port));
 	instance = this;
 	signal(SIGINT, signalHandler);
 }
@@ -41,7 +42,7 @@ void Server::run()
 	Log::msgServer(INFO, SERVER_RUN);
 
 	// Add the server to the poll.
-	this->this->connectionManager.addServerToPoll();
+	this->connectionManager.addServerToPoll();
 
 	// Main loop, handling new client connections and already running clients.
 	while (running)
@@ -57,7 +58,7 @@ void Server::run()
 			return;
 		}
 
-		this->connectionManager.handleTimeouts();
+		this->handleTimeouts();
 		this->connectionManager.addNewClientsToPoll();
 		this->connectionManager.deleteQueuedClientsFromPoll();
 
@@ -78,7 +79,7 @@ void Server::run()
 			}
 			else if ((it->revents & POLLIN) == POLLIN)
 			{
-				if (it->fd == this->config.getFd())
+				if (it->fd == this->ConfigManager.getFd())
 				{
 					this->connectionManager.acceptNewClientConnection(it->fd);
 					this->clientManager.addClient(it->fd);
@@ -88,7 +89,9 @@ void Server::run()
 					try
 					{
 						currClient.addToBuffer(ClientTranslator::parseClientBufferFromRecv(it->fd));
-						commandManager.executeCommands(currClient, this->config.getPassword());
+						Manager manager(this->channelManager, this->clientManager,
+							this->commandManager, this->ConfigManager, this->connectionManager);
+						commandManager.executeCommands(manager, currClient);
 					}
 					catch (std::exception&)
 					{
@@ -125,11 +128,12 @@ void Server::handleTimeouts()
 	{
 		std::map<int, Client>::const_iterator clientIt = clients.find(it->fd);
 		if (clientIt != clients.end() &&
-			!clientIt->second.registered(this->config.getPassword()) &&
+			!clientIt->second.registered(this->ConfigManager.getPassword()) &&
 			difftime(std::time(0), clientIt->second.getTimeConnected()) > TIME_FOR_CLIENT_TO_REGISTER)
 		{
 			Replier::addToQueue(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
 				clientIt->second.getHostname()));
+			// TODO: check if can send the message first and then delete.
 			this->connectionManager.queueClientToDeleteFromPoll(*it);
 			this->clientManager.deleteClient(it->fd);
 		}

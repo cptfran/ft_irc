@@ -10,19 +10,19 @@ public:
     Privmsg();
     ~Privmsg();
 
-    void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
+    void execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const;
 
 private:
-    std::vector<std::pair<Client, std::string> > findMatchingTargets(const Client& requester, Server& server, 
+    std::vector<std::pair<Client, std::string> > findMatchingTargets(const Client& requester, Manager& serverManager,
         const std::string& targets) const;
-    std::vector<std::pair<Client, std::string> > getTargetsFromServer(const Client& requester, Server& server, 
+    std::vector<std::pair<Client, std::string> > getTargetsFromServer(const Client& requester, Manager& serverManager,
         const std::string& extrTarget) const;
-    std::vector<std::pair<Client, std::string> > getChannelTargets(const Client& requester, Server& server, 
+    std::vector<std::pair<Client, std::string> > getChannelTargets(const Client& requester, Manager& serverManager,
         const std::string& extrTarget) const;
     std::vector<std::pair<Client, std::string> > getHostnameTargetsByWildcard(const Client& requester, 
-        const Server& server, const std::string& extrTarget) const;
+        Manager& serverManager, const std::string& extrTarget) const;
     std::vector<std::pair<Client, std::string> > getServerTargetsByWildcard(const Client& requester,
-        const Server& server, const std::string& extrTarget) const;
-    std::vector<std::pair<Client, std::string> > getUserTargets(const Client& requester, const Server& server, 
+        Manager& serverManager, const std::string& extrTarget) const;
+    std::vector<std::pair<Client, std::string> > getUserTargets(const Client& requester, Manager& serverManager,
         const std::string& extrTarget) const;
 };

@@ -15,24 +15,26 @@ Kick::~Kick()
 
 }
 
-void Kick::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Kick::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+    ConfigManager& configManager = serverManager.getConfigManager();
+
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), std::string("KICK")));
         return;
     }
 
     // Find the channel.
     const std::string& channelName = args[0];
-    Channel* channel = server.getChannel(channelName);
+    Channel* channel = serverManager.getChannelManager().getChannel(channelName);
 
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -40,7 +42,7 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Client not on the channel.
     if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), channelName));
         return;
     }
@@ -48,16 +50,16 @@ void Kick::execute(Server& server, Client& requester, const std::vector<std::str
     // Client is not an operator.
     if (!channel->isUserOperator(requester.getNickname()))
     {
-        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), channelName));
         return;
     }
 
-    kickUser(args, *channel, requester, server);
+    kickUser(args, *channel, requester, configManager.getName());
 }
 
 void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester,
-    Server& server) const
+    const std::string& serverName) const
 {
     const std::string& userToKick = args[1];
 
@@ -65,10 +67,10 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
-    if (!channel.deleteUser(server, userToKick))
+    if (!channel.deleteUser(userToKick))
     {
         Replier::addToQueue(requester.getFd(), Replier::errUserNotInChannel,
-            Utils::anyToVec(server.getName(), requester.getNickname(), userToKick, channel.getName()));
+            Utils::anyToVec(serverName, requester.getNickname(), userToKick, channel.getName()));
         return;
     }
 

@@ -2,6 +2,8 @@
 #include <vector>
 #include <csignal>
 #include <arpa/inet.h>
+#include <communication/Replier.h>
+#include <utils/Utils.h>
 
 ClientManager::ClientManager()
 {
@@ -83,3 +85,4 @@ std::string ClientManager::findClientHostname(sockaddr_in& addr, socklen_t addrL
 	// Function returns the resolved hostname as a std::string.
 	return std::string(host_entry->h_name);
 }
+

@@ -69,4 +69,4 @@ private:
 	Log& operator=(const Log& toAssign);
 };
 
-#include "../../src/manager/Log.tpp"
+#include "../../src/core/Log.tpp"

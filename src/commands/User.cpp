@@ -16,11 +16,13 @@ User::~User()
 
 }
 
-void User::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void User::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+	ConfigManager& configManager = serverManager.getConfigManager();
+
 	if (args.size() < 4)
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), std::string("USER")));
 		return;
 	}
@@ -28,7 +30,7 @@ void User::execute(Server& server, Client& requester, const std::vector<std::str
 	const std::string& realname = args[3];
 	if (realname[0] != ':')
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), std::string("USER")));
 		return;
 	}

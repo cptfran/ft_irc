@@ -1,13 +1,16 @@
 #pragma once
 
+#include <vector>
+#include <string>
 #include "data/Channel.h"
+#include "data/Client.h"
 
 class ChannelManager 
 {
 public:
     ChannelManager();
     ~ChannelManager();
-
+   
     Channel* getNewestChannel();
     Channel* getChannel(const std::string& channelName);
     bool usersHaveCommonChannel(const std::string& nickname1, const std::string& nickname2) const;

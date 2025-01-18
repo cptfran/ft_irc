@@ -4,8 +4,9 @@
 #include <core/Log.h>
 #include "unistd.h"
 #include <fcntl.h>
+#include <netdb.h>
 
-ConnectionManager::ConnectionManager() : serverRunning(false)
+ConnectionManager::ConnectionManager()
 {
 
 }
@@ -20,7 +21,7 @@ std::vector<pollfd> ConnectionManager::getPollFds() const
 	return this->pollFds;
 }
 
-const int ConnectionManager::initSocket(const int port)
+int ConnectionManager::initSocket(const int port)
 {
 	if (port < REGISTERED_PORT_MIN || port > REGISTERED_PORT_MAX)
 	{
@@ -111,11 +112,26 @@ void ConnectionManager::queueClientToDeleteFromPoll(const pollfd pollFd)
 
 void ConnectionManager::deleteQueuedClientsFromPoll()
 {
-	for (std::vector<pollfd>::iterator it = this->pollFdsToDelete.begin(); it != this->pollFdsToDelete.end();)
+	// Iterate over pollFds and remove entries present in pollFdsToDelete.
+	for (std::vector<pollfd>::iterator it = this->pollFds.begin(); it != this->pollFds.end();)
 	{
-		if (std::find(this->pollFds.begin(), this->pollFds.end(), *it) != this->pollFds.end())
+		bool shouldRemove = false;
+
+		// Check if the current pollfd matches any in pollFdsToDelete.
+		for (std::vector<pollfd>::iterator delIt = this->pollFdsToDelete.begin(); delIt != this->pollFdsToDelete.end();
+			++delIt)
+		{
+			if (it->fd == delIt->fd && it->events == delIt->events && it->revents == delIt->revents)
+			{
+				shouldRemove = true;
+				break;
+			}
+		}
+
+		if (shouldRemove)
 		{
 			it = this->pollFds.erase(it);
+			Log::msgServer(INFO, "CLIENT", it->fd, CLIENT_DISCONNECTED);
 		}
 		else
 		{
@@ -123,6 +139,7 @@ void ConnectionManager::deleteQueuedClientsFromPoll()
 		}
 	}
 
+	// Clear the list of pollFdsToDelete after processing.
 	this->pollFdsToDelete.clear();
 }
 
@@ -132,17 +149,3 @@ void ConnectionManager::deleteQueuedClientsFromPoll()
 	//close(clientFd);
 	//Log::msgServer(INFO, "CLIENT", clientFd, CLIENT_DISCONNECTED);
 //}
-
-void ConnectionManager::handleNicknameCollision(const int newClientFd, const std::string& newClientNickname)
-{
-	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
-	{
-		if (newClientNickname == it->second.getNickname() && it->second.getFd() != newClientFd)
-		{
-			Replier::addToQueue(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->name,
-				newClientNickname, it->second.getUsername(), it->second.getHostname()));
-			this->disconnectClient(it->second.getFd());
-			return;
-		}
-	}
-}

@@ -14,20 +14,22 @@ Join::~Join()
 
 }
 
-void Join::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Join::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+	ConfigManager& configManager = serverManager.getConfigManager();
+
 	// Not enough arguments provided.
 	if (args.empty())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), std::string("JOIN")));
 		return;
 	}
 
 	// User is not registered.
-	if (!requester.registered(server.getPassword()))
+	if (!requester.registered(configManager.getPassword()))
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(configManager.getName(),
 			requester.getNickname()));
 		return;
 	}
@@ -38,18 +40,18 @@ void Join::execute(Server& server, Client& requester, const std::vector<std::str
 	// If yes, don't join and send proper reply.
 	if (requester.getNumChannelsJoined() == CHANNELS_MAX)
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errTooManyChannels, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errTooManyChannels, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), channelName));
 		return;
 	}
 
 	// Find channel on the list. If not found, create new channel.
-	Channel* channelToJoin = findOrCreateChannel(server, channelName);
+	Channel* channelToJoin = findOrCreateChannel(serverManager.getChannelManager(), channelName);
 
 	// If channel is invite only and client is not invited, don't join the client to it and send proper reply.
 	if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(requester.getNickname()))
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errInviteOnlyChan, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), channelName));
 		return;
 	}
@@ -57,7 +59,7 @@ void Join::execute(Server& server, Client& requester, const std::vector<std::str
 	// Check if channel requires key, if yes, check if it's provided and correct.
 	if (!channelToJoin->getKey().empty() && !isValidChannelKey(args, channelToJoin->getKey()))
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errBadChannelKey, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errBadChannelKey, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), channelName));
 		return;
 	}
@@ -65,21 +67,21 @@ void Join::execute(Server& server, Client& requester, const std::vector<std::str
 	// Check if channel has user limit, if yes check if it's not full.
 	if (channelToJoin->isUserLimitActive() && channelToJoin->getUserLimit() == channelToJoin->getNumOfJoinedUsers())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errChannelIsFull, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errChannelIsFull, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), channelName));
 		return;
 	}
 
-	joinChannel(requester, *channelToJoin, server.getName());
+	joinChannel(requester, *channelToJoin, configManager.getName());
 }
 
-Channel* Join::findOrCreateChannel(Server& server, const std::string& channelName) const
+Channel* Join::findOrCreateChannel(ChannelManager& channelManager, const std::string& channelName) const
 {
-	Channel* channelToJoin = server.getChannel(channelName);
+	Channel* channelToJoin = channelManager.getChannel(channelName);
 	if (channelToJoin == NULL)
 	{
-		server.addChannel(Channel(channelName));
-		channelToJoin = server.getNewestChannel();
+		channelManager.addChannel(Channel(channelName));
+		channelToJoin = channelManager.getNewestChannel();
 	}
 
 	return channelToJoin;

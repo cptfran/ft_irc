@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "data/Client.h"
-#include "core/Server.h"
+
+class Client;
 
 class Channel
 {

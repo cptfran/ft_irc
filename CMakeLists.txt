@@ -20,7 +20,6 @@ add_executable(ircserv
         include/commands/Who.h
         include/communication/ClientTranslator.h
         include/communication/Replier.h
-        include/core/Config.h
         include/core/Log.h
         include/core/Server.h
         include/data/Channel.h
@@ -28,7 +27,9 @@ add_executable(ircserv
         include/manager/ChannelManager.h
         include/manager/ClientManager.h
         include/manager/CommandManager.h
+        include/manager/ConfigManager.h
         include/manager/ConnectionManager.h
+        include/manager/Manager.h
         include/utils/Colors.h
         include/utils/Utils.h
         src/commands/Cap.cpp
@@ -45,7 +46,6 @@ add_executable(ircserv
         src/commands/Who.cpp
         src/communication/ClientTranslator.cpp
         src/communication/Replier.cpp
-        src/core/Config.cpp
         src/core/Log.cpp
         src/core/Server.cpp
         src/data/Channel.cpp
@@ -54,8 +54,10 @@ add_executable(ircserv
         src/manager/ChannelManager.cpp
         src/manager/ClientManager.cpp
         src/manager/CommandManager.cpp
+        src/manager/ConfigManager.cpp
         src/manager/ConnectionManager.cpp
+        src/manager/Manager.cpp
         src/utils/Utils.cpp
-)
+ )
 
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")

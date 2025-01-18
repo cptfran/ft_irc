@@ -43,7 +43,7 @@ CommandManager::~CommandManager()
 	}
 }
 
-void CommandManager::executeCommands(Client& client, const std::string& serverPassword)
+void CommandManager::executeCommands(Manager& manager, Client& client)
 {
 	while (true)
 	{
@@ -52,34 +52,36 @@ void CommandManager::executeCommands(Client& client, const std::string& serverPa
 		{
 			return;
 		}
-		this->executeCommand(client, msg);
+		this->executeCommand(manager, client, msg);
 	}
 }
 
-void CommandManager::executeCommand(Client& client, const std::string& buffer, const std::string& serverPassword)
+void CommandManager::executeCommand(Manager& manager, Client& client, const std::string& buffer)
 {
+	const ConfigManager& cfg = manager.getConfigManager();
+
 	std::pair<std::string, std::vector<std::string> > cmdWithArgs = ClientTranslator::fetchCmdAndArgs(buffer);
 	if (this->validCommands.find(cmdWithArgs.first) == this->validCommands.end())
 	{
-		Replier::addToQueue(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(this->name,
+		Replier::addToQueue(client.getFd(), Replier::errUnknownCommand, Utils::anyToVec(cfg.getName(),
 			client.getNickname(), cmdWithArgs.first));
 		return;
 	}
 
-	this->validCommands.at(cmdWithArgs.first)->execute(*this, client, cmdWithArgs.second);
+	this->validCommands.at(cmdWithArgs.first)->execute(manager, client, cmdWithArgs.second);
 
-	if (client.registered(serverPassword) && !client.getWelcomeRepliesSent())
+	if (client.registered(cfg.getName()) && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
 
-		Replier::addToQueue(client.getFd(), Replier::rplWelcome, Utils::anyToVec(this->name, client.getNickname(),
+		Replier::addToQueue(client.getFd(), Replier::rplWelcome, Utils::anyToVec(cfg.getName(), client.getNickname(),
 			client.getUsername(), client.getHostname()));
-		Replier::addToQueue(client.getFd(), Replier::rplYourHost, Utils::anyToVec(this->name, client.getNickname(),
-			this->version));
-		Replier::addToQueue(client.getFd(), Replier::rplCreated, Utils::anyToVec(this->name, client.getNickname(),
-			this->creationDate));
-		Replier::addToQueue(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(this->name, client.getNickname(),
-			this->version, this->availableUserModes, this->availableChannelModes));
+		Replier::addToQueue(client.getFd(), Replier::rplYourHost, Utils::anyToVec(cfg.getName(), client.getNickname(),
+			cfg.getVersion()));
+		Replier::addToQueue(client.getFd(), Replier::rplCreated, Utils::anyToVec(cfg.getName(), client.getNickname(),
+			cfg.getCreationDate()));
+		Replier::addToQueue(client.getFd(), Replier::rplMyInfo, Utils::anyToVec(cfg.getName(), client.getNickname(),
+			cfg.getVersion(), cfg.getAvailableUserModes(), cfg.getAvailableChannelModes()));
 
 		client.setWelcomeRepliesSent(true);
 	}

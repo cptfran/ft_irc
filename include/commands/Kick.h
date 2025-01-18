@@ -8,9 +8,9 @@ public:
     Kick();
     ~Kick();
 
-    void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
+    void execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const;
 
 private:
-    void kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester, Server& server) 
-        const;
+    void kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester, 
+        const std::string& serverName) const;
 };

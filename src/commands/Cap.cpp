@@ -13,10 +13,11 @@ Cap::~Cap()
 
 }
 
-void Cap::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Cap::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
 	if (!args.empty() && args[0] == "LS")
 	{
-		Replier::addToQueue(requester.getFd(), Replier::rplCap, Utils::anyToVec(server.getName()));
+		Replier::addToQueue(requester.getFd(), Replier::rplCap, 
+			Utils::anyToVec(serverManager.getConfigManager().getName()));
 	}
 }

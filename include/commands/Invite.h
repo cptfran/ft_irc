@@ -9,7 +9,7 @@ public:
     Invite();
     ~Invite();
 
-    void execute(Server& server, Client& requester, const std::vector<std::string>& args) const;
+    void execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const;
 	void inviteUser(Channel& channelToInvite, const Client& invitingClient, const Client& invitedClient,
 		const std::string& serverName) const;
 };

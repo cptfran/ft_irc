@@ -15,11 +15,13 @@ Nick::~Nick()
 
 }
 
-void Nick::execute(Server& server, Client& requester, const std::vector<std::string>& args) const
+void Nick::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+	ConfigManager& configManager = serverManager.getConfigManager();
+
 	if (args.empty())
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errNoNicknameGiven, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errNoNicknameGiven, Utils::anyToVec(configManager.getName(),
 			requester.getNickname()));
 		return;
 	}
@@ -28,22 +30,22 @@ void Nick::execute(Server& server, Client& requester, const std::vector<std::str
 
 	if (!ClientTranslator::nicknameValid(nickname))
 	{
-		Replier::addToQueue(requester.getFd(), Replier::errOneusNickname, Utils::anyToVec(server.getName(),
+		Replier::addToQueue(requester.getFd(), Replier::errOneusNickname, Utils::anyToVec(configManager.getName(),
 			requester.getNickname(), nickname));
 		return;
 	}
 	if (!requester.getNickname().empty())
 	{
-		if (server.getClientByNickname(nickname) != NULL)
+		if (serverManager.getClientManager().getClientByNickname(nickname) != NULL)
 		{
-			Replier::addToQueue(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(server.getName(),
+			Replier::addToQueue(requester.getFd(), Replier::errNicknameInUse, Utils::anyToVec(configManager.getName(),
 				requester.getNickname(), nickname));
 			return;
 		}
 	}
 	else
 	{
-		server.handleNicknameCollision(requester.getFd(), nickname);
+		serverManager.handleNicknameCollision(requester.getFd(), nickname);
 	}
 	requester.setNickname(args[0]);
 }
