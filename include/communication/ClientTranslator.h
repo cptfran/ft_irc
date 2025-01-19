@@ -5,8 +5,6 @@
 #include "core/Server.h"
 #include "data/Client.h"
 
-#define CHANNEL_NAME_MAX_LENGTH 50
-
 class ClientTranslator
 {
 public:

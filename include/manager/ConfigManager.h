@@ -12,6 +12,9 @@ public:
 	static const int REGISTERED_PORT_MAX = 49151;
 	static const int MAX_PRIVMSG_TARGETS = 5;
 	static const int MAX_CHANNELS_CLIENT_CAN_JOIN = 10;
+	static const int MAX_USERNAME_LEN = 9;
+	static const int CHANNEL_NAME_MAX_LENGTH = 50;
+
 
 	ConfigManager(const std::string& name, const std::string& version, const std::string& password);
 	~ConfigManager();

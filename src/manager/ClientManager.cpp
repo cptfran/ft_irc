@@ -72,7 +72,7 @@ std::string ClientManager::findClientHostname(sockaddr_in& addr, socklen_t addrL
 	// A buffer to hold the client's IP address in human-readable form.
 	char client_ip[INET_ADDRSTRLEN];
 
-	// Fills the addr structure with the address information of the client connected to clientFd.
+	// Fills the addr structure with the address Log::INFOrmation of the client connected to clientFd.
 	if (getpeername(clientFd, reinterpret_cast<sockaddr*>(&addr), &addrLen) == -1)
 	{
 		return "unknown";

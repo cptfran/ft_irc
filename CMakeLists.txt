@@ -57,6 +57,7 @@ add_executable(ircserv
         src/manager/ConfigManager.cpp
         src/manager/ConnectionManager.cpp
         src/manager/Manager.cpp
+        src/utils/Colors.cpp
         src/utils/Utils.cpp
   )
 

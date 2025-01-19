@@ -1,42 +1,19 @@
 #pragma once
 
-// TODO: make it a class?
-#define RED "\033[31m"
-#pragma once
-#include <string>
-
-class Colors
+namespace Colors
 {
-public:
-    static const std::string RED;
-    static const std::string LIGHT_GREEN;
-    static const std::string BLUE;
-    static const std::string YELLOW;
-    static const std::string GRAY;
-    static const std::string CYAN;
-    static const std::string LIGHT_CYAN;
-    static const std::string PURPLE;
-    static const std::string LIGHT_PURPLE;
-    static const std::string LIGHT_RED;
-    static const std::string LIGHT_YELLOW;
-    static const std::string LIGHT_MAGENTA;
-    static const std::string WHITE;
-    static const std::string RESET;
-
-private:
-
-};
-//#define LIGHT_GREEN "\033[92m"
-//#define BLUE "\033[94m"
-//#define YELLOW "\033[33m"
-//#define GRAY "\033[90m"
-//#define CYAN "\033[36m"
-//#define LIGHT_CYAN "\033[96m"
-//#define PURPLE "\033[35m"
-//#define LIGHT_PURPLE "\033[95m"
-//#define LIGHT_RED "\033[91m"
-//#define LIGHT_YELLOW "\033[93m"
-//#define LIGHT_MAGENTA "\033[95m"
-//#define LIGHT_CYAN "\033[96m"
-//#define WHITE "\033[97m"
-//#define RESET "\033[0m"
+    extern const char* LIGHT_GREEN;
+    extern const char* BLUE;
+    extern const char* YELLOW;
+    extern const char* GRAY;
+    extern const char* CYAN;
+    extern const char* LIGHT_CYAN;
+    extern const char* PURPLE;
+    extern const char* LIGHT_PURPLE;
+    extern const char* LIGHT_RED;
+    extern const char* LIGHT_YELLOW;
+    extern const char* LIGHT_MAGENTA;
+    extern const char* WHITE;
+    extern const char* RED;
+    extern const char* RESET;
+}

@@ -26,7 +26,7 @@ ClientTranslator::~ClientTranslator()
  * @brief Parses the client buffer received from the given file descriptor.
  *
  * This method reads data from the specified file descriptor into a buffer and returns it as a string.
- * If no data is read, it checks for specific error conditions and throws an exception if necessary.
+ * If no data is read, it checks for specific Log::ERROR conditions and throws an exception if necessary.
  *
  * @param fd The file descriptor from which to receive the buffer.
  * @return The received buffer as a string.
@@ -42,7 +42,7 @@ std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 		{
 			return std::string();
 		}
-		throw std::runtime_error(ERROR + std::string("recv"));
+		throw std::runtime_error(Log::ERROR + std::string("recv"));
 	}
 	recvBuffer[bytesRead] = '\0';
 
@@ -221,9 +221,9 @@ std::string ClientTranslator::sanitizeChannelName(const std::string& name)
 		sanitized = "#" + sanitized;
 	}
 
-	if (name.length() > CHANNEL_NAME_MAX_LENGTH)
+	if (name.length() > ConfigManager::CHANNEL_NAME_MAX_LENGTH)
 	{
-		sanitized = sanitized.substr(0, CHANNEL_NAME_MAX_LENGTH);
+		sanitized = sanitized.substr(0, ConfigManager::CHANNEL_NAME_MAX_LENGTH);
 	}
 
 	size_t pos = sanitized.find(' ');
@@ -269,7 +269,7 @@ void ClientTranslator::parseUserTarget(const std::string& extrTarget, std::strin
 }
 
 /**
- * @brief Assigns user information by splitting the target string using the specified splitters.
+ * @brief Assigns user Log::INFOrmation by splitting the target string using the specified splitters.
  *
  * This method recursively splits the target string using the provided delimiters and assigns the values to the 
  * provided references.

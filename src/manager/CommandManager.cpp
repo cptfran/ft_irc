@@ -93,7 +93,7 @@ void CommandManager::executeCommand(Manager& manager, Client& client, const std:
 
 	if (client.registered(cfg.getPassword()) && !client.getWelcomeRepliesSent())
 	{
-		Log::msgServer(INFO, "CLIENT", client.getFd(), CLIENT_REGISTER_SUCCESS);
+		Log::msgServer(Log::INFO, "CLIENT", client.getFd(), Log::CLIENT_REGISTER_SUCCESS);
 
 		Replier::addToQueue(client.getFd(), Replier::rplWelcome, Utils::anyToVec(cfg.getName(), client.getNickname(),
 			client.getUsername(), client.getHostname()));

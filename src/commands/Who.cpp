@@ -17,7 +17,7 @@ Who::~Who()
  * @brief Executes the WHO command.
  *
  * This method processes the WHO command issued by a client. It determines whether the client
- * is requesting information about a channel or about users. If the command is for a channel,
+ * is requesting Log::INFOrmation about a channel or about users. If the command is for a channel,
  * it delegates the request to handleChannel(). If the command is for users, it delegates the
  * request to handleUsers().
  *
@@ -37,7 +37,7 @@ void Who::execute(Manager& serverManager, Client& requester, const std::vector<s
 
     const std::string& mask = args[0];
 
-    // User prompting for channel info.
+    // User prompting for channel Log::INFO.
     if (mask[0] == '#')
     {
         bool operatorOnly = (args.size() == 2 && args[1] == "o");
@@ -45,16 +45,16 @@ void Who::execute(Manager& serverManager, Client& requester, const std::vector<s
         return;
     }
 
-    // User prompting for users info.
+    // User prompting for users Log::INFO.
     handleUsers(serverManager, requester, mask);
 }
 
 /**
  * @brief Handles the WHO command for a specific channel.
  *
- * This method processes the WHO command when the client requests information about a specific
- * channel. It retrieves the list of users in the channel and sends the information back to the
- * requester. If the channel does not exist, it sends an error message to the requester.
+ * This method processes the WHO command when the client requests Log::INFOrmation about a specific
+ * channel. It retrieves the list of users in the channel and sends the Log::INFOrmation back to the
+ * requester. If the channel does not exist, it sends an Log::ERROR message to the requester.
  *
  * @param serverManager Reference to the server manager.
  * @param mask The channel mask.
@@ -86,10 +86,10 @@ void Who::handleChannel(Manager& serverManager, const std::string& mask, Client&
 /**
  * @brief Handles the WHO command for users.
  * 
- * This method processes the WHO command when the client requests information about users.
+ * This method processes the WHO command when the client requests Log::INFOrmation about users.
  * It iterates through the list of clients and checks if they match the given mask. If a user
  * matches the mask and is not invisible or shares a common channel with the requester, their
- * information is sent back to the requester.
+ * Log::INFOrmation is sent back to the requester.
  *
  * @param serverManager Reference to the server manager.
  * @param requester Reference to the client who requested the command.

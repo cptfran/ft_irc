@@ -62,7 +62,7 @@ void Part::execute(Manager& serverManager, Client& requester, const std::vector<
         // Attempt to remove the user from the channel.
         if (!channelToLeave->deleteUser(requester.getNickname()))
         {
-            Log::msgServer(INFO, "CLIENT", requester.getFd(), EJECT_CLIENT_FAIL);
+            Log::msgServer(Log::INFO, "CLIENT", requester.getFd(), Log::EJECT_CLIENT_FAIL);
         }
     }
 }

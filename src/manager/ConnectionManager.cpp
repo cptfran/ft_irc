@@ -31,13 +31,13 @@ int ConnectionManager::initSocket(const int port)
 {
 	if (port < ConfigManager::REGISTERED_PORT_MIN || port > ConfigManager::REGISTERED_PORT_MAX)
 	{
-		throw std::runtime_error(ERROR WRONG_PORT_RANGE);
+		throw std::runtime_error(Log::ERROR + Log::WRONG_PORT_RANGE);
 	}
 
 	const int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (serverSocket < 0)
 	{
-		throw std::runtime_error(ERROR SOCKET_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::SOCKET_FAIL);
 	}
 
 	// Set the socket option to allow the socket to be reusable.
@@ -46,13 +46,13 @@ int ConnectionManager::initSocket(const int port)
 	const int option = 1;
 	if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)))
 	{
-		throw std::runtime_error(ERROR SETSOCKOPT_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::SETSOCKOPT_FAIL);
 	}
 
 	// Make the socket non-blocking.
 	if (fcntl(serverSocket, F_SETFL, O_NONBLOCK))
 	{
-		throw std::runtime_error(ERROR F_SETFL_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::F_SETFL_FAIL);
 	}
 
 	sockaddr_in addr = {};
@@ -62,13 +62,13 @@ int ConnectionManager::initSocket(const int port)
 	if (bind(serverSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
 	{
 		close(serverSocket);
-		throw std::runtime_error(ERROR BIND_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::BIND_FAIL);
 	}
 
 	if (listen(serverSocket, SOMAXCONN) < 0)
 	{
 		close(serverSocket);
-		throw std::runtime_error(ERROR LISTEN_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::LISTEN_FAIL);
 	}
 
 	return serverSocket;
@@ -87,7 +87,7 @@ int ConnectionManager::initSocket(const int port)
  */
 pollfd ConnectionManager::acceptNewClientConnection(const int serverFd)
 {
-	Log::msgServer(INFO, NEW_CLIENT_START);
+	Log::msgServer(Log::INFO, Log::NEW_CLIENT_START);
 
 	sockaddr_in addr = {};
 	socklen_t addrLen = sizeof(addr);
@@ -96,10 +96,10 @@ pollfd ConnectionManager::acceptNewClientConnection(const int serverFd)
 	const int clientFd = accept(serverFd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
 	if (clientFd < 0)
 	{
-		throw std::runtime_error(ERROR ACCEPT_FAIL);
+		throw std::runtime_error(Log::ERROR + Log::ACCEPT_FAIL);
 	}
 
-	Log::msgServer(INFO, "CLIENT", clientFd, NEW_CLIENT_SUCCESS);
+	Log::msgServer(Log::INFO, "CLIENT", clientFd, Log::NEW_CLIENT_SUCCESS);
 
 	// Create pollfd for the new client and add it to the pollfd list.
 	pollfd pollFd = { clientFd, POLLIN | POLLOUT, 0 };
@@ -135,9 +135,9 @@ void ConnectionManager::deleteQueuedClientsFromPoll(std::vector<pollfd>& pollFds
 		{
 			if (it->fd == *delIt)
 			{
-				Log::msgServer(INFO, "CLIENT", it->fd, CLIENT_DISCONNECTED);
-				it = pollFds.erase(it);
+				Log::msgServer(Log::INFO, "CLIENT", it->fd, Log::CLIENT_DISCONNECTED);
 				close(it->fd);
+				it = pollFds.erase(it);
 			}
 			else
 			{

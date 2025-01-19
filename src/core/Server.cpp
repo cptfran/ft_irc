@@ -49,7 +49,7 @@ Server::~Server()
  */
 void Server::run()
 {
-	Log::msgServer(INFO, SERVER_RUN);
+	Log::msgServer(Log::INFO, Log::SERVER_RUN);
 
 	// Add the server to the poll.
 	const pollfd listenFd = {this->configManager.getFd(), POLLIN, 0};
@@ -65,7 +65,7 @@ void Server::run()
 			{
 				continue;
 			}
-			Log::msgServer(ERROR, "Poll error: " + std::string(strerror(errno)));
+			Log::msgServer(Log::ERROR, "Poll error " + std::string(strerror(errno)));
 			return;
 		}
 

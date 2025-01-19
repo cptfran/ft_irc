@@ -78,7 +78,7 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
 {
     const std::string& userToKick = args[1];
 
-    // Get client list for broadcast message before client is kicked, so it will receive kick information.
+    // Get client list for broadcast message before client is kicked, so it will receive kick Log::INFOrmation.
     const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
