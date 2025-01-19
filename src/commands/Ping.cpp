@@ -1,9 +1,9 @@
 #include "commands/Ping.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
+#include "core/Server.h"
+#include "utils/Utils.h"
+#include "communication/Replier.h"
 
-Ping::Ping()
+Ping::Ping() : Command()
 {
 
 }
@@ -13,15 +13,27 @@ Ping::~Ping()
 
 }
 
-void Ping::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+/**
+ * @brief Executes the Ping command.
+ * 
+ * This method sends a PONG reply to the client that sent the PING command.
+ * If no arguments are provided, it replies with the server's name.
+ * If an argument is provided, it replies with the server's name and the provided argument.
+ * 
+ * @param serverManager Reference to the server manager.
+ * @param requester Reference to the client that sent the PING command.
+ * @param args Vector of arguments provided with the PING command.
+ */
+void Ping::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-	const std::string& serverToReply = args[0];
+    ConfigManager& configManager = serverManager.getConfigManager();
 
-	if (args.empty())
-	{
-		Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName()));
-		return;
-	}
+    if (args.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(configManager.getName()));
+        return;
+    }
 
-	Replier::reply(client.getFd(), Replier::rplPong, Utils::anyToVec(server.getName(), serverToReply));
+    const std::string& serverToReply = args[0];
+    Replier::addToQueue(requester.getFd(), Replier::rplPong, Utils::anyToVec(configManager.getName(), serverToReply));
 }

@@ -1,21 +1,27 @@
 #pragma once
 
-#include "Client.h"
+#include "data/Client.h"
 #include <vector>
+#include <map>
 
 class Replier
 {
 public:
 	~Replier();
 
+
 private:
-	typedef std::string (*ReplyFunction)(const std::vector<std::string>&);
+	typedef std::string(*ReplyFunction)(const std::vector<std::string>&);
+
+	static std::map<int, std::vector<std::string> > rplQueue;
 
 	Replier();
 
+	static void addToQueue(int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs);
+	static bool clientInQueue(int fd);
+	static void sendFromQueue(int fd);
+
 	// Reply functions.
-	static void reply(int clientFd, ReplyFunction func, const std::vector<std::string>& args);
-	static void broadcast(const std::vector<int>& clientsFdList, ReplyFunction func, const std::vector<std::string>& args);
 	static std::string rplWelcome(const std::vector<std::string>& args); // 001
 	static std::string rplYourHost(const std::vector<std::string>& args); // 002
 	static std::string rplCreated(const std::vector<std::string>& args); // 003
@@ -38,11 +44,15 @@ private:
 	static std::string rplPrivmsg(const std::vector<std::string>& args); // none
 	static std::string errNoSuchNick(const std::vector<std::string>& args); // 401
 	static std::string errNoSuchChannel(const std::vector<std::string>& args); // 403
+	static std::string errCannotSendToChan(const std::vector<std::string>& args); // 404
 	static std::string errTooManyChannels(const std::vector<std::string>& args); // 405
 	static std::string errTooManyTargets(const std::vector<std::string>& args); // 407
 	static std::string errNoRecipient(const std::vector<std::string>& args); // 411
 	static std::string errNoTextToSend(const std::vector<std::string>& args); // 412
 	static std::string errUnknownCommand(const std::vector<std::string>& args); // 421
+	static std::string errNoNicknameGiven(const std::vector<std::string>& args); // 431
+	static std::string errOneusNickname(const std::vector<std::string>& args); // 432
+	static std::string errNicknameInUse(const std::vector<std::string>& args); // 433
 	static std::string errNickCollision(const std::vector<std::string>& args); // 436
 	static std::string errUserNotInChannel(const std::vector<std::string>& args); // 441
 	static std::string errNotOnChannel(const std::vector<std::string>& args); // 442
@@ -62,10 +72,12 @@ private:
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
 	friend class Command;
+	friend class CommandManager;
 	friend class Cap;
 	friend class Invite;
 	friend class Join;
 	friend class Kick;
+	friend class Manager;
 	friend class Mode;
 	friend class Nick;
 	friend class Part;

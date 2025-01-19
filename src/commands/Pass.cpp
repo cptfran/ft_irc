@@ -1,10 +1,10 @@
 #include "commands/Pass.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Log.h"
-#include "Replier.h"
+#include "core/Server.h"
+#include "utils/Utils.h"
+#include "core/Log.h"
+#include "communication/Replier.h"
 
-Pass::Pass()
+Pass::Pass() : Command()
 {
 
 }
@@ -14,22 +14,34 @@ Pass::~Pass()
 
 }
 
-void Pass::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+/**
+ * @brief Executes the PASS command to authenticate a client with a password.
+ * 
+ * @param serverManager Reference to the server's Manager object.
+ * @param requester Reference to the Client object making the request.
+ * @param args Vector of arguments passed with the command.
+ */
+void Pass::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-	if (args.empty())
-	{
-		Replier::reply(client.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
-			client.getNickname()));
-		return;
-	}
+    ConfigManager& configManager = serverManager.getConfigManager();
 
-	const std::string& enteredPassword = args[0];
-	if (enteredPassword != server.getPassword())
-	{
-		Replier::reply(client.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(server.getName(),
-			client.getNickname()));
-		return;
-	}
+    // Check if no password was provided.
+    if (args.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
+            requester.getNickname()));
+        return;
+    }
 
-	client.setPassword(args[0]);
+    const std::string& enteredPassword = args[0];
+    // Check if the provided password does not match the server's password.
+    if (enteredPassword != configManager.getPassword())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
+            requester.getNickname()));
+        return;
+    }
+
+    // Set the client's password.
+    requester.setPassword(args[0]);
 }

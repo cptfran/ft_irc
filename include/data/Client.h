@@ -2,16 +2,13 @@
 
 #include <iostream>
 
-// Maxium number of channels, client can join:
-#define CHANNELS_MAX 10
-
 /**
  * A client is anything connecting to a server that is not another
  * server. Each client is distinguished from other clients by a unique
  * nickname having a maximum length of nine (9) characters. See the
  * protocol grammar rules for what may and may not be used in a
  * nickname. In addition to the nickname, all servers must have the
- * following information about all clients: the real name of the host
+ * following Log::INFOrmation about all clients: the real name of the host
  * that the client is running on, the username of the client on that
  * host, and the server to which the client is connected.
  */
@@ -23,13 +20,17 @@ public:
 	~Client();
 
 	int getFd() const;
-	std::string getPassword() const;
-	std::string getNickname() const;
-	std::string getUsername() const;
-	// TODO: check what exactly is the hostname output (needed to properly work with privmsg hostname mask checker).
-	std::string getHostname() const;
-	std::string getRealname() const;
+	const std::string& getPassword() const;
+	const std::string& getNickname() const;
+	const std::string& getUsername() const;
+	const std::string& getHostname() const;
+	const std::string& getRealname() const;
+	bool registered(const std::string& serverPassword) const;
+	time_t getTimeConnected() const;
+	bool getWelcomeRepliesSent() const;
+	int getNumChannelsJoined() const;
 	bool isInvisible() const;
+	const std::string departCompleteMsgFromBuffer();
 
 	void setPassword(const std::string& password);
 	void setNickname(const std::string& nickname);
@@ -39,11 +40,7 @@ public:
 	void setWelcomeRepliesSent(bool sent);
 	void setNumChannelsJoined(int num);
 	void setInvisible(bool invisible);
-
-	bool registered(const std::string& serverPassword) const;
-	time_t getTimeConnected() const;
-	bool getWelcomeRepliesSent() const;
-	int getNumChannelsJoined() const;
+	void addToBuffer(const std::string& str);
 
 private:
 	int fd;
@@ -56,6 +53,7 @@ private:
 	bool welcomeRepliesSent;
 	int channelsJoined;
 	bool invisible;
+	std::string recvBuffer;
 
 	Client();
 };

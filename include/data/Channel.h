@@ -2,10 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "Client.h"
-#include "Server.h"
 
-#define CHANNEL_NAME_MAX_LENGTH 50
+class Client;
 
 class Channel
 {
@@ -23,10 +21,9 @@ public:
 	bool operator==(const Channel& toCompare) const;
 	~Channel();
 
-	std::string getName() const;
-	std::string getKey() const;
-	std::vector<std::string> getNicknamesListWithOperatorInfo() const;
-	std::vector<int> getFdsList() const;
+	const std::string& getName() const;
+	const std::string& getKey() const;
+	const std::vector<std::string> getNicknamesListWithOperatorInfo() const;
 	bool isInviteOnly() const;
 	bool isUserInvited(const std::string& nickname) const;
 	bool isTopicRestricted() const;
@@ -35,12 +32,12 @@ public:
 	bool isUserLimitActive() const;
 	unsigned int getUserLimit() const;
 	unsigned int getNumOfJoinedUsers() const;
-	std::string getTopic() const;
-	std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
-	std::vector<Client> getClientList() const;
+	const std::string& getTopic() const;
+	const std::vector<std::string> getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const;
+	const std::vector<Client> getClientList() const;
 
 	void joinUser(Client& newClient);
-	bool ejectUser(Server& server, const std::string& userToKick);
+	bool deleteUser(const std::string& userToKick);
 	void setChannelInviteOnly(bool isInviteOnly);
 	void addToInviteList(const std::string& invitedNickname);
 	void setTopicRestricted(bool isTopicRestricted);
@@ -49,9 +46,6 @@ public:
 	void setOperator(const std::string& targetNickname, bool operatorPrivilege);
 	void setUserLimit(int limit);
 	void disableUserLimit();
-
-	// TODO: maybe move it to ClientTranslator.
-	std::string sanitizeChannelName(const std::string& name) const;
 
 private:
 	std::string name;

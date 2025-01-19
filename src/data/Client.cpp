@@ -1,13 +1,15 @@
-#include "../include/Client.h"
-#include "Log.h"
+#include "data/Client.h"
+#include "core/Log.h"
 #include <ctime>
+#include <unistd.h>
 
-Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0),
+invisible(false)
 {
 
 }
 
-Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0)
+Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0), invisible(false)
 {
 
 }
@@ -50,7 +52,7 @@ void Client::setRealname(const std::string& realname)
 	this->realname = realname;
 }
 
-void Client::setWelcomeRepliesSent(const bool sent)
+void Client::setWelcomeRepliesSent(bool sent)
 {
 	this->welcomeRepliesSent = sent;
 }
@@ -60,9 +62,14 @@ void Client::setNumChannelsJoined(const int num)
 	this->channelsJoined = num;
 }
 
-void Client::setInvisible(const bool invisible)
+void Client::setInvisible(bool invisible)
 {
 	this->invisible = invisible;
+}
+
+void Client::addToBuffer(const std::string& str)
+{
+	this->recvBuffer += str;
 }
 
 int Client::getFd() const
@@ -70,27 +77,27 @@ int Client::getFd() const
 	return this->fd;
 }
 
-std::string Client::getPassword() const
+const std::string& Client::getPassword() const
 {
 	return this->password;
 }
 
-std::string Client::getNickname() const
+const std::string& Client::getNickname() const
 {
 	return this->nickname;
 }
 
-std::string Client::getUsername() const
+const std::string& Client::getUsername() const
 {
 	return this->username;
 }
 
-std::string Client::getHostname() const
+const std::string& Client::getHostname() const
 {
 	return this->hostname;
 }
 
-std::string Client::getRealname() const
+const std::string& Client::getRealname() const
 {
 	return this->realname;
 }
@@ -122,4 +129,32 @@ time_t Client::getTimeConnected() const
 bool Client::getWelcomeRepliesSent() const
 {
 	return this->welcomeRepliesSent;
+}
+
+/**
+ * @brief Extracts a complete message from the received buffer.
+ * 
+ * This method searches for the first occurrence of the delimiter "\r\n" in the
+ * receive buffer. If found, it extracts the complete message up to and including
+ * the delimiter, removes it from the buffer, and returns the message. If the
+ * delimiter is not found, it returns an empty string.
+ * 
+ * @return A complete message from the receive buffer, or an empty string if no complete message is found.
+ */
+const std::string Client::departCompleteMsgFromBuffer()
+{
+	// Find the position of "\r\n" in recvBuffer
+	size_t endOfMsgPos = this->recvBuffer.find("\r\n");
+	if (endOfMsgPos == std::string::npos)
+	{
+		return "";
+	}
+
+	// Extract the complete message
+	std::string completeMsg = this->recvBuffer.substr(0, endOfMsgPos + 2);
+
+	// Remove the extracted message from recvBuffer
+	this->recvBuffer.erase(0, endOfMsgPos + 2);
+
+	return completeMsg;
 }

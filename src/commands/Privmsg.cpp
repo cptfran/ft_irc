@@ -1,13 +1,11 @@
 #include "commands/Privmsg.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
-#include "Channel.h"
-#include "ClientTranslator.h"
+#include "core/Server.h"
+#include "utils/Utils.h"
+#include "communication/Replier.h"
+#include "data/Channel.h"
+#include "communication/ClientTranslator.h"
 
-#define MAX_PRIVMSG_TARGETS 5
-
-Privmsg::Privmsg()
+Privmsg::Privmsg() : Command()
 {
 
 }
@@ -17,99 +15,178 @@ Privmsg::~Privmsg()
 
 }
 
-void Privmsg::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+/**
+* @brief Executes the PRIVMSG command.
+* 
+* The execute method is responsible for handling the PRIVMSG command, which is used to send private messages to 
+* one or more recipients. This method ensures that the command is properly formatted and that the recipients are 
+* valid before sending the message.
+
+* @param serverManager Reference to the server manager.
+* @param requester Reference to the client who sent the command.
+* @param args Vector of arguments passed with the command.
+*/
+void Privmsg::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-    if (!validateArgs(server, client, args))
+    ConfigManager& configManager = serverManager.getConfigManager();
+
+    // Target not provided.
+    if (args.empty() || (args.size() >= 1 && args[0][0] == ':'))
     {
+        Replier::addToQueue(requester.getFd(), Replier::errNoRecipient, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), std::string("PRIVMSG")));
         return;
     }
 
-    const std::string& targetsCommaSeparated = args[0];
-    std::vector<Client> foundTargets = findMatchingTargets(client, server, targetsCommaSeparated);
-    const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
-    sendMessagesToTargets(client, foundTargets, message);
-}
-
-bool Privmsg::validateArgs(Server& server, Client& client, const std::vector<std::string>& args) const
-{
-    if (args.empty() || (args.size() >= 1 && args[0][0] == ':'))
-    {
-        Replier::reply(client.getFd(), Replier::errNoRecipient, Utils::anyToVec(server.getName(), client.getNickname(),
-            std::string("PRIVMSG")));
-        return false;
-    }
-
+    // Message not provided.
     if (args.size() < 2 || args[1][0] != ':')
     {
-        Replier::reply(client.getFd(), Replier::errNoTextToSend, Utils::anyToVec(server.getName(), client.getNickname()));
-        return false;
+        Replier::addToQueue(requester.getFd(), Replier::errNoTextToSend, Utils::anyToVec(configManager.getName(),
+            requester.getNickname()));
+        return;
     }
 
-    return true;
+    // Find all the targets that match with connected clients.
+    const std::string& targetsCommaSeparated = args[0];
+    const std::vector<std::pair<Client, std::string> > targets = findMatchingTargets(requester, serverManager,
+        targetsCommaSeparated);
+
+    const std::string& message = ClientTranslator::sanitizeColonMessage(args[1]);
+
+    for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end();
+        ++it)
+    {
+        Replier::addToQueue(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(requester.getNickname(),
+            requester.getUsername(), requester.getHostname(), it->second, message));
+    }
 }
 
-std::vector<Client> Privmsg::findMatchingTargets(Client& client, Server& server, const std::string& targets) const
+/**
+* @brief Finds all matching targets for the PRIVMSG command.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param targets Comma-separated string of target names.
+* @return Vector of pairs containing matching clients and their corresponding target names.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::findMatchingTargets(const Client& requester, 
+Manager& serverManager, const std::string& targets) const
 {
     std::vector<std::string> extrTargets = ClientTranslator::splitToTokens(targets, ',');
 
-    std::vector<Client> foundTargets;
+    if (extrTargets.size() > ConfigManager::MAX_PRIVMSG_TARGETS)
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errTooManyTargets, 
+            Utils::anyToVec(serverManager.getConfigManager().getName(), requester.getNickname(),
+                extrTargets[extrTargets.size() - 1], std::string("Too many targets."), 
+                std::string("Message not sent.")));
+        return std::vector<std::pair<Client, std::string> >();
+    }
+
+    std::vector<std::pair<Client, std::string> > foundTargets;
     for (std::vector<std::string>::const_iterator it = extrTargets.begin(); it != extrTargets.end(); ++it)
     {
-        // TODO: check here if partOfFoundTargets empty? because then probably cannot execute and return error?
-        std::vector<Client> partOfFoundTargets = getTargetsFromServer(client, server, *it);
+        std::vector<std::pair<Client, std::string> > partOfFoundTargets = getTargetsFromServer(requester,
+            serverManager, *it);
+        if (partOfFoundTargets.empty())
+        {
+            return std::vector<std::pair<Client, std::string> >();
+        }
         foundTargets.insert(foundTargets.end(), partOfFoundTargets.begin(), partOfFoundTargets.end());
     }
 
     return foundTargets;
 }
 
-void Privmsg::sendMessagesToTargets(const Client& client, const std::vector<Client>& foundTargets, 
-    const std::string& message) const
-{
-    for (std::vector<Client>::const_iterator it = foundTargets.begin(); it != foundTargets.end(); ++it)
-    {
-        Replier::reply(it->getFd(), Replier::rplPrivmsg, Utils::anyToVec(client.getNickname(), client.getUsername(),
-            client.getHostname(), it->getNickname(), message));
-    }
-}
-
-std::vector<Client> Privmsg::getTargetsFromServer(Client& requester, Server& server, const std::string& extrTarget) 
-    const
+/**
+* @brief Retrieves targets from the server based on the target string.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param extrTarget Target string to search for.
+* @return Vector of pairs containing matching clients and their corresponding target names.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::getTargetsFromServer(const Client& requester,
+Manager& serverManager, const std::string& extrTarget) const
 {
     if (extrTarget[0] == '#')
     {
-        std::vector<Client> targets = getChannelTargets(server, extrTarget);
+        std::vector<std::pair<Client, std::string> > targets = getChannelTargets(requester, serverManager, extrTarget);
         if (!targets.empty())
         {
+            if (targets.size() == 1 && targets[0].second.empty())
+            {
+                return std::vector<std::pair<Client, std::string> >();
+            }
             return targets;
         }
 
-        return getHostnameTargetsByWildcard(requester, server, extrTarget.substr(1));
+        return getHostnameTargetsByWildcard(requester, serverManager, extrTarget.substr(1));
     }
     if (extrTarget[0] == '$')
     {
-        return getServerTargetsByWildcard(requester, server, extrTarget.substr(1));
+        return getServerTargetsByWildcard(requester, serverManager, extrTarget.substr(1));
     }
 
-    return getUserTargets(requester, server, extrTarget);
+    return getUserTargets(requester, serverManager, extrTarget);
 }
 
-std::vector<Client> Privmsg::getChannelTargets(Server& server, const std::string& extrTarget) const
+/**
+* @brief Retrieves channel targets for the PRIVMSG command.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param extrTarget Channel name to search for.
+* @return Vector of pairs containing matching clients and their corresponding channel names.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::getChannelTargets(const Client& requester, 
+Manager& serverManager, const std::string& extrTarget) const
 {
-    const Channel* channel = server.getChannel(extrTarget);
-    if (channel != NULL)
+    const Channel* channel = serverManager.getChannelManager().getChannel(extrTarget);
+
+    if (channel == NULL)
     {
-        return channel->getClientList();
+        return std::vector<std::pair<Client, std::string> >();
     }
 
-    return std::vector<Client>();
+    std::vector<std::pair<Client, std::string> > channelTargets;
+
+    if (!channel->isUserOnChannel(requester.getNickname()))
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errCannotSendToChan, 
+            Utils::anyToVec(serverManager.getConfigManager().getName(), requester.getNickname(), channel->getName()));
+        channelTargets.push_back(std::make_pair(requester, std::string()));
+        return channelTargets;
+    }
+
+    const std::vector<Client>& clientList = channel->getClientList();
+    for (std::vector<Client>::const_iterator it = clientList.begin(); it != clientList.end(); ++it)
+    {
+        if (it->getNickname() == requester.getNickname())
+        {
+            continue;
+        }
+        channelTargets.push_back(std::make_pair(*it, channel->getName()));
+    }
+
+    return channelTargets;
 }
 
-std::vector<Client> Privmsg::getHostnameTargetsByWildcard(Client& requester, Server& server,
-    const std::string& extrTarget) const
+/**
+* @brief Retrieves hostname targets using wildcard matching.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param extrTarget Hostname string with wildcard to search for.
+* @return Vector of pairs containing matching clients and their corresponding hostnames.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::getHostnameTargetsByWildcard(const Client& requester, 
+    Manager& serverManager, const std::string& extrTarget) const
 {
-    std::vector<Client> targets;
-    const std::map<int, Client>& clients = server.getClients();
+    std::vector<std::pair<Client, std::string> > targets;
+    const std::map<int, Client>& clients = serverManager.getClientManager().getClients();
+
+    ConfigManager& configManager = serverManager.getConfigManager();
 
     size_t dotPos = extrTarget.find('.');
     if (dotPos != std::string::npos)
@@ -117,149 +194,121 @@ std::vector<Client> Privmsg::getHostnameTargetsByWildcard(Client& requester, Ser
         const std::string afterDot = extrTarget.substr(dotPos);
         if (afterDot.empty() || afterDot.find('*') != std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(configManager.getName(),
                 requester.getNickname(), extrTarget));
-            return std::vector<Client>();
+            return std::vector<std::pair<Client, std::string> >();
         }
 
         for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
         {
             if (ClientTranslator::matchWildcard(extrTarget.c_str(), it->second.getHostname().c_str()))
             {
-                targets.push_back(it->second);
+                targets.push_back(std::make_pair(it->second, it->second.getHostname()));
             }
-            return targets;
         }
     }
 
-    Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-        requester.getNickname(), extrTarget));
-    return std::vector<Client>();
+    if (targets.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), extrTarget));
+    }
+        
+    return targets;
 }
 
-std::vector<Client> Privmsg::getServerTargetsByWildcard(Client& requester, Server& server,
-    const std::string& extrTarget) const
+/**
+* @brief Retrieves server targets using wildcard matching.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param extrTarget Server name string with wildcard to search for.
+* @return Vector of pairs containing matching clients and their corresponding server names.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::getServerTargetsByWildcard(const Client& requester, 
+    Manager& serverManager, const std::string& extrTarget) const
 {
+    std::vector<std::pair<Client, std::string> > targets;
+
+    ConfigManager& configManager = serverManager.getConfigManager();
+
     size_t dotPos = extrTarget.find('.');
     if (dotPos != std::string::npos)
     {
         const std::string afterDot = extrTarget.substr(dotPos + 1);
         if (afterDot.empty() || afterDot.find('*') != std::string::npos)
         {
-            Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
+            Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(configManager.getName(),
                 requester.getNickname(), extrTarget));
-            return std::vector<Client>();
+            return std::vector<std::pair<Client, std::string> >();
         }
 
-        std::vector<Client> targets;
-        const std::map<int, Client>& clients = server.getClients();
-        if (ClientTranslator::matchWildcard(extrTarget.c_str(), server.getName().c_str()))
+        const std::map<int, Client>& clients = serverManager.getClientManager().getClients();
+        if (ClientTranslator::matchWildcard(extrTarget.c_str(), configManager.getName().c_str()))
         {
             for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
             {
-                targets.push_back(it->second);
+                targets.push_back(std::make_pair(it->second, configManager.getName()));
             }
-            return targets;
         }
     }
+    if (targets.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), extrTarget));
+    }
 
-    Replier::reply(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(server.getName(),
-        requester.getNickname(), extrTarget));
-    return std::vector<Client>();
+    return targets;
 }
 
-std::vector<Client> Privmsg::getUserTargets(Client& requester, Server& server, const std::string& extrTarget) const
+/**
+* @brief Retrieves user targets for the PRIVMSG command.
+* 
+* @param requester Reference to the client who sent the command.
+* @param serverManager Reference to the server manager.
+* @param extrTarget User target string to search for.
+* @return Vector of pairs containing matching clients and their corresponding target names.
+*/
+std::vector<std::pair<Client, std::string> > Privmsg::getUserTargets(const Client& requester, Manager& serverManager,
+    const std::string& extrTarget) const
 {
     std::string nickname, username, hostname, serverName;
-    parseUserTarget(extrTarget, nickname, username, hostname, serverName);
+    ClientTranslator::parseUserTarget(extrTarget, nickname, username, hostname, serverName);
 
-    std::vector<Client> targets;
-    const std::map<int, Client>& clients = server.getClients();
+    std::vector<std::pair<Client, std::string> > targets;
+    const std::map<int, Client>& clients = serverManager.getClientManager().getClients();
+
+    ConfigManager& configManager = serverManager.getConfigManager();
 
     for (std::map<int, Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
     {
         bool allEmpty = (hostname.empty() && serverName.empty() && nickname.empty() && username.empty());
-        bool hostMatches = (hostname.empty() || hostname == it->second.getHostname());
-        bool serverMatches = (serverName.empty() || serverName == server.getName());
         bool nickMatches = (nickname.empty() || nickname == it->second.getNickname());
         bool userMatches = (username.empty() || username == it->second.getUsername());
+        bool hostMatches = (hostname.empty() || hostname == it->second.getHostname());
+        bool serverMatches = (serverName.empty() || serverName == configManager.getName());
+        bool hostServerMatches = ((hostMatches && serverMatches) ||
+                                    ((hostMatches || serverMatches) && hostname == serverName));
 
-        if (!allEmpty && hostMatches && serverMatches && nickMatches && userMatches)
+        if (!allEmpty && nickMatches && userMatches && hostServerMatches)
         {
-            targets.push_back(it->second);
+            targets.push_back(std::make_pair(it->second, extrTarget));
         }
     }
 
     if (targets.size() > 1)
     {
         std::string errorCode = "Ambiguous " + extrTarget + ".";
-        Replier::reply(requester.getFd(), Replier::errTooManyTargets, Utils::anyToVec(server.getName(),
+        Replier::addToQueue(requester.getFd(), Replier::errTooManyTargets, Utils::anyToVec(configManager.getName(),
             requester.getNickname(), extrTarget, errorCode, std::string("Message not sent.")));
-        return std::vector<Client>();
+        return std::vector<std::pair<Client, std::string> >();
+    }
+
+    if (targets.empty())
+    {
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), extrTarget));
     }
 
     return targets;
-}
-
-void Privmsg::parseUserTarget(const std::string& extrTarget, std::string& nickname, std::string& username, 
-    std::string& hostname, std::string& serverName) const
-{
-    size_t splitPos = extrTarget.find('!');
-    if (splitPos != std::string::npos)
-    {
-        nickname = extrTarget.substr(0, splitPos);
-        username = extrTarget.substr(splitPos + 1);
-
-        splitPos = username.find('%');
-        if (splitPos != std::string::npos)
-        {
-            hostname = username.substr(splitPos + 1);
-            username = username.substr(0, splitPos);
-
-            splitPos = username.find('@');
-            if (splitPos != std::string::npos)
-            {
-                serverName = hostname.substr(splitPos + 1);
-                hostname = hostname.substr(0, splitPos);
-            }
-        }
-        else
-        {
-            splitPos = username.find('@');
-            if (splitPos != std::string::npos)
-            {
-                hostname, serverName = username.substr(splitPos + 1);
-                username = username.substr(0, splitPos);
-            }
-        }
-    }
-    else
-    {
-        splitPos = extrTarget.find('%');
-        if (splitPos != std::string::npos)
-        {
-            username = extrTarget.substr(0, splitPos);
-            hostname = extrTarget.substr(splitPos + 1);
-
-            splitPos = hostname.find('@');
-            if (splitPos != std::string::npos)
-            {
-                serverName = hostname.substr(splitPos + 1);
-                hostname = hostname.substr(0, splitPos);
-            }
-        }
-        else
-        {
-            splitPos = extrTarget.find('@');
-            if (splitPos != std::string::npos)
-            {
-                username = extrTarget.substr(0, splitPos);
-                hostname, serverName = extrTarget.size(splitPos + 1);
-            }
-            else
-            {
-                nickname = extrTarget;
-            }
-        }
-    }
 }

@@ -78,30 +78,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Channel.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Client.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/ClientTranslator.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Colors.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Log.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Replier.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Server.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/Utils.h">
-			<Option target="ircserv"/>
-		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Cap.h">
 			<Option target="ircserv"/>
 		</Unit>
@@ -117,19 +93,16 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Kick.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Mode.h">
-			<Option target="ircserv"/>
-		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Nick.h">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Part.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Pass.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Ping.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Privmsg.h">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Topic.h">
@@ -141,28 +114,49 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Who.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Channel.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/communication/ClientTranslator.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Client.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/communication/Replier.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/ClientTranslator.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/core/Log.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Log.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/core/Server.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Log.tpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/data/Channel.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Replier.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/data/Client.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Server.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/ChannelManager.h">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Utils.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/ClientManager.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/CommandManager.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/ConfigManager.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/ConnectionManager.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/manager/Manager.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/utils/Colors.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/utils/Utils.h">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/Main.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Cap.cpp">
@@ -180,19 +174,16 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Kick.cpp">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Mode.cpp">
-			<Option target="ircserv"/>
-		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp">
-			<Option target="ircserv"/>
-		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Part.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Ping.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Privmsg.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Topic.cpp">
@@ -204,7 +195,43 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Who.cpp">
 			<Option target="ircserv"/>
 		</Unit>
-		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/main.cpp">
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/communication/ClientTranslator.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/communication/Replier.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/core/Log.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/core/Server.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/data/Channel.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/data/Client.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/ChannelManager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/ClientManager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/CommandManager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/ConfigManager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/ConnectionManager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/Manager.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/CMakeLists.txt">

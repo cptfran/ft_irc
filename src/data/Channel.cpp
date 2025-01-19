@@ -1,17 +1,13 @@
-#include "Channel.h"
-#include "Log.h"
+#include "data/Channel.h"
+#include "core/Log.h"
+#include "core/Server.h"
+#include "communication/ClientTranslator.h"
 #include <algorithm>
-#include "Server.h"
 
 Channel::Channel(const std::string& name)
 : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
 {
-	this->name = sanitizeChannelName(name);
-}
-
-Channel::Channel() : inviteOnly(false), topicRestricted(false), userLimitActive(false), userLimit(0)
-{
-
+	this->name = ClientTranslator::sanitizeChannelName(name);
 }
 
 Channel::~Channel()
@@ -64,17 +60,17 @@ bool Channel::ClientData::operator==(const ClientData& toCompare) const
 }
 
 
-std::string Channel::getName() const
+const std::string& Channel::getName() const
 {
 	return this->name;
 }
 
-std::string Channel::getKey() const
+const std::string& Channel::getKey() const
 {
 	return this->key;
 }
 
-std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
+const std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 {
 	std::vector<std::string> nicknamesList;
 
@@ -92,17 +88,6 @@ std::vector<std::string> Channel::getNicknamesListWithOperatorInfo() const
 	}
 
 	return nicknamesList;
-}
-
-std::vector<int> Channel::getFdsList() const
-{
-	std::vector<int> fdsList;
-	for (std::vector<Channel::ClientData>::const_iterator it = this->joinedClients.begin();
-		it != this->joinedClients.end(); ++it)
-	{
-		fdsList.push_back(it->client.getFd());
-	}
-	return fdsList;
 }
 
 bool Channel::isInviteOnly() const
@@ -165,12 +150,12 @@ unsigned int Channel::getNumOfJoinedUsers() const
 	return this->joinedClients.size();
 }
 
-std::string Channel::getTopic() const
+const std::string& Channel::getTopic() const
 {
 	return this->topic;
 }
 
-std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, const bool operatorOnly) const
+const std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serverName, bool operatorOnly) const
 {
 	std::vector<std::string> list;
 
@@ -198,7 +183,7 @@ std::vector<std::string> Channel::getUserListForWhoQuery(const std::string& serv
 	return list;
 }
 
-std::vector<Client> Channel::getClientList() const
+const std::vector<Client> Channel::getClientList() const
 {
 	std::vector<Client> clientList;
 
@@ -223,7 +208,7 @@ void Channel::joinUser(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::ejectUser(Server& server, const std::string& userToKick)
+bool Channel::deleteUser(const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
@@ -232,15 +217,13 @@ bool Channel::ejectUser(Server& server, const std::string& userToKick)
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
 
-			server.deleteChannelIfEmpty(*this);
-
 			return true;
 		}
 	}
 	return false;
 }
 
-void Channel::setChannelInviteOnly(const bool isInviteOnly)
+void Channel::setChannelInviteOnly(bool isInviteOnly)
 {
 	this->inviteOnly = isInviteOnly;
 }
@@ -250,7 +233,7 @@ void Channel::addToInviteList(const std::string& invitedNickname)
 	this->invitedUsers.push_back(invitedNickname);
 }
 
-void Channel::setTopicRestricted(const bool isTopicRestricted)
+void Channel::setTopicRestricted(bool isTopicRestricted)
 {
 	this->topicRestricted = isTopicRestricted;
 }
@@ -265,7 +248,7 @@ void Channel::setTopic(const std::string& newTopic)
 	this->topic = newTopic;
 }
 
-void Channel::setOperator(const std::string& targetNickname, const bool operatorPrivilege)
+void Channel::setOperator(const std::string& targetNickname, bool operatorPrivilege)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
@@ -286,37 +269,4 @@ void Channel::setUserLimit(const int limit)
 void Channel::disableUserLimit()
 {
 	this->userLimitActive = false;
-}
-
-std::string Channel::sanitizeChannelName(const std::string& name) const
-{
-	std::string sanitized = name;
-
-	if (name[0] != '#')
-	{
-		sanitized = "#" + sanitized;
-	}
-
-	if (name.length() > CHANNEL_NAME_MAX_LENGTH)
-	{
-		sanitized = sanitized.substr(0, CHANNEL_NAME_MAX_LENGTH);
-	}
-
-	size_t pos = sanitized.find(' ');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-	pos = sanitized.find(',');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-	pos = sanitized.find('\a');
-	if (pos != std::string::npos)
-	{
-		sanitized = sanitized.substr(0, pos);
-	}
-
-	return sanitized;
 }

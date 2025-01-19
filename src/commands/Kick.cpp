@@ -1,11 +1,11 @@
 #include "commands/Kick.h"
 
-#include "Channel.h"
-#include "Server.h"
-#include "Utils.h"
-#include "Replier.h"
+#include "data/Channel.h"
+#include "core/Server.h"
+#include "utils/Utils.h"
+#include "communication/Replier.h"
 
-Kick::Kick()
+Kick::Kick() : Command()
 {
 
 }
@@ -15,70 +15,91 @@ Kick::~Kick()
 
 }
 
-void Kick::execute(Server& server, Client& client, const std::vector<std::string>& args) const
+/**
+ * @brief Executes the KICK command to remove a user from a channel.
+ * 
+ * @param serverManager Reference to the server manager.
+ * @param requester Reference to the client requesting the kick.
+ * @param args Vector of arguments where args[0] is the channel name and args[1] is the user to kick.
+ */
+void Kick::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
+    ConfigManager& configManager = serverManager.getConfigManager();
+
     // Not enough parameters provided.
     if (args.size() < 2)
     {
-        Replier::reply(client.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(server.getName(),
-            client.getNickname(), std::string("KICK")));
+        Replier::addToQueue(requester.getFd(), Replier::errNeedMoreParams, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), std::string("KICK")));
         return;
     }
 
     // Find the channel.
     const std::string& channelName = args[0];
-    Channel* channel = server.getChannel(channelName);
+    Channel* channel = serverManager.getChannelManager().getChannel(channelName);
 
     // Channel not found.
     if (channel == NULL)
     {
-        Replier::reply(client.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchChannel, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
     // Client not on the channel.
-    if (!channel->isUserOnChannel(client.getNickname()))
+    if (!channel->isUserOnChannel(requester.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errNotOnChannel, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::addToQueue(requester.getFd(), Replier::errNotOnChannel, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
     // Client is not an operator.
-    if (!channel->isUserOperator(client.getNickname()))
+    if (!channel->isUserOperator(requester.getNickname()))
     {
-        Replier::reply(client.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(server.getName(),
-            client.getNickname(), channelName));
+        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(configManager.getName(),
+            requester.getNickname(), channelName));
         return;
     }
 
-    kickUser(args, *channel, client, server);
+    kickUser(args, *channel, requester, configManager.getName());
 }
 
-void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requestor,
-    Server& server) const
+/**
+ * @brief Kicks a user from the specified channel and notifies all clients in the channel.
+ * 
+ * @param args Vector of arguments where args[1] is the user to kick and optionally args[2] is a comment.
+ * @param channel Reference to the channel from which the user will be kicked.
+ * @param requester Reference to the client requesting the kick.
+ * @param serverName Name of the server.
+ */
+void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester,
+    const std::string& serverName) const
 {
     const std::string& userToKick = args[1];
 
-    // Get fds list for broadcast message before client is kicked, so it will receive kick information.
-    const std::vector<int>& clientsFdList = channel.getFdsList();
+    // Get client list for broadcast message before client is kicked, so it will receive kick Log::INFOrmation.
+    const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
-    if (!channel.ejectUser(server, userToKick))
+    if (!channel.deleteUser(userToKick))
     {
-        Replier::reply(requestor.getFd(), Replier::errUserNotInChannel,
-            Utils::anyToVec(server.getName(), requestor.getNickname(), userToKick, channel.getName()));
+        Replier::addToQueue(requester.getFd(), Replier::errUserNotInChannel,
+            Utils::anyToVec(serverName, requester.getNickname(), userToKick, channel.getName()));
         return;
     }
 
     // Broadcast reply after kick.
-    std::vector<std::string> rplKickArgs = Utils::anyToVec(requestor.getNickname(), requestor.getUsername(),
-        requestor.getHostname(), userToKick, channel.getName());
+    std::vector<std::string> rplKickArgs = Utils::anyToVec(requester.getNickname(), requester.getUsername(),
+        requester.getHostname(), userToKick, channel.getName());
     if (args.size() == 3)
     {
         const std::string& comment = args[2];
         rplKickArgs.push_back(comment);
     }
-    Replier::broadcast(clientsFdList, Replier::rplKick, rplKickArgs);
+
+    for (std::vector<Client>::const_iterator it = clientList.begin(); it != clientList.end(); ++it)
+    {
+        Replier::addToQueue(it->getFd(), Replier::rplKick, rplKickArgs);
+    }
 }

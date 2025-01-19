@@ -1,6 +1,9 @@
-#include "../include/Replier.h"
+#include "communication/Replier.h"
 #include <sys/socket.h>
-#include "Log.h"
+#include "core/Log.h"
+#include <map>
+
+std::map<int, std::vector<std::string> > Replier::rplQueue;
 
 Replier::Replier()
 {
@@ -12,26 +15,78 @@ Replier::~Replier()
 
 }
 
-void Replier::reply(const int clientFd, const ReplyFunction func, const std::vector<std::string>& args)
+/**
+* @brief Adds a reply to the queue for the given file descriptor.
+*
+* This function takes a file descriptor, a reply function, and its arguments,
+* then adds the result of the reply function to the queue associated with the file descriptor.
+*
+* @param fd The file descriptor of the client.
+* @param func The reply function to generate the reply.
+* @param funcArgs The arguments to pass to the reply function.
+*/
+void Replier::addToQueue(const int fd, const ReplyFunction func, const std::vector<std::string>& funcArgs)
 {
-	const std::string reply = func(args);
-	send(clientFd, reply.c_str(), reply.size(), 0);
+    
+    rplQueue[fd].push_back(func(funcArgs));
 }
 
-void Replier::broadcast(const std::vector<int>& clientsFdList, const ReplyFunction func,
-	const std::vector<std::string>& args)
+/**
+* @brief Checks if a client is in the queue.
+*
+* This function checks if there is an entry in the queue for the given file descriptor.
+*
+* @param fd The file descriptor of the client.
+* @return true if the client is in the queue, false otherwise.
+*/
+bool Replier::clientInQueue(const int fd)
 {
-	for (std::vector<int>::const_iterator it = clientsFdList.begin(); it != clientsFdList.end(); ++it)
-	{
-		Replier::reply(*it, func, args);
-	}
+    if (Replier::rplQueue.find(fd) == Replier::rplQueue.end())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+* @brief Sends the first reply from the queue for the given file descriptor.
+*
+* This function finds the queue associated with the given file descriptor,
+* sends the first reply in the queue, and then removes it from the queue.
+* If the queue becomes empty, the entry is removed from the map.
+*
+* @param fd The file descriptor of the client.
+*/
+void Replier::sendFromQueue(const int fd)
+{
+    
+    // Find the vector associated with the given file descriptor.
+    std::map<int, std::vector<std::string> >::iterator it = Replier::rplQueue.find(fd);
+    if (it == Replier::rplQueue.end())
+    {
+        return;
+    }
+
+    // Get the first reply from the vector.
+    const std::string& reply = it->second.front();
+    send(fd, reply.c_str(), reply.size(), 0);
+
+    // Erase the first element from the vector.
+    it->second.erase(it->second.begin());
+
+    // If the vector becomes empty, erase the element from the map.
+    if (it->second.empty())
+    {
+        Replier::rplQueue.erase(it);
+    }
 }
 
 std::string Replier::rplWelcome(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplWelcome()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplWelcome()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -47,36 +102,36 @@ std::string Replier::rplYourHost(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplYourHost()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplYourHost()"));
 	}
 
 	const std::string& serverName = args[0];
 	const std::string& nickname = args[1];
 	const std::string& version = args[2];
 
-	return ":" + serverName + " 002 " + nickname + " :Your host is " + serverName + ", running version " + version
-	+ "\r\n";
+	return ":" + serverName + " 002 " + nickname + " :Your host is " + serverName + ", running version " + version +
+		"\r\n";
 }
 
 std::string Replier::rplCreated(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplCreated()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplCreated()"));
 	}
 
 	const std::string& serverName = args[0];
 	const std::string& nickname = args[1];
 	const std::string& creationDate = args[2];
 
-	return ":" + serverName + " 003 " + nickname + ": This server was created " + creationDate + "\r\n";
+	return ":" + serverName + " 003 " + nickname + " :This server was created " + creationDate + "\r\n";
 }
 
 std::string Replier::rplMyInfo(const std::vector<std::string>& args)
 {
 	if (args.size() != 5)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplMyInfo()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplMyInfo()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -85,15 +140,15 @@ std::string Replier::rplMyInfo(const std::vector<std::string>& args)
 	const std::string& availableUserModes = args[3];
 	const std::string& availableChannelModes = args[4];
 
-	return ":" + serverName + " 004 " + nickname + " " + nickname + " Version: " + version + " " + availableUserModes
-	+ " Available channel modes: " + availableChannelModes + "\r\n";
+	return ":" + serverName + " 004 " + nickname + " :" + nickname + " Version: " + version + 
+		" Available user modes: " + availableUserModes + " Available channel modes: " + availableChannelModes + "\r\n";
 }
 
 std::string Replier::rplPong(const std::vector<std::string>& args)
 {
 	if (args.empty())
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplPong()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplPong()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -112,7 +167,7 @@ std::string Replier::rplCap(const std::vector<std::string>& args)
 {
 	if (args.empty())
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplCap()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplCap()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -126,7 +181,7 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 {
 	if (args.size() < 5)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplKick()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplKick()"));
 	}
 
 	const std::string& kickerNickname = args[0];
@@ -149,7 +204,7 @@ std::string Replier::rplUModeIs(const std::vector<std::string>& args)
 {
 	if (args.size() < 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplUModeIs()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -168,7 +223,7 @@ std::string Replier::rplEndOfWho(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplEndOfWho()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplEndOfWho()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -182,7 +237,7 @@ std::string Replier::rplChannelModeIs(const std::vector<std::string>& args)
 {
 	if (args.size() < 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplChannelModeIs()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplChannelModeIs()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -205,7 +260,7 @@ std::string Replier::rplNoTopic(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNoTopic()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplNoTopic()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -219,7 +274,7 @@ std::string Replier::rplTopic(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplTopic()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplTopic()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -234,7 +289,7 @@ std::string Replier::rplInviting(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplInviting()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplInviting()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -249,7 +304,7 @@ std::string Replier::rplInvite(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplInvite()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplInvite()"));
 	}
 
 	const std::string& invitingNickname = args[0];
@@ -263,7 +318,7 @@ std::string Replier::rplJoin(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplJoin()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplJoin()"));
 	}
 
 	const std::string& nickname = args[0];
@@ -278,7 +333,7 @@ std::string Replier::rplWhoReply(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplWhoReply()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplWhoReply()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -292,7 +347,7 @@ std::string Replier::rplNamReply(const std::vector<std::string>& args)
 {
 	if (args.size() < 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNamReply()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplNamReply()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -322,7 +377,7 @@ std::string Replier::rplEndOfNames(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplEndOfNames()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplEndOfNames()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -336,7 +391,7 @@ std::string Replier::rplEndOfBanList(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplEndOfBanList()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplEndOfBanList()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -350,7 +405,7 @@ std::string Replier::rplPrivmsg(const std::vector<std::string>& args)
 {
 	if (args.size() != 5)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplPrivmsg()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplPrivmsg()"));
 	}
 
 	const std::string& senderNickname = args[0];
@@ -367,7 +422,7 @@ std::string Replier::errNoSuchNick(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("rplNoSuchNick()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("rplNoSuchNick()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -381,7 +436,7 @@ std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoSuchChannel()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNoSuchChannel()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -391,11 +446,25 @@ std::string Replier::errNoSuchChannel(const std::vector<std::string>& args)
 	return ":" + serverName + " 403 " + nickname + " " + channelName + " :No such channel\r\n";
 }
 
+std::string Replier::errCannotSendToChan(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errCannotSendToChan()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+	const std::string& channelName = args[2];
+
+	return ":" + serverName + " 404 " + nickname + " " + channelName + " :Cannot send to channel\r\n";
+}
+
 std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errTooManyChannels()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errTooManyChannels()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -407,9 +476,9 @@ std::string Replier::errTooManyChannels(const std::vector<std::string>& args)
 
 std::string Replier::errTooManyTargets(const std::vector<std::string>& args)
 {
-	if (args.size() != 3)
+	if (args.size() != 5)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errTooManyTargets()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errTooManyTargets()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -425,7 +494,7 @@ std::string Replier::errNoRecipient(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoRecipient()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNoRecipient()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -439,7 +508,7 @@ std::string Replier::errNoTextToSend(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNoTextToSend()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNoTextToSend()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -453,7 +522,7 @@ std::string Replier::errUnknownCommand(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUnknownCommand()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errUnknownCommand()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -463,11 +532,52 @@ std::string Replier::errUnknownCommand(const std::vector<std::string>& args)
 	return ":" + serverName + " 421 " + nickname + " " + command + " :Unknown command\r\n";
 }
 
+std::string Replier::errNoNicknameGiven(const std::vector<std::string>& args)
+{
+	if (args.size() != 2)
+	{
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNoNicknameGiven()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& nickname = args[1];
+
+	return ":" + serverName + " 431 " + nickname + " :No nickname given\r\n";
+}
+
+std::string Replier::errOneusNickname(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errOneusNickname()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& currNickname = args[1];
+	const std::string& newNickname = args[1];
+
+	return ":" + serverName + " 431 " + currNickname + " " + newNickname + " :Erroneous nickname\r\n";
+}
+
+std::string Replier::errNicknameInUse(const std::vector<std::string>& args)
+{
+	if (args.size() != 3)
+	{
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNicknameInUse()"));
+	}
+
+	const std::string& serverName = args[0];
+	const std::string& currNickname = args[1];
+	const std::string& newNickname = args[2];
+
+	return ":" + serverName + " 433 " + currNickname + " " + newNickname + " :Nickname is already in use\r\n";
+}
+
 std::string Replier::errNickCollision(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNickCollision()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNickCollision()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -483,7 +593,7 @@ std::string Replier::errUserNotInChannel(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUserNotInChannel()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errUserNotInChannel()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -499,7 +609,7 @@ std::string Replier::errNotOnChannel(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNotOnChannel()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNotOnChannel()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -513,7 +623,7 @@ std::string Replier::errUserOnChannel(const std::vector<std::string>& args)
 {
 	if (args.size() != 4)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUserOnChannel()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errUserOnChannel()"));
 	}
 	const std::string& serverName = args[0];
 	const std::string& nicknameInviting = args[1];
@@ -528,7 +638,7 @@ std::string Replier::errNotRegistered(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNotRegistered()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNotRegistered()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -541,7 +651,7 @@ std::string Replier::errNeedMoreParams(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errNeedMoreParams()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errNeedMoreParams()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -556,7 +666,7 @@ std::string Replier::errPasswdMismatch(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errPasswdMismatch()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errPasswdMismatch()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -569,7 +679,7 @@ std::string Replier::errKeySet(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errKeySet()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errKeySet()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -583,7 +693,7 @@ std::string Replier::errChannelIsFull(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChannelIsFull()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errChannelIsFull()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -597,7 +707,7 @@ std::string Replier::errUnknownMode(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUnknownMode()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errUnknownMode()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -610,7 +720,7 @@ std::string Replier::errInviteOnlyChan(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errInviteOnlyChan()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errInviteOnlyChan()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -624,7 +734,7 @@ std::string Replier::errBadChannelKey(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errBadChannelKey()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errBadChannelKey()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -638,7 +748,7 @@ std::string Replier::errBadChanMask(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errBadChanMask()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errBadChanMask()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -652,7 +762,7 @@ std::string Replier::errChanOPrivsNeeded(const std::vector<std::string>& args)
 {
 	if (args.size() != 3)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errChanOprivsNeeded()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errChanOprivsNeeded()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -666,7 +776,7 @@ std::string Replier::errUModeUnknownFlag(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -679,7 +789,7 @@ std::string Replier::errUsersDontMatch(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errUsersDontMatch()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errUsersDontMatch()"));
 	}
 
 	const std::string& serverName = args[0];
@@ -692,11 +802,11 @@ std::string Replier::errClosingLink(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{
-		throw std::invalid_argument(ERROR + RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
+		throw std::invalid_argument(Log::ERROR + Log::RPL_WRONG_NUM_OF_ARGS("errClosingLink()"));
 	}
 
 	const std::string& nickname = args[0];
 	const std::string& hostname = args[1];
 
-	return "ERROR :Closing Link: " + nickname + "[" + hostname + "] (Registration timeout)\r\n";
+	return "Log::ERROR :Closing Link: " + nickname + "[" + hostname + "] (Registration timeout)\r\n";
 }

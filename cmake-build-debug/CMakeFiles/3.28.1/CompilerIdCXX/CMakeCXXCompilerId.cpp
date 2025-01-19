@@ -2,7 +2,7 @@
    recognize the extension without flags.  Borland does not know .cxx for
    example.  */
 #ifndef __cplusplus
-# error "A C compiler has been selected for C++."
+# Log::ERROR "A C compiler has been selected for C++."
 #endif
 
 #if !defined(__has_include)
@@ -430,17 +430,17 @@
    getting matched.  Store it in a pointer rather than an array
    because some compilers will just produce instructions to fill the
    array rather than assigning a pointer to a static array.  */
-char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";
+char const* Log::INFO_compiler = "Log::INFO" ":" "compiler[" COMPILER_ID "]";
 #ifdef SIMULATE_ID
-char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
+char const* Log::INFO_simulate = "Log::INFO" ":" "simulate[" SIMULATE_ID "]";
 #endif
 
 #ifdef __QNXNTO__
-char const* qnxnto = "INFO" ":" "qnxnto[]";
+char const* qnxnto = "Log::INFO" ":" "qnxnto[]";
 #endif
 
 #if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
-char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";
+char const *Log::INFO_cray = "Log::INFO" ":" "compiler_wrapper[CrayPrgEnv]";
 #endif
 
 #define STRINGIFY_HELPER(X) #X
@@ -739,11 +739,11 @@ char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";
 
 /* Construct a string literal encoding the version number. */
 #ifdef COMPILER_VERSION
-char const* info_version = "INFO" ":" "compiler_version[" COMPILER_VERSION "]";
+char const* Log::INFO_version = "Log::INFO" ":" "compiler_version[" COMPILER_VERSION "]";
 
 /* Construct a string literal encoding the version number components. */
 #elif defined(COMPILER_VERSION_MAJOR)
-char const info_version[] = {
+char const Log::INFO_version[] = {
   'I', 'N', 'F', 'O', ':',
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
   COMPILER_VERSION_MAJOR,
@@ -761,18 +761,18 @@ char const info_version[] = {
 
 /* Construct a string literal encoding the internal version number. */
 #ifdef COMPILER_VERSION_INTERNAL
-char const info_version_internal[] = {
+char const Log::INFO_version_internal[] = {
   'I', 'N', 'F', 'O', ':',
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
   'i','n','t','e','r','n','a','l','[',
   COMPILER_VERSION_INTERNAL,']','\0'};
 #elif defined(COMPILER_VERSION_INTERNAL_STR)
-char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
+char const* Log::INFO_version_internal = "Log::INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
 #endif
 
 /* Construct a string literal encoding the version number components. */
 #ifdef SIMULATE_VERSION_MAJOR
-char const info_simulate_version[] = {
+char const Log::INFO_simulate_version[] = {
   'I', 'N', 'F', 'O', ':',
   's','i','m','u','l','a','t','e','_','v','e','r','s','i','o','n','[',
   SIMULATE_VERSION_MAJOR,
@@ -792,8 +792,8 @@ char const info_simulate_version[] = {
    getting matched.  Store it in a pointer rather than an array
    because some compilers will just produce instructions to fill the
    array rather than assigning a pointer to a static array.  */
-char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";
-char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
+char const* Log::INFO_platform = "Log::INFO" ":" "platform[" PLATFORM_ID "]";
+char const* Log::INFO_arch = "Log::INFO" ":" "arch[" ARCHITECTURE_ID "]";
 
 
 
@@ -813,7 +813,7 @@ char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
 #  define CXX_STD __cplusplus
 #endif
 
-const char* info_language_standard_default = "INFO" ":" "standard_default["
+const char* Log::INFO_language_standard_default = "Log::INFO" ":" "standard_default["
 #if CXX_STD > 202002L
   "23"
 #elif CXX_STD > 201703L
@@ -829,7 +829,7 @@ const char* info_language_standard_default = "INFO" ":" "standard_default["
 #endif
 "]";
 
-const char* info_language_extensions_default = "INFO" ":" "extensions_default["
+const char* Log::INFO_language_extensions_default = "Log::INFO" ":" "extensions_default["
 #if (defined(__clang__) || defined(__GNUC__) || defined(__xlC__) ||           \
      defined(__TI_COMPILER_VERSION__)) &&                                     \
   !defined(__STRICT_ANSI__)
@@ -844,26 +844,26 @@ const char* info_language_extensions_default = "INFO" ":" "extensions_default["
 int main(int argc, char* argv[])
 {
   int require = 0;
-  require += info_compiler[argc];
-  require += info_platform[argc];
-  require += info_arch[argc];
+  require += Log::INFO_compiler[argc];
+  require += Log::INFO_platform[argc];
+  require += Log::INFO_arch[argc];
 #ifdef COMPILER_VERSION_MAJOR
-  require += info_version[argc];
+  require += Log::INFO_version[argc];
 #endif
 #ifdef COMPILER_VERSION_INTERNAL
-  require += info_version_internal[argc];
+  require += Log::INFO_version_internal[argc];
 #endif
 #ifdef SIMULATE_ID
-  require += info_simulate[argc];
+  require += Log::INFO_simulate[argc];
 #endif
 #ifdef SIMULATE_VERSION_MAJOR
-  require += info_simulate_version[argc];
+  require += Log::INFO_simulate_version[argc];
 #endif
 #if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
-  require += info_cray[argc];
+  require += Log::INFO_cray[argc];
 #endif
-  require += info_language_standard_default[argc];
-  require += info_language_extensions_default[argc];
+  require += Log::INFO_language_standard_default[argc];
+  require += Log::INFO_language_extensions_default[argc];
   (void)argv;
   return require;
 }
