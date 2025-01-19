@@ -69,10 +69,10 @@ void Server::run()
 			return;
 		}
 
+		this->eventHandler();
 		this->connectionManager.addNewClientsToPoll(this->pollFds);
 		this->connectionManager.deleteQueuedClientsFromPoll(this->pollFds);
 		this->timeoutHandler();
-		this->eventHandler();
 	}
 }
 
