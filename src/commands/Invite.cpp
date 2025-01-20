@@ -22,7 +22,7 @@ Invite::~Invite()
 */  
 void Invite::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const  
 {  
-   ConfigManager& serverConfig = serverManager.getConfigManager();  
+   const ConfigManager& serverConfig = serverManager.getConfigManager();
 
    // Not enough parameters provided.  
    if (args.size() < 2)  
@@ -75,7 +75,7 @@ void Invite::execute(Manager& serverManager, Client& requester, const std::vecto
    }  
 
    // Channel is invite-only and inviting client doesn't have operator privileges.  
-   if (channelToInvite->isInviteOnly() && !channelToInvite->isUserOperator(requester.getNickname()))  
+   if (channelToInvite->isInviteOnly() && !channelToInvite->isUserOperator(requester.getNickname()))
    {  
        Replier::addToQueue(requester.getFd(), Replier::errChanOPrivsNeeded, Utils::anyToVec(serverConfig.getName(),  
            requester.getNickname(), channelToInviteName));  

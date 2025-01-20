@@ -1,5 +1,4 @@
 #include "commands/Kick.h"
-
 #include "data/Channel.h"
 #include "core/Server.h"
 #include "utils/Utils.h"

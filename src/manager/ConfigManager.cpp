@@ -48,11 +48,6 @@ const std::string& ConfigManager::getVersion() const
 	return this->version;
 }
 
-const std::string& ConfigManager::getPassword() const
-{
-	return this->password;
-}
-
 const std::string& ConfigManager::getCreationDate() const
 {
 	return this->creationDate;
@@ -66,4 +61,9 @@ const std::string& ConfigManager::getAvailableUserModes() const
 const std::string& ConfigManager::getAvailableChannelModes() const
 {
 	return this->availableChannelModes;
+}
+
+bool ConfigManager::passwordValidator(const std::string& pass) const
+{
+	return this->password == pass;
 }

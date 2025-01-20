@@ -231,6 +231,9 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/manager/Manager.cpp">
 			<Option target="ircserv"/>
 		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/utils/Colors.cpp">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp">
 			<Option target="ircserv"/>
 		</Unit>

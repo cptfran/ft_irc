@@ -2,6 +2,7 @@
 
 #include "Command.h"
 
+// TODO: implement like in new rfc?..
 class Kick: public Command
 {
 public:

@@ -34,7 +34,7 @@ void Join::execute(Manager& serverManager, Client& requester, const std::vector<
     }
 
     // User is not registered.
-    if (!requester.registered(configManager.getPassword()))
+    if (!requester.registered())
     {
         Replier::addToQueue(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(configManager.getName(),
             requester.getNickname()));

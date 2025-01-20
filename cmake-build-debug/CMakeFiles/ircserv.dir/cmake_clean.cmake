@@ -49,6 +49,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o"
   "CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o.d"
+  "CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o"
+  "CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o.d"
   "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o"
   "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o.d"
   "ircserv"

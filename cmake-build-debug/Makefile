@@ -729,6 +729,30 @@ src/manager/Manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/manager/Manager.cpp.s
 .PHONY : src/manager/Manager.cpp.s
 
+src/utils/Colors.o: src/utils/Colors.cpp.o
+.PHONY : src/utils/Colors.o
+
+# target to build an object file
+src/utils/Colors.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o
+.PHONY : src/utils/Colors.cpp.o
+
+src/utils/Colors.i: src/utils/Colors.cpp.i
+.PHONY : src/utils/Colors.i
+
+# target to preprocess a source file
+src/utils/Colors.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/utils/Colors.cpp.i
+.PHONY : src/utils/Colors.cpp.i
+
+src/utils/Colors.s: src/utils/Colors.cpp.s
+.PHONY : src/utils/Colors.s
+
+# target to generate assembly for a file
+src/utils/Colors.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ircserv.dir/build.make CMakeFiles/ircserv.dir/src/utils/Colors.cpp.s
+.PHONY : src/utils/Colors.cpp.s
+
 src/utils/Utils.o: src/utils/Utils.cpp.o
 .PHONY : src/utils/Utils.o
 
@@ -837,6 +861,9 @@ help:
 	@echo "... src/manager/Manager.o"
 	@echo "... src/manager/Manager.i"
 	@echo "... src/manager/Manager.s"
+	@echo "... src/utils/Colors.o"
+	@echo "... src/utils/Colors.i"
+	@echo "... src/utils/Colors.s"
 	@echo "... src/utils/Utils.o"
 	@echo "... src/utils/Utils.i"
 	@echo "... src/utils/Utils.s"

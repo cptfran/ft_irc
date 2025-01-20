@@ -91,7 +91,7 @@ void CommandManager::executeCommand(Manager& manager, Client& client, const std:
 
 	this->validCommands.at(cmdWithArgs.first)->execute(manager, client, cmdWithArgs.second);
 
-	if (client.registered(cfg.getPassword()) && !client.getWelcomeRepliesSent())
+	if (client.registered() && !client.getWelcomeRepliesSent())
 	{
 		Log::msgServer(Log::INFO, "CLIENT", client.getFd(), Log::CLIENT_REGISTER_SUCCESS);
 

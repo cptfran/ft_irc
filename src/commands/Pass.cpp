@@ -23,7 +23,7 @@ Pass::~Pass()
  */
 void Pass::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-    ConfigManager& configManager = serverManager.getConfigManager();
+    const ConfigManager& configManager = serverManager.getConfigManager();
 
     // Check if no password was provided.
     if (args.empty())
@@ -35,7 +35,7 @@ void Pass::execute(Manager& serverManager, Client& requester, const std::vector<
 
     const std::string& enteredPassword = args[0];
     // Check if the provided password does not match the server's password.
-    if (enteredPassword != configManager.getPassword())
+    if (!configManager.passwordValidator(enteredPassword))
     {
         Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
             requester.getNickname()));
@@ -43,5 +43,5 @@ void Pass::execute(Manager& serverManager, Client& requester, const std::vector<
     }
 
     // Set the client's password.
-    requester.setPassword(args[0]);
+    requester.setPasswordAccepted(true);
 }

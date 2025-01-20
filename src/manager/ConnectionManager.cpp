@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include <netdb.h>
 
+#include "communication/Replier.h"
+
 ConnectionManager::ConnectionManager()
 {
 
@@ -133,7 +135,7 @@ void ConnectionManager::deleteQueuedClientsFromPoll(std::vector<pollfd>& pollFds
 	{
 		for (std::vector<pollfd>::iterator it = pollFds.begin(); it != pollFds.end();)
 		{
-			if (it->fd == *delIt)
+			if (it->fd == *delIt && !Replier::clientInQueue(it->fd))
 			{
 				Log::msgServer(Log::INFO, "CLIENT", it->fd, Log::CLIENT_DISCONNECTED);
 				close(it->fd);
