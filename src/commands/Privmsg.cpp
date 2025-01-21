@@ -56,6 +56,10 @@ void Privmsg::execute(Manager& serverManager, Client& requester, const std::vect
     for (std::vector<std::pair<Client, std::string> >::const_iterator it = targets.begin(); it != targets.end();
         ++it)
     {
+        if (it->first.getFd() == requester.getFd())
+        {
+            continue;
+        }
         Replier::addToQueue(it->first.getFd(), Replier::rplPrivmsg, Utils::anyToVec(requester.getNickname(),
             requester.getUsername(), requester.getHostname(), it->second, message));
     }
@@ -162,10 +166,6 @@ Manager& serverManager, const std::string& extrTarget) const
     const std::vector<Client>& clientList = channel->getClientList();
     for (std::vector<Client>::const_iterator it = clientList.begin(); it != clientList.end(); ++it)
     {
-        if (it->getNickname() == requester.getNickname())
-        {
-            continue;
-        }
         channelTargets.push_back(std::make_pair(*it, channel->getName()));
     }
 

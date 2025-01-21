@@ -24,7 +24,7 @@ Part::~Part()
  */
 void Part::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-    ConfigManager& configManager = serverManager.getConfigManager();
+    const ConfigManager& configManager = serverManager.getConfigManager();
 
     // Check if arguments are provided.
     if (args.empty())
@@ -60,7 +60,7 @@ void Part::execute(Manager& serverManager, Client& requester, const std::vector<
         }
 
         // Attempt to remove the user from the channel.
-        if (!channelToLeave->deleteUser(requester.getNickname()))
+        if (!channelToLeave->deleteUser(serverManager.getChannelManager(), requester.getNickname()))
         {
             Log::msgServer(Log::INFO, "CLIENT", requester.getFd(), Log::EJECT_CLIENT_FAIL);
         }

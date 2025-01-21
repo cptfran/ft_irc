@@ -5,7 +5,6 @@
 #include <arpa/inet.h>
 #include <communication/Replier.h>
 #include <utils/Utils.h>
-
 #include "core/Log.h"
 
 ClientManager::ClientManager()
@@ -40,9 +39,23 @@ void ClientManager::addClient(const int clientFd)
 	this->clients.insert(std::make_pair(clientFd, client));
 }
 
-void ClientManager::deleteClient(const int clientFd)
+void ClientManager::queueClientToDelete(const int clientFd)
 {
-	this->clients.erase(clientFd);
+	this->fdsToDelete.push_back(clientFd);
+}
+
+void ClientManager::deleteQueuedClients()
+{
+	for (std::vector<int>::iterator it = this->fdsToDelete.begin(); it != this->fdsToDelete.end();)
+	{
+		if (Replier::clientInQueue(*it))
+		{
+			++it;
+			continue;
+		}
+		this->clients.erase(*it);
+		it = this->fdsToDelete.erase(it);
+	}
 }
 
 Client& ClientManager::getClientByFd(const int fd)
@@ -50,11 +63,11 @@ Client& ClientManager::getClientByFd(const int fd)
 	return this->clients.at(fd);
 }
 
-Client* ClientManager::getClientByNickname(const std::string& nicknameToFind)
+Client* ClientManager::getClientByNickname(const std::string& nickname)
 {
 	for (std::map<int, Client>::iterator it = this->clients.begin(); it != this->clients.end(); ++it)
 	{
-		if (it->second.getNickname() == nicknameToFind)
+		if (it->second.getNickname() == nickname)
 		{
 			return &it->second;
 		}

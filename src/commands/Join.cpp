@@ -23,7 +23,7 @@ Join::~Join()
  */
 void Join::execute(Manager& serverManager, Client& requester, const std::vector<std::string>& args) const
 {
-    ConfigManager& configManager = serverManager.getConfigManager();
+    const ConfigManager& configManager = serverManager.getConfigManager();
 
     // Not enough arguments provided.
     if (args.empty())
@@ -34,7 +34,7 @@ void Join::execute(Manager& serverManager, Client& requester, const std::vector<
     }
 
     // User is not registered.
-    if (!requester.registered(configManager.getPassword()))
+    if (!requester.registered())
     {
         Replier::addToQueue(requester.getFd(), Replier::errNotRegistered, Utils::anyToVec(configManager.getName(),
             requester.getNickname()));
@@ -54,6 +54,12 @@ void Join::execute(Manager& serverManager, Client& requester, const std::vector<
 
     // Find channel on the list. If not found, create new channel.
     Channel* channelToJoin = findOrCreateChannel(serverManager.getChannelManager(), channelName);
+
+    // User is already on the channel. No need to do anything.
+    if (channelToJoin->isUserOnChannel(requester.getNickname()))
+    {
+        return;
+    }
 
     // If channel is invite only and client is not invited, don't join the client to it and send proper reply.
     if (channelToJoin->isInviteOnly() && !channelToJoin->isUserInvited(requester.getNickname()))
@@ -96,6 +102,7 @@ Channel* Join::findOrCreateChannel(ChannelManager& channelManager, const std::st
     {
         channelManager.addChannel(Channel(channelName));
         channelToJoin = channelManager.getNewestChannel();
+        Log::msgServer(Log::INFO, "CHANNEL", channelToJoin->getName(), Log::CHANNEL_CREATED);
     }
 
     return channelToJoin;

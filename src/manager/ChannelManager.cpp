@@ -1,5 +1,5 @@
 #include "manager/ChannelManager.h"
-#include <algorithm>
+#include "core/Log.h"
 
 ChannelManager::ChannelManager() 
 {
@@ -42,7 +42,7 @@ void ChannelManager::deleteClientFromChannels(const Client& client)
 	{
 		if (it->isUserOnChannel(client.getNickname()))
 		{
-			it->deleteUser(client.getNickname());
+			it->deleteUser(*this, client.getNickname());
 
 			if (it->getNumOfJoinedUsers() == 0)
 			{
@@ -63,6 +63,7 @@ void ChannelManager::deleteChannel(const Channel& channel)
 		channel);
 	if (it != this->channels.end())
 	{
+		Log::msgServer(Log::INFO, "CHANNEL", it->getName(), Log::CHANNEL_DELETED);
 		this->channels.erase(it);
 	}
 }

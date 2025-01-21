@@ -192,7 +192,7 @@ std::string Replier::rplKick(const std::vector<std::string>& args)
 
 	if (args.size() == 6)
 	{
-		const std::string& comment = args[5].substr(0);
+		const std::string& comment = args[5].substr(1);
 		return ":" + kickerNickname + "!" + kickerUsername + "@" + kickerHostname + " KICK " + channelName + " " +
 			kickedUser + " :" + comment + "\r\n";
 	}
@@ -808,5 +808,5 @@ std::string Replier::errClosingLink(const std::vector<std::string>& args)
 	const std::string& nickname = args[0];
 	const std::string& hostname = args[1];
 
-	return "Log::ERROR :Closing Link: " + nickname + "[" + hostname + "] (Registration timeout)\r\n";
+	return "ERROR :Closing Link: " + nickname + "[" + hostname + "] (Registration timeout)\r\n";
 }

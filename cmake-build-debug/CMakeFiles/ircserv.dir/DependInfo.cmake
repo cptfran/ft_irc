@@ -15,6 +15,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Join.cpp" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Kick.cpp" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/commands/Part.cpp" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Ping.cpp" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/commands/Privmsg.cpp" "CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o.d"
@@ -33,15 +34,16 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/szymon/CLionProjects/ft_irc/src/manager/ConfigManager.cpp" "CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/manager/ConnectionManager.cpp" "CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/manager/Manager.cpp" "CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o.d"
+  "/Users/szymon/CLionProjects/ft_irc/src/utils/Colors.cpp" "CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o.d"
   "/Users/szymon/CLionProjects/ft_irc/src/utils/Utils.cpp" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_LINKED_Log::INFO_FILES
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
   )
 
 # Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_FORWARD_LINKED_Log::INFO_FILES
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

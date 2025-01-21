@@ -11,7 +11,8 @@ public:
     ~ClientManager();
 
     void addClient(int clientFd);
-    void deleteClient(int clientFd);
+    void queueClientToDelete(int clientFd);
+    void deleteQueuedClients();
 
     Client& getClientByFd(int fd);
     Client* getClientByNickname(const std::string& nickname);
@@ -20,6 +21,7 @@ public:
 
 private:
     std::map<int, Client> clients;
+    std::vector<int> fdsToDelete;
 
     ClientManager(const ClientManager& toCopy);
     ClientManager& operator=(const ClientManager& toAssign);

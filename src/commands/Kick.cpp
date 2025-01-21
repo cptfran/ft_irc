@@ -1,5 +1,4 @@
 #include "commands/Kick.h"
-
 #include "data/Channel.h"
 #include "core/Server.h"
 #include "utils/Utils.h"
@@ -62,7 +61,7 @@ void Kick::execute(Manager& serverManager, Client& requester, const std::vector<
         return;
     }
 
-    kickUser(args, *channel, requester, configManager.getName());
+    kickUser(args, *channel, requester, serverManager);
 }
 
 /**
@@ -74,7 +73,7 @@ void Kick::execute(Manager& serverManager, Client& requester, const std::vector<
  * @param serverName Name of the server.
  */
 void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, const Client& requester,
-    const std::string& serverName) const
+    const Manager& serverManager) const
 {
     const std::string& userToKick = args[1];
 
@@ -82,10 +81,11 @@ void Kick::kickUser(const std::vector<std::string>& args, Channel& channel, cons
     const std::vector<Client>& clientList = channel.getClientList();
 
     // Kick user from the channel.
-    if (!channel.deleteUser(userToKick))
+    if (!channel.deleteUser(serverManager.getChannelManager(), userToKick))
     {
         Replier::addToQueue(requester.getFd(), Replier::errUserNotInChannel,
-            Utils::anyToVec(serverName, requester.getNickname(), userToKick, channel.getName()));
+            Utils::anyToVec(serverManager.getConfigManager().getName(), requester.getNickname(), userToKick,
+                channel.getName()));
         return;
     }
 

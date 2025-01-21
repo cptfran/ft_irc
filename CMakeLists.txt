@@ -12,6 +12,7 @@ add_executable(ircserv
         include/commands/Join.h
         include/commands/Kick.h
         include/commands/Nick.h
+        include/commands/Part.h
         include/commands/Pass.h
         include/commands/Ping.h
         include/commands/Privmsg.h
@@ -38,6 +39,7 @@ add_executable(ircserv
         src/commands/Join.cpp
         src/commands/Kick.cpp
         src/commands/Nick.cpp
+        src/commands/Part.cpp
         src/commands/Pass.cpp
         src/commands/Ping.cpp
         src/commands/Privmsg.cpp

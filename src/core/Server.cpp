@@ -71,6 +71,7 @@ void Server::run()
 
 		this->eventHandler();
 		this->connectionManager.addNewClientsToPoll(this->pollFds);
+		this->clientManager.deleteQueuedClients();
 		this->connectionManager.deleteQueuedClientsFromPoll(this->pollFds);
 		this->timeoutHandler();
 	}
@@ -120,6 +121,7 @@ void Server::eventHandler()
 			}
 			else
 			{
+				std::cout << "pollFd = " <<  it->fd << std::endl;
 				clientRequestHandler(it->fd);
 			}
 		}
@@ -137,13 +139,13 @@ void Server::timeoutHandler()
 	{
 		std::map<int, Client>::const_iterator clientIt = clients.find(it->fd);
 		if (clientIt != clients.end() &&
-			!clientIt->second.registered(this->configManager.getPassword()) &&
+			!clientIt->second.registered() &&
 			difftime(std::time(0), clientIt->second.getTimeConnected()) > ConfigManager::TIME_FOR_CLIENT_TO_REGISTER)
 		{
 			Replier::addToQueue(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),
 				clientIt->second.getHostname()));
 			this->connectionManager.queueClientToDeleteFromPoll(it->fd);
-			this->clientManager.deleteClient(it->fd);
+			this->clientManager.queueClientToDelete(it->fd);
 		}
 	}
 }
@@ -186,6 +188,6 @@ void Server::clientRequestHandler(const int fd)
 void Server::clientRemovalHandler(const int fd)
 {
 	this->channelManager.deleteClientFromChannels(this->clientManager.getClientByFd(fd));
-	this->clientManager.deleteClient(fd);
+	this->clientManager.queueClientToDelete(fd);
 	this->connectionManager.queueClientToDeleteFromPoll(fd);
 }

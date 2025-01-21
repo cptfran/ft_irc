@@ -25,10 +25,11 @@ public:
 	int getFd() const;
 	const std::string& getName() const;
 	const std::string& getVersion() const;
-	const std::string& getPassword() const;
 	const std::string& getCreationDate() const;
 	const std::string& getAvailableUserModes() const;
 	const std::string& getAvailableChannelModes() const;
+
+	bool passwordValidator(const std::string& pass) const;
 
 private:
 	int fd;

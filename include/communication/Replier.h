@@ -71,9 +71,11 @@ private:
 	static std::string errUsersDontMatch(const std::vector<std::string>& args); // 502
 	static std::string errClosingLink(const std::vector<std::string>& args); // none
 
+	friend class Cap;
+	friend class ClientManager;
 	friend class Command;
 	friend class CommandManager;
-	friend class Cap;
+	friend class ConnectionManager;
 	friend class Invite;
 	friend class Join;
 	friend class Kick;

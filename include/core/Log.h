@@ -57,6 +57,8 @@ public:
     static const std::string CLIENT_DISCONNECTED;
     static const std::string FIND_CHANNEL_FAIL_AFTER_ADD;
     static const std::string EJECT_CLIENT_FAIL;
+    static const std::string CHANNEL_CREATED;
+    static const std::string CHANNEL_DELETED;
 
     // Dynamic message:
     static std::string RPL_WRONG_NUM_OF_ARGS(const std::string& funcName);
