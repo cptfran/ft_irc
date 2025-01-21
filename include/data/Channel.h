@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+class ChannelManager;
 class Client;
 
 class Channel
@@ -37,7 +38,7 @@ public:
 	const std::vector<Client> getClientList() const;
 
 	void joinUser(Client& newClient);
-	bool deleteUser(const std::string& userToKick);
+	bool deleteUser(ChannelManager& channelManager, const std::string& userToKick);
 	void setChannelInviteOnly(bool isInviteOnly);
 	void addToInviteList(const std::string& invitedNickname);
 	void setTopicRestricted(bool isTopicRestricted);

@@ -50,7 +50,6 @@ ConnectionManager& Manager::getConnectionManager() const
  * @param newClientFd The file descriptor of the new client.
  * @param newClientNickname The nickname of the new client.
  */
-// TODO: 'map::at:  key not found' when nickname collision.
 void Manager::handleNicknameCollision(const int newClientFd, const std::string& newClientNickname)
 {
     // Get client list, iterate and find collision.

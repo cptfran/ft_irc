@@ -208,7 +208,7 @@ void Channel::joinUser(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
-bool Channel::deleteUser(const std::string& userToKick)
+bool Channel::deleteUser(ChannelManager& channelManager, const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
 	{
@@ -216,6 +216,16 @@ bool Channel::deleteUser(const std::string& userToKick)
 		{
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
+
+			if (this->joinedClients.empty())
+			{
+				channelManager.deleteChannel(*this);
+			}
+
+			if (this->joinedClients.size() == 1)
+			{
+				this->joinedClients[0].isOperator = true;
+			}
 
 			return true;
 		}

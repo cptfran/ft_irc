@@ -121,6 +121,7 @@ void Server::eventHandler()
 			}
 			else
 			{
+				std::cout << "pollFd = " <<  it->fd << std::endl;
 				clientRequestHandler(it->fd);
 			}
 		}

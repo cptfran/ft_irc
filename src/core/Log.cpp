@@ -29,6 +29,8 @@ const std::string Log::SETSOCKOPT_FAIL = Colors::LIGHT_CYAN + std::string("Faile
 const std::string Log::CLIENT_DISCONNECTED = Colors::LIGHT_CYAN + std::string("Client disconnected.") + Colors::RESET;
 const std::string Log::FIND_CHANNEL_FAIL_AFTER_ADD = Colors::LIGHT_CYAN + std::string("Failed to find the channel after adding it to the channels list.") + Colors::RESET;
 const std::string Log::EJECT_CLIENT_FAIL = Colors::LIGHT_CYAN + std::string("Cannot kick user, user not found.") + Colors::RESET;
+const std::string Log::CHANNEL_CREATED = Colors::LIGHT_CYAN + std::string("Channel created.") + Colors::RESET;
+const std::string Log::CHANNEL_DELETED = Colors::LIGHT_CYAN + std::string("Channel deleted.") + Colors::RESET;
 
 std::string Log::RPL_WRONG_NUM_OF_ARGS(const std::string& funcName)
 {

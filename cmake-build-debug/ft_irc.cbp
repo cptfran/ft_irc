@@ -96,6 +96,9 @@
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Nick.h">
 			<Option target="ircserv"/>
 		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Part.h">
+			<Option target="ircserv"/>
+		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/include/commands/Pass.h">
 			<Option target="ircserv"/>
 		</Unit>
@@ -175,6 +178,9 @@
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Nick.cpp">
+			<Option target="ircserv"/>
+		</Unit>
+		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Part.cpp">
 			<Option target="ircserv"/>
 		</Unit>
 		<Unit filename="/Users/szymon/CLionProjects/ft_irc/src/commands/Pass.cpp">
