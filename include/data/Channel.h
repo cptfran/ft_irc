@@ -2,8 +2,7 @@
 
 #include <string>
 #include <vector>
-
-class Client;
+#include <data/Client.h>
 
 class Channel
 {
@@ -11,7 +10,7 @@ public:
 	struct ClientData
 	{
 		bool isOperator;
-		Client& client;
+		Client client;
 		ClientData& operator=(const ClientData& toCopy);
 		bool operator==(const ClientData& toCompare) const;
 	};

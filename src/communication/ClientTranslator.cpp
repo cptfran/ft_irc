@@ -38,10 +38,6 @@ std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(fd) + "]: \"") + recvBuffer + "\"");
 	if (bytesRead <= 0)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-		{
-			return std::string();
-		}
 		throw std::runtime_error(Log::ERROR + std::string("recv"));
 	}
 	recvBuffer[bytesRead] = '\0';

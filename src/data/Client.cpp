@@ -16,9 +16,13 @@ Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false),
 
 bool Client::operator==(const Client& toCompare) const
 {
-	return this->fd == toCompare.fd && this->password == toCompare.password && this->nickname == toCompare.nickname
-		&& this->username == toCompare.username && this->realname == toCompare.realname
-		&& this->welcomeRepliesSent == toCompare.welcomeRepliesSent && this->channelsJoined == toCompare.channelsJoined;
+	return this->fd == toCompare.fd &&
+					   this->password == toCompare.password &&
+					   this->nickname == toCompare.nickname &&
+					   this->username == toCompare.username &&
+					   this->realname == toCompare.realname &&
+					   this->welcomeRepliesSent == toCompare.welcomeRepliesSent &&
+					   this->channelsJoined == toCompare.channelsJoined;
 }
 
 Client::~Client()

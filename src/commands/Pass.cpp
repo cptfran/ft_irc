@@ -43,5 +43,6 @@ void Pass::execute(Manager& serverManager, Client& requester, const std::vector<
     }
 
     // Set the client's password.
+	// TODO: not needed, just info its accepted.
     requester.setPassword(args[0]);
 }

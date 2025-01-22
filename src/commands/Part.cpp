@@ -42,7 +42,7 @@ void Part::execute(Manager& serverManager, Client& requester, const std::vector<
     {
         const std::string& channelToFindName = *it;
         Channel* channelToLeave = serverManager.getChannelManager().getChannel(channelToFindName);
-
+	
         // Check if the channel exists
         if (channelToLeave == NULL)
         {

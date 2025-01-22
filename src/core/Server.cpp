@@ -1,22 +1,15 @@
 #include "core/Server.h"
 #include <cerrno>
 #include <communication/ClientTranslator.h>
-#include <cstdio>
 #include "core/Log.h"
 #include <stdexcept>
-#include <unistd.h>
-#include <sys/socket.h>
 #include <cstring>
-#include <iostream>
 #include <list>
 #include <map>
-#include <algorithm>
 #include <csignal>
 #include <poll.h>
-#include <sstream>
 #include "utils/Utils.h"
 #include <ctime>
-#include <arpa/inet.h>
 #include "communication/Replier.h"
 #include "manager/Manager.h"
 
@@ -61,10 +54,6 @@ void Server::run()
 		const int pollResult = poll(&this->pollFds[0], this->pollFds.size(), 1000);
 		if (pollResult < 0)
 		{
-			if (errno == EINTR)
-			{
-				continue;
-			}
 			Log::msgServer(Log::ERROR, "Poll error " + std::string(strerror(errno)));
 			return;
 		}

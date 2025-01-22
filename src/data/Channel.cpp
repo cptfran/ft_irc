@@ -208,6 +208,7 @@ void Channel::joinUser(Client& newClient)
 	this->joinedClients.push_back(newClientData);
 }
 
+// TODO: handle when there is one user left on the channel and he is not OP.
 bool Channel::deleteUser(const std::string& userToKick)
 {
 	for (std::vector<ClientData>::iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)

@@ -1,5 +1,5 @@
 #ifdef __cplusplus
-# Log::ERROR "A C++ compiler has been selected for C."
+# error "A C++ compiler has been selected for C."
 #endif
 
 #if defined(__18CXX)
@@ -335,6 +335,13 @@
   # define COMPILER_VERSION_PATCH DEC(__ARMCOMPILER_VERSION/100   % 100)
 # define COMPILER_VERSION_INTERNAL DEC(__ARMCOMPILER_VERSION)
 
+#elif defined(__clang__) && defined(__ti__)
+# define COMPILER_ID "TIClang"
+  # define COMPILER_VERSION_MAJOR DEC(__ti_major__)
+  # define COMPILER_VERSION_MINOR DEC(__ti_minor__)
+  # define COMPILER_VERSION_PATCH DEC(__ti_patchlevel__)
+# define COMPILER_VERSION_INTERNAL DEC(__ti_version__)
+
 #elif defined(__clang__)
 # define COMPILER_ID "Clang"
 # if defined(_MSC_VER)
@@ -445,17 +452,17 @@
    getting matched.  Store it in a pointer rather than an array
    because some compilers will just produce instructions to fill the
    array rather than assigning a pointer to a static array.  */
-char const* Log::INFO_compiler = "Log::INFO" ":" "compiler[" COMPILER_ID "]";
+char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";
 #ifdef SIMULATE_ID
-char const* Log::INFO_simulate = "Log::INFO" ":" "simulate[" SIMULATE_ID "]";
+char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 #endif
 
 #ifdef __QNXNTO__
-char const* qnxnto = "Log::INFO" ":" "qnxnto[]";
+char const* qnxnto = "INFO" ":" "qnxnto[]";
 #endif
 
 #if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
-char const *Log::INFO_cray = "Log::INFO" ":" "compiler_wrapper[CrayPrgEnv]";
+char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";
 #endif
 
 #define STRINGIFY_HELPER(X) #X
@@ -679,6 +686,14 @@ char const *Log::INFO_cray = "Log::INFO" ":" "compiler_wrapper[CrayPrgEnv]";
 #  define ARCHITECTURE_ID ""
 # endif
 
+#elif defined(__clang__) && defined(__ti__)
+# if defined(__ARM_ARCH)
+#  define ARCHITECTURE_ID "Arm"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
 #elif defined(__TI_COMPILER_VERSION__)
 # if defined(__TI_ARM__)
 #  define ARCHITECTURE_ID "ARM"
@@ -754,11 +769,11 @@ char const *Log::INFO_cray = "Log::INFO" ":" "compiler_wrapper[CrayPrgEnv]";
 
 /* Construct a string literal encoding the version number. */
 #ifdef COMPILER_VERSION
-char const* Log::INFO_version = "Log::INFO" ":" "compiler_version[" COMPILER_VERSION "]";
+char const* info_version = "INFO" ":" "compiler_version[" COMPILER_VERSION "]";
 
 /* Construct a string literal encoding the version number components. */
 #elif defined(COMPILER_VERSION_MAJOR)
-char const Log::INFO_version[] = {
+char const info_version[] = {
   'I', 'N', 'F', 'O', ':',
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
   COMPILER_VERSION_MAJOR,
@@ -776,18 +791,18 @@ char const Log::INFO_version[] = {
 
 /* Construct a string literal encoding the internal version number. */
 #ifdef COMPILER_VERSION_INTERNAL
-char const Log::INFO_version_internal[] = {
+char const info_version_internal[] = {
   'I', 'N', 'F', 'O', ':',
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
   'i','n','t','e','r','n','a','l','[',
   COMPILER_VERSION_INTERNAL,']','\0'};
 #elif defined(COMPILER_VERSION_INTERNAL_STR)
-char const* Log::INFO_version_internal = "Log::INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
+char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
 #endif
 
 /* Construct a string literal encoding the version number components. */
 #ifdef SIMULATE_VERSION_MAJOR
-char const Log::INFO_simulate_version[] = {
+char const info_simulate_version[] = {
   'I', 'N', 'F', 'O', ':',
   's','i','m','u','l','a','t','e','_','v','e','r','s','i','o','n','[',
   SIMULATE_VERSION_MAJOR,
@@ -807,8 +822,8 @@ char const Log::INFO_simulate_version[] = {
    getting matched.  Store it in a pointer rather than an array
    because some compilers will just produce instructions to fill the
    array rather than assigning a pointer to a static array.  */
-char const* Log::INFO_platform = "Log::INFO" ":" "platform[" PLATFORM_ID "]";
-char const* Log::INFO_arch = "Log::INFO" ":" "arch[" ARCHITECTURE_ID "]";
+char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";
+char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
 
 
 
@@ -829,10 +844,10 @@ char const* Log::INFO_arch = "Log::INFO" ":" "arch[" ARCHITECTURE_ID "]";
 #else
 # define C_VERSION "90"
 #endif
-const char* Log::INFO_language_standard_default =
-  "Log::INFO" ":" "standard_default[" C_VERSION "]";
+const char* info_language_standard_default =
+  "INFO" ":" "standard_default[" C_VERSION "]";
 
-const char* Log::INFO_language_extensions_default = "Log::INFO" ":" "extensions_default["
+const char* info_language_extensions_default = "INFO" ":" "extensions_default["
 #if (defined(__clang__) || defined(__GNUC__) || defined(__xlC__) ||           \
      defined(__TI_COMPILER_VERSION__)) &&                                     \
   !defined(__STRICT_ANSI__)
@@ -854,26 +869,26 @@ int main(int argc, char* argv[])
 # endif
 {
   int require = 0;
-  require += Log::INFO_compiler[argc];
-  require += Log::INFO_platform[argc];
-  require += Log::INFO_arch[argc];
+  require += info_compiler[argc];
+  require += info_platform[argc];
+  require += info_arch[argc];
 #ifdef COMPILER_VERSION_MAJOR
-  require += Log::INFO_version[argc];
+  require += info_version[argc];
 #endif
 #ifdef COMPILER_VERSION_INTERNAL
-  require += Log::INFO_version_internal[argc];
+  require += info_version_internal[argc];
 #endif
 #ifdef SIMULATE_ID
-  require += Log::INFO_simulate[argc];
+  require += info_simulate[argc];
 #endif
 #ifdef SIMULATE_VERSION_MAJOR
-  require += Log::INFO_simulate_version[argc];
+  require += info_simulate_version[argc];
 #endif
 #if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
-  require += Log::INFO_cray[argc];
+  require += info_cray[argc];
 #endif
-  require += Log::INFO_language_standard_default[argc];
-  require += Log::INFO_language_extensions_default[argc];
+  require += info_language_standard_default[argc];
+  require += info_language_extensions_default[argc];
   (void)argv;
   return require;
 }

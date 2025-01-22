@@ -1,7 +1,7 @@
 .PHONY: all clean fclean re
 
 NAME = ircserv
-CC = c++
+CC = clang++
 FLAGS = -Wall -Wextra -std=c++98 -g
 
 SRC_DIR = src

@@ -5,7 +5,8 @@
 
 static bool initServer(const char* host, const char* version, const char* password, int port);
 
-// TODO: when disconnecting server with ctrl+c send msg to clients?
+// TODO: clients not leaving the channel
+// TODO: segfault when wrong parameters in /mode +o
 int main(const int argc, char* argv[])
 {
     if (argc != 3)
