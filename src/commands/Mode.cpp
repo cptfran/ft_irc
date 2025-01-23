@@ -274,6 +274,7 @@ void Mode::handleKeyMode(Channel& channel, const std::string& action, const std:
     }
 
     const std::string& newKey = args[argsI];
+	++argsI;
     channel.setKey(newKey);
 }
 
@@ -299,10 +300,11 @@ void Mode::handleOperatorMode(Channel& channel, const std::string& action, const
     }
 
     const std::string& targetNickname = args[argsI];
-    ++argsI;
+	++argsI;
     if (!channel.isUserOnChannel(targetNickname))
     {
-        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(serverName, targetNickname));
+        Replier::addToQueue(requester.getFd(), Replier::errNoSuchNick, Utils::anyToVec(serverName,
+			requester.getNickname(), targetNickname));
         return;
     }
 

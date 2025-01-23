@@ -51,10 +51,13 @@ void Server::run()
 	// Main loop, handling new client connections and already running clients.
 	while (running)
 	{
-		const int pollResult = poll(&this->pollFds[0], this->pollFds.size(), 1000);
+		const int pollResult = poll(&this->pollFds[0], this->pollFds.size(), 0);
 		if (pollResult < 0)
 		{
-			Log::msgServer(Log::ERROR, "Poll error " + std::string(strerror(errno)));
+			if (running)
+			{
+				Log::msgServer(Log::ERROR, "Poll error " + std::string(strerror(errno)));
+			}
 			return;
 		}
 
@@ -126,7 +129,7 @@ void Server::timeoutHandler()
 	{
 		std::map<int, Client>::const_iterator clientIt = clients.find(it->fd);
 		if (clientIt != clients.end() &&
-			!clientIt->second.registered(this->configManager.getPassword()) &&
+			!clientIt->second.registered() &&
 			difftime(std::time(0), clientIt->second.getTimeConnected()) > ConfigManager::TIME_FOR_CLIENT_TO_REGISTER)
 		{
 			Replier::addToQueue(it->fd, Replier::errClosingLink, Utils::anyToVec(clientIt->second.getNickname(),

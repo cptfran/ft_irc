@@ -5,8 +5,6 @@
 
 static bool initServer(const char* host, const char* version, const char* password, int port);
 
-// TODO: clients not leaving the channel
-// TODO: segfault when wrong parameters in /mode +o
 int main(const int argc, char* argv[])
 {
     if (argc != 3)

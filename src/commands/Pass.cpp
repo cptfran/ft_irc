@@ -35,14 +35,13 @@ void Pass::execute(Manager& serverManager, Client& requester, const std::vector<
 
     const std::string& enteredPassword = args[0];
     // Check if the provided password does not match the server's password.
-    if (enteredPassword != configManager.getPassword())
+    if (!configManager.passwordValidator(enteredPassword))
     {
         Replier::addToQueue(requester.getFd(), Replier::errPasswdMismatch, Utils::anyToVec(configManager.getName(),
             requester.getNickname()));
         return;
     }
 
-    // Set the client's password.
-	// TODO: not needed, just info its accepted.
-    requester.setPassword(args[0]);
+    // Set client password as accepted.
+    requester.setPasswordAccepted(true);
 }

@@ -139,10 +139,24 @@ CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/sfrankie/CLionProjects/ft_irc/src/commands/Kick.cpp -o CMakeFiles/ircserv.dir/src/commands/Kick.cpp.s
 
+CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o: CMakeFiles/ircserv.dir/flags.make
+CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Mode.cpp
+CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Mode.cpp
+
+CMakeFiles/ircserv.dir/src/commands/Mode.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ircserv.dir/src/commands/Mode.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/sfrankie/CLionProjects/ft_irc/src/commands/Mode.cpp > CMakeFiles/ircserv.dir/src/commands/Mode.cpp.i
+
+CMakeFiles/ircserv.dir/src/commands/Mode.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ircserv.dir/src/commands/Mode.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/sfrankie/CLionProjects/ft_irc/src/commands/Mode.cpp -o CMakeFiles/ircserv.dir/src/commands/Mode.cpp.s
+
 CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Nick.cpp
 CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Nick.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Nick.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/ircserv.dir/src/commands/Nick.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Part.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Part.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Part.cpp
 CMakeFiles/ircserv.dir/src/commands/Part.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Part.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Part.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Part.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Part.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Part.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Part.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Part.cpp.i: cmake_force
@@ -170,7 +184,7 @@ CMakeFiles/ircserv.dir/src/commands/Part.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Pass.cpp
 CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Pass.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Pass.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/ircserv.dir/src/commands/Pass.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Ping.cpp
 CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Ping.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Ping.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Ping.cpp.i: cmake_force
@@ -198,7 +212,7 @@ CMakeFiles/ircserv.dir/src/commands/Ping.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Privmsg.cpp
 CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Privmsg.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.i: cmake_force
@@ -212,7 +226,7 @@ CMakeFiles/ircserv.dir/src/commands/Privmsg.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Topic.cpp
 CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Topic.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Topic.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Topic.cpp.i: cmake_force
@@ -226,7 +240,7 @@ CMakeFiles/ircserv.dir/src/commands/Topic.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/User.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/User.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/User.cpp
 CMakeFiles/ircserv.dir/src/commands/User.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/ircserv.dir/src/commands/User.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/ircserv.dir/src/commands/User.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/User.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/User.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/User.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/User.cpp
 
 CMakeFiles/ircserv.dir/src/commands/User.cpp.i: cmake_force
@@ -240,7 +254,7 @@ CMakeFiles/ircserv.dir/src/commands/User.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/commands/Who.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/commands/Who.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/commands/Who.cpp
 CMakeFiles/ircserv.dir/src/commands/Who.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Who.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/ircserv.dir/src/commands/Who.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/commands/Who.cpp.o -MF CMakeFiles/ircserv.dir/src/commands/Who.cpp.o.d -o CMakeFiles/ircserv.dir/src/commands/Who.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/commands/Who.cpp
 
 CMakeFiles/ircserv.dir/src/commands/Who.cpp.i: cmake_force
@@ -254,7 +268,7 @@ CMakeFiles/ircserv.dir/src/commands/Who.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/communication/ClientTranslator.cpp
 CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o -MF CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o.d -o CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/communication/ClientTranslator.cpp
 
 CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.i: cmake_force
@@ -268,7 +282,7 @@ CMakeFiles/ircserv.dir/src/communication/ClientTranslator.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/communication/Replier.cpp
 CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o -MF CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o.d -o CMakeFiles/ircserv.dir/src/communication/Replier.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/communication/Replier.cpp
 
 CMakeFiles/ircserv.dir/src/communication/Replier.cpp.i: cmake_force
@@ -282,7 +296,7 @@ CMakeFiles/ircserv.dir/src/communication/Replier.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/core/Log.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/core/Log.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/core/Log.cpp
 CMakeFiles/ircserv.dir/src/core/Log.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/ircserv.dir/src/core/Log.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/ircserv.dir/src/core/Log.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/core/Log.cpp.o -MF CMakeFiles/ircserv.dir/src/core/Log.cpp.o.d -o CMakeFiles/ircserv.dir/src/core/Log.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/core/Log.cpp
 
 CMakeFiles/ircserv.dir/src/core/Log.cpp.i: cmake_force
@@ -296,7 +310,7 @@ CMakeFiles/ircserv.dir/src/core/Log.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/core/Server.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/core/Server.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/core/Server.cpp
 CMakeFiles/ircserv.dir/src/core/Server.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/ircserv.dir/src/core/Server.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/ircserv.dir/src/core/Server.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/core/Server.cpp.o -MF CMakeFiles/ircserv.dir/src/core/Server.cpp.o.d -o CMakeFiles/ircserv.dir/src/core/Server.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/core/Server.cpp
 
 CMakeFiles/ircserv.dir/src/core/Server.cpp.i: cmake_force
@@ -310,7 +324,7 @@ CMakeFiles/ircserv.dir/src/core/Server.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/data/Channel.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/data/Channel.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/data/Channel.cpp
 CMakeFiles/ircserv.dir/src/data/Channel.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/ircserv.dir/src/data/Channel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/ircserv.dir/src/data/Channel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/data/Channel.cpp.o -MF CMakeFiles/ircserv.dir/src/data/Channel.cpp.o.d -o CMakeFiles/ircserv.dir/src/data/Channel.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/data/Channel.cpp
 
 CMakeFiles/ircserv.dir/src/data/Channel.cpp.i: cmake_force
@@ -324,7 +338,7 @@ CMakeFiles/ircserv.dir/src/data/Channel.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/data/Client.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/data/Client.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/data/Client.cpp
 CMakeFiles/ircserv.dir/src/data/Client.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/ircserv.dir/src/data/Client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/ircserv.dir/src/data/Client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/data/Client.cpp.o -MF CMakeFiles/ircserv.dir/src/data/Client.cpp.o.d -o CMakeFiles/ircserv.dir/src/data/Client.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/data/Client.cpp
 
 CMakeFiles/ircserv.dir/src/data/Client.cpp.i: cmake_force
@@ -338,7 +352,7 @@ CMakeFiles/ircserv.dir/src/data/Client.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/Main.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/Main.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/Main.cpp
 CMakeFiles/ircserv.dir/src/Main.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/ircserv.dir/src/Main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/ircserv.dir/src/Main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/Main.cpp.o -MF CMakeFiles/ircserv.dir/src/Main.cpp.o.d -o CMakeFiles/ircserv.dir/src/Main.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/Main.cpp
 
 CMakeFiles/ircserv.dir/src/Main.cpp.i: cmake_force
@@ -352,7 +366,7 @@ CMakeFiles/ircserv.dir/src/Main.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/ChannelManager.cpp
 CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/ChannelManager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.i: cmake_force
@@ -366,7 +380,7 @@ CMakeFiles/ircserv.dir/src/manager/ChannelManager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/ClientManager.cpp
 CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/ClientManager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.i: cmake_force
@@ -380,7 +394,7 @@ CMakeFiles/ircserv.dir/src/manager/ClientManager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/CommandManager.cpp
 CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/CommandManager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.i: cmake_force
@@ -394,7 +408,7 @@ CMakeFiles/ircserv.dir/src/manager/CommandManager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/ConfigManager.cpp
 CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/ConfigManager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.i: cmake_force
@@ -408,7 +422,7 @@ CMakeFiles/ircserv.dir/src/manager/ConfigManager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/ConnectionManager.cpp
 CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/ConnectionManager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.i: cmake_force
@@ -422,7 +436,7 @@ CMakeFiles/ircserv.dir/src/manager/ConnectionManager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/manager/Manager.cpp
 CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o -MF CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o.d -o CMakeFiles/ircserv.dir/src/manager/Manager.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/manager/Manager.cpp
 
 CMakeFiles/ircserv.dir/src/manager/Manager.cpp.i: cmake_force
@@ -436,7 +450,7 @@ CMakeFiles/ircserv.dir/src/manager/Manager.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/utils/Colors.cpp
 CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o -MF CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o.d -o CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/utils/Colors.cpp
 
 CMakeFiles/ircserv.dir/src/utils/Colors.cpp.i: cmake_force
@@ -450,7 +464,7 @@ CMakeFiles/ircserv.dir/src/utils/Colors.cpp.s: cmake_force
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o: CMakeFiles/ircserv.dir/flags.make
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o: /home/sfrankie/CLionProjects/ft_irc/src/utils/Utils.cpp
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o: CMakeFiles/ircserv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o -MF CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o.d -o CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o -c /home/sfrankie/CLionProjects/ft_irc/src/utils/Utils.cpp
 
 CMakeFiles/ircserv.dir/src/utils/Utils.cpp.i: cmake_force
@@ -468,6 +482,7 @@ ircserv_OBJECTS = \
 "CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o" \
 "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o" \
 "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o" \
+"CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o" \
 "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" \
 "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o" \
 "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" \
@@ -500,6 +515,7 @@ ircserv: CMakeFiles/ircserv.dir/src/commands/Command.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Join.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o
+ircserv: CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Part.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o
@@ -525,7 +541,7 @@ ircserv: CMakeFiles/ircserv.dir/src/utils/Colors.cpp.o
 ircserv: CMakeFiles/ircserv.dir/src/utils/Utils.cpp.o
 ircserv: CMakeFiles/ircserv.dir/build.make
 ircserv: CMakeFiles/ircserv.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Linking CXX executable ircserv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Linking CXX executable ircserv"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ircserv.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

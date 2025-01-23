@@ -11,6 +11,7 @@ add_executable(ircserv
         include/commands/Invite.h
         include/commands/Join.h
         include/commands/Kick.h
+        include/commands/Mode.h
         include/commands/Nick.h
         include/commands/Part.h
         include/commands/Pass.h
@@ -38,6 +39,7 @@ add_executable(ircserv
         src/commands/Invite.cpp
         src/commands/Join.cpp
         src/commands/Kick.cpp
+        src/commands/Mode.cpp
         src/commands/Nick.cpp
         src/commands/Part.cpp
         src/commands/Pass.cpp

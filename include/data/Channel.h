@@ -28,6 +28,7 @@ public:
 	bool isTopicRestricted() const;
 	bool isUserOnChannel(const std::string& nicknameToFind) const;
 	bool isUserOperator(const std::string& nicknameToFind) const;
+	bool doesChannelHaveOperator() const;
 	bool isUserLimitActive() const;
 	unsigned int getUserLimit() const;
 	unsigned int getNumOfJoinedUsers() const;

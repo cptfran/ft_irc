@@ -3,13 +3,14 @@
 #include <ctime>
 #include <unistd.h>
 
-Client::Client(const int fd) : fd(fd), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0),
-invisible(false)
+Client::Client(const int fd) : fd(fd), passwordAccepted(false), timeConnected(std::time(0)), welcomeRepliesSent(false),
+	channelsJoined(0), invisible(false)
 {
 
 }
 
-Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false), channelsJoined(0), invisible(false)
+Client::Client() : fd(), passwordAccepted(false), timeConnected(std::time(0)), welcomeRepliesSent(false),
+	channelsJoined(0), invisible(false)
 {
 
 }
@@ -17,7 +18,7 @@ Client::Client() : fd(), timeConnected(std::time(0)), welcomeRepliesSent(false),
 bool Client::operator==(const Client& toCompare) const
 {
 	return this->fd == toCompare.fd &&
-					   this->password == toCompare.password &&
+					   this->passwordAccepted == toCompare.passwordAccepted &&
 					   this->nickname == toCompare.nickname &&
 					   this->username == toCompare.username &&
 					   this->realname == toCompare.realname &&
@@ -30,9 +31,9 @@ Client::~Client()
 
 }
 
-void Client::setPassword(const std::string& password)
+void Client::setPasswordAccepted(bool accepted)
 {
-	this->password = password;
+	this->passwordAccepted = accepted;
 }
 
 void Client::setNickname(const std::string& nickname)
@@ -81,9 +82,9 @@ int Client::getFd() const
 	return this->fd;
 }
 
-const std::string& Client::getPassword() const
+bool Client::getPasswordAccepted() const
 {
-	return this->password;
+	return this->passwordAccepted;
 }
 
 const std::string& Client::getNickname() const
@@ -116,9 +117,9 @@ int Client::getNumChannelsJoined() const
 	return this->channelsJoined;
 }
 
-bool Client::registered(const std::string& serverPassword) const
+bool Client::registered() const
 {
-	if (this->password != serverPassword || this->nickname.empty() || this->username.empty())
+	if (!this->passwordAccepted || this->nickname.empty() || this->username.empty())
 	{
 		return false;
 	}

@@ -20,19 +20,19 @@ public:
 	~Client();
 
 	int getFd() const;
-	const std::string& getPassword() const;
+	bool getPasswordAccepted() const;
 	const std::string& getNickname() const;
 	const std::string& getUsername() const;
 	const std::string& getHostname() const;
 	const std::string& getRealname() const;
-	bool registered(const std::string& serverPassword) const;
+	bool registered() const;
 	time_t getTimeConnected() const;
 	bool getWelcomeRepliesSent() const;
 	int getNumChannelsJoined() const;
 	bool isInvisible() const;
 	const std::string departCompleteMsgFromBuffer();
 
-	void setPassword(const std::string& password);
+	void setPasswordAccepted(bool accepted);
 	void setNickname(const std::string& nickname);
 	void setUsername(const std::string& username);
 	void setHostname(const std::string& hostname);
@@ -44,7 +44,7 @@ public:
 
 private:
 	int fd;
-	std::string password;
+	bool passwordAccepted;
 	std::string nickname;
 	std::string username;
 	std::string hostname;

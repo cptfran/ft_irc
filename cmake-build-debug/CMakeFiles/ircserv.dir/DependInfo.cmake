@@ -14,6 +14,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Invite.cpp" "CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Invite.cpp.o.d"
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Join.cpp" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Join.cpp.o.d"
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Kick.cpp" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Kick.cpp.o.d"
+  "/home/sfrankie/CLionProjects/ft_irc/src/commands/Mode.cpp" "CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Mode.cpp.o.d"
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Nick.cpp" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Nick.cpp.o.d"
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Part.cpp" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Part.cpp.o.d"
   "/home/sfrankie/CLionProjects/ft_irc/src/commands/Pass.cpp" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o" "gcc" "CMakeFiles/ircserv.dir/src/commands/Pass.cpp.o.d"
