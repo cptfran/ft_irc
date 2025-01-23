@@ -48,9 +48,9 @@ const std::string& ConfigManager::getVersion() const
 	return this->version;
 }
 
-const std::string& ConfigManager::getPassword() const
+bool ConfigManager::passwordValidator(const std::string& password) const
 {
-	return this->password;
+	return password == this->password;
 }
 
 const std::string& ConfigManager::getCreationDate() const

@@ -25,7 +25,7 @@ public:
 	int getFd() const;
 	const std::string& getName() const;
 	const std::string& getVersion() const;
-	const std::string& getPassword() const;
+	bool passwordValidator(const std::string& password) const;
 	const std::string& getCreationDate() const;
 	const std::string& getAvailableUserModes() const;
 	const std::string& getAvailableChannelModes() const;

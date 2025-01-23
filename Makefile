@@ -1,8 +1,8 @@
 .PHONY: all clean fclean re
 
 NAME = ircserv
-CC = c++
-FLAGS = -Wall -Wextra -std=c++98 -g
+CC = clang++
+FLAGS = -Wall -Wextra -std=c++98 -g -O3
 
 SRC_DIR = src
 OBJ_DIR = obj

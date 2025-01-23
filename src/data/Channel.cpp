@@ -135,6 +135,19 @@ bool Channel::isUserOperator(const std::string& nicknameToFind) const
 	return false;
 }
 
+bool Channel::doesChannelHaveOperator() const
+{
+	for (std::vector<ClientData>::const_iterator it = this->joinedClients.begin(); it != this->joinedClients.end(); ++it)
+	{
+		if (it->isOperator)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 bool Channel::isUserLimitActive() const
 {
 	return this->userLimitActive;
@@ -217,6 +230,11 @@ bool Channel::deleteUser(const std::string& userToKick)
 			it->client.setNumChannelsJoined(it->client.getNumChannelsJoined() - 1);
 			this->joinedClients.erase(it);
 
+			if (!this->doesChannelHaveOperator())
+			{
+				this->joinedClients[0].isOperator = true;
+			}
+			
 			return true;
 		}
 	}

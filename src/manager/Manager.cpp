@@ -61,10 +61,9 @@ void Manager::handleNicknameCollision(const int newClientFd, const std::string& 
         {
             Replier::addToQueue(newClientFd, Replier::errNickCollision, Utils::anyToVec(this->configManager.getName(),
                 newClientNickname, it->second.getUsername(), it->second.getHostname()));
+	        
+	        this->connectionManager.queueClientToDeleteFromPoll(it->second.getFd());
             this->clientManager.deleteClient(it->second.getFd());
-            
-            // Delete user from pollFds.
-            this->connectionManager.queueClientToDeleteFromPoll(it->second.getFd());
             return;
         }
     }

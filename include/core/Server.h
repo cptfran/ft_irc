@@ -7,7 +7,6 @@
 #include "manager/ConnectionManager.h"
 #include <poll.h>
 
-// TODO: add more logs of the server, so it logs whenever something imporant happens, like channel created etc.
 class Server
 {
 public:
@@ -35,7 +34,7 @@ private:
 	void eventHandler();
 	void timeoutHandler();
 	void clientJoinHandler();
-	void clientRequestHandler(const int fd);
+	void clientRequestHandler(int fd);
 	void clientRemovalHandler(int fd);
 
 	friend class Command;

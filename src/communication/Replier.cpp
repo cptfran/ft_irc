@@ -58,6 +58,7 @@ bool Replier::clientInQueue(const int fd)
 *
 * @param fd The file descriptor of the client.
 */
+// first (fd = 4) second ("first reply" "second reply")
 void Replier::sendFromQueue(const int fd)
 {
     

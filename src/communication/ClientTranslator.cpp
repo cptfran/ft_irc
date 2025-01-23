@@ -2,13 +2,10 @@
 #include <cctype>
 #include "communication/ClientTranslator.h"
 #include <sstream>
-#include <algorithm>
 #include <sys/socket.h>
 #include "core/Log.h"
 #include "utils/Utils.h"
-#include <cerrno>
 #include <cstring>
-#include <iostream>
 #include <stdexcept>
 #include "manager/ConfigManager.h"
 
@@ -38,10 +35,6 @@ std::string ClientTranslator::parseClientBufferFromRecv(const int fd)
 	DEBUG_LOG(std::string("CLIENT[" + Utils::intToString(fd) + "]: \"") + recvBuffer + "\"");
 	if (bytesRead <= 0)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-		{
-			return std::string();
-		}
 		throw std::runtime_error(Log::ERROR + std::string("recv"));
 	}
 	recvBuffer[bytesRead] = '\0';
