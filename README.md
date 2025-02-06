@@ -1,5 +1,5 @@
 # ft_irc
-ft_irc is an IRC (Internet Relay Chat) server implementation written in C++. This project is part of the 42 Core Curriculum and aims to provide a functional IRC server. Irssi was chosen as reference client for most of the testing.
+ft_irc is an IRC (Internet Relay Chat) server implementation written in C++ (restricted to c++98). This project is part of the 42 Core Curriculum and aims to provide a functional IRC server. Irssi was chosen as reference client for most of the testing.
 
 ## Features
 - able to authenticate, set a nickname, a username, join a channel, send and receive private messages
