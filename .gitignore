@@ -1,3 +1,30 @@
-.vs/
-CMakeSettings.json
-out/
+# Ignore CMakeLists.txt
+CMakeLists.txt
+
+# Ignore CMake build directory
+cmake-build-debug/
+
+# Ignore other CMake-related files and directories
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Ignore other build artifacts
+build/
+*.o
+*.obj
+*.exe
+*.out
+*.log
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+
+# Ignore JetBrains IDE settings
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
