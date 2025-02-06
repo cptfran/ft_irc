@@ -1,3 +1,0 @@
-/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/ircserv.dir
-/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/sfrankie/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
